@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">PasajesYa</string>
+
+    <string name="logo_pasajes_ya">Logo de PasajesYa</string>
+
+    <string name="pasajes">Pasajes</string>
+    <string name="ya">YA</string>
+
+    <string name="descripcion_pasajes_ya">
+        Tu pasaje, rápido y seguro
+    </string>
+
+    <string name="preparando_viaje">
+        Preparando tu próxima ruta…
+    </string>
+
+    <string name="todas_empresas">
+        Todas tus empresas de transporte en una sola app
+    </string>
+
+    <string name="version_pasajes">Versión 1.0</string>
+
+
+</resources>

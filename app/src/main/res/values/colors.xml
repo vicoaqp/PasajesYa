@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Marca PasajesYa -->
+    <color name="pasajes_primary">#1261A6</color>
+    <color name="pasajes_primary_dark">#0A3D6B</color>
+    <color name="pasajes_primary_light">#40A9E8</color>
+
+    <color name="pasajes_secondary">#FFB300</color>
+    <color name="pasajes_secondary_light">#FFD45C</color>
+
+    <!-- Splash -->
+    <color name="pasajes_splash_start">#073B67</color>
+    <color name="pasajes_splash_center">#1261A6</color>
+    <color name="pasajes_splash_end">#168CC8</color>
+
+    <color name="pasajes_text_white">#FFFFFF</color>
+    <color name="pasajes_text_soft">#D8ECFA</color>
+    <color name="pasajes_logo_background">#FFFFFFFF</color>
+
+    <!-- Aplicación -->
+    <color name="pasajes_background">#F4F7FB</color>
+    <color name="pasajes_surface">#FFFFFF</color>
+    <color name="pasajes_text_primary">#18232D</color>
+    <color name="pasajes_text_secondary">#697985</color>
+    <color name="pasajes_border">#DDE6ED</color>
+
+
+</resources>
