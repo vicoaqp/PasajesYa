@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_viaje"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="7dp"
+    android:layout_marginBottom="7dp"
+    app:cardBackgroundColor="@color/pasajes_surface"
+    app:cardCornerRadius="22dp"
+    app:cardElevation="3dp"
+    app:strokeColor="@color/pasajes_border"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="19dp">
+
+        <!-- Ruta y estado -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_ruta_viaje"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="Aplao → Arequipa" />
+
+                <TextView
+                    android:id="@+id/tv_fecha_hora_viaje"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="13sp"
+                    tools:text="Hoy · Salida aproximada 10:30 a. m." />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_estado_viaje"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_estado_disponible"
+                android:gravity="center"
+                android:paddingStart="11dp"
+                android:paddingEnd="11dp"
+                android:text="DISPONIBLE"
+                android:textColor="@color/pasajes_success"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Vehículo -->
+
+        <TextView
+            android:id="@+id/tv_vehiculo_viaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/pasajes_text_primary"
+            android:textSize="14sp"
+            tools:text="Toyota Yaris · V8X-321" />
+
+        <TextView
+            android:id="@+id/tv_embarque_viaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/pasajes_text_secondary"
+            android:textSize="13sp"
+            tools:text="Embarque: Terminal terrestre de Aplao" />
+
+        <!-- Ocupación -->
+
+        <ProgressBar
+            android:id="@+id/progress_ocupacion"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="18dp"
+            android:indeterminate="false"
+            android:max="4"
+            android:progress="2"
+            android:progressBackgroundTint="@color/pasajes_border"
+            android:progressTint="@color/pasajes_primary" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_ocupacion_viaje"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="12sp"
+                tools:text="2 de 4 asientos ocupados" />
+
+            <TextView
+                android:id="@+id/tv_disponibles_viaje"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pasajes_success"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="Quedan 2" />
+
+        </LinearLayout>
+
+        <!-- Precio y reserva -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Precio por asiento"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tv_precio_viaje"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:textColor="@color/pasajes_primary"
+                    android:textSize="21sp"
+                    android:textStyle="bold"
+                    tools:text="S/ 25.00" />
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_reservar_viaje"
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:minWidth="0dp"
+                android:paddingStart="19dp"
+                android:paddingEnd="19dp"
+                android:text="RESERVAR"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/pasajes_primary"
+                app:cornerRadius="15dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

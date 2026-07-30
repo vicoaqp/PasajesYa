@@ -1,25 +1,23 @@
 package com.PasajesYa.pasajesya
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import android.content.Intent
+import android.os.Bundle
 import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.PasajesYa.pasajesya.databinding.ActivityLoginBinding
-
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseNetworkException
-import com.google.firebase.auth.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestore
-import com.pasajesya.usuario.databinding.ActivityLoginBinding
+import java.util.Locale
+
 
 class LoginActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
@@ -46,6 +44,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun configurarPantalla() {
+
         window.statusBarColor =
             getColor(R.color.pasajes_primary_dark)
 
@@ -64,11 +63,13 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.tvCrearCuenta.setOnClickListener {
-            Toast.makeText(
+
+            val intent = Intent(
                 this,
-                "En el siguiente paso crearemos el registro.",
-                Toast.LENGTH_SHORT
-            ).show()
+                RegisterActivity::class.java
+            )
+
+            startActivity(intent)
         }
 
         binding.etPassword.setOnEditorActionListener { _, actionId, _ ->
@@ -82,12 +83,14 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.etCorreo.setOnFocusChangeListener { _, tieneFoco ->
+
             if (tieneFoco) {
                 binding.tilCorreo.error = null
             }
         }
 
         binding.etPassword.setOnFocusChangeListener { _, tieneFoco ->
+
             if (tieneFoco) {
                 binding.tilPassword.error = null
             }
@@ -203,7 +206,7 @@ class LoginActivity : AppCompatActivity() {
                     else -> {
 
                         guardarCorreo(correo)
-                        abrirPantallaPrincipal()
+                        abrirSeleccionEmpresa()
                     }
                 }
             }
@@ -215,7 +218,8 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(
                     this,
                     "No se pudo verificar el perfil: " +
-                            error.localizedMessage,
+                            (error.localizedMessage
+                                ?: "error desconocido"),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -281,9 +285,7 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        if (
-            !Patterns.EMAIL_ADDRESS.matcher(correo).matches()
-        ) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
 
             binding.tilCorreo.error =
                 "Ingresa un correo válido"
@@ -305,7 +307,8 @@ class LoginActivity : AppCompatActivity() {
 
                 } else {
 
-                    "No se pudo enviar el enlace de recuperación."
+                    tarea.exception?.localizedMessage
+                        ?: "No se pudo enviar el enlace de recuperación."
                 }
 
                 Toast.makeText(
@@ -341,6 +344,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun limpiarErrores() {
+
         binding.tilCorreo.error = null
         binding.tilPassword.error = null
     }
@@ -407,18 +411,13 @@ class LoginActivity : AppCompatActivity() {
         binding.etPassword.requestFocus()
     }
 
-    private fun abrirPantallaPrincipal() {
+    private fun abrirSeleccionEmpresa() {
 
         mostrarCargando(false)
 
-        /*
-         * Temporalmente abrimos MainActivity.
-         * Cuando creemos SeleccionEmpresaActivity,
-         * reemplazaremos MainActivity por esa pantalla.
-         */
         val intent = Intent(
             this,
-            MainActivity::class.java
+            SeleccionarEmpresaActivity::class.java
         ).apply {
 
             flags =
@@ -437,13 +436,20 @@ class LoginActivity : AppCompatActivity() {
         return when (error) {
 
             is FirebaseNetworkException ->
-                "No se pudo conectar. Revisa tu internet."
+                "No se pudo conectar. Revisa tu conexión a internet."
 
             is FirebaseTooManyRequestsException ->
                 "Demasiados intentos. Espera unos minutos."
 
-            else ->
+            is FirebaseAuthInvalidUserException ->
+                "No existe una cuenta registrada con este correo."
+
+            is FirebaseAuthInvalidCredentialsException ->
                 "Correo o contraseña incorrectos."
+
+            else ->
+                error?.localizedMessage
+                    ?: "No se pudo iniciar sesión."
         }
     }
 

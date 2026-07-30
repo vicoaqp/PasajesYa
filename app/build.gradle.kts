@@ -48,17 +48,27 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.firebase.auth)
+
+
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
-    implementation(libs.firebase.firestore.ktx)
-    implementation(libs.firebase.firestore)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
 
+    // Firebase: versiones compatibles administradas por el BoM
+    implementation(
+        platform("com.google.firebase:firebase-bom:34.16.0")
+    )
+
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+
 }

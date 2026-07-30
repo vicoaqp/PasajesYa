@@ -10,23 +10,27 @@ import android.os.Handler
 import android.os.Looper
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.PasajesYa.pasajesya.databinding.ActivitySplashBinding
+import com.google.firebase.auth.FirebaseAuth
 
 
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashBinding
+    private lateinit var auth: FirebaseAuth
 
     private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        // Debe ejecutarse antes de super.onCreate().
+        // Siempre antes de super.onCreate()
         installSplashScreen()
 
         super.onCreate(savedInstanceState)
 
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        auth = FirebaseAuth.getInstance()
 
         configurarPantalla()
         iniciarAnimaciones()
@@ -44,7 +48,6 @@ class SplashActivity : AppCompatActivity() {
 
     private fun iniciarAnimaciones() {
 
-        // Animación del logo.
         binding.contenedorLogo.apply {
 
             alpha = 0f
@@ -61,7 +64,6 @@ class SplashActivity : AppCompatActivity() {
                 .start()
         }
 
-        // Animación del nombre.
         binding.contenedorNombre.apply {
 
             alpha = 0f
@@ -75,7 +77,6 @@ class SplashActivity : AppCompatActivity() {
                 .start()
         }
 
-        // Animación de la descripción.
         binding.tvDescripcion.apply {
 
             alpha = 0f
@@ -89,7 +90,6 @@ class SplashActivity : AppCompatActivity() {
                 .start()
         }
 
-        // Animación del cargador.
         binding.progressSplash.apply {
 
             alpha = 0f
@@ -121,31 +121,44 @@ class SplashActivity : AppCompatActivity() {
                 return@postDelayed
             }
 
-            /*
-             * Temporalmente abre MainActivity.
-             * Cuando creemos LoginActivity, cambiaremos
-             * MainActivity::class.java por LoginActivity::class.java.
-             */
-            val intent = Intent(
-                this,
-                MainActivity::class.java
-            ).apply {
-
-                flags =
-                    Intent.FLAG_ACTIVITY_NEW_TASK or
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK
-            }
-
-            startActivity(intent)
-
-            overridePendingTransition(
-                android.R.anim.fade_in,
-                android.R.anim.fade_out
-            )
-
-            finish()
+            verificarSesion()
 
         }, TIEMPO_SPLASH)
+    }
+
+    private fun verificarSesion() {
+
+        val usuarioActual = auth.currentUser
+
+        val pantallaDestino = if (usuarioActual == null) {
+
+            // No inició sesión
+            LoginActivity::class.java
+
+        } else {
+
+            // Ya inició sesión
+            SeleccionarEmpresaActivity::class.java
+        }
+
+        val intent = Intent(
+            this,
+            pantallaDestino
+        ).apply {
+
+            flags =
+                Intent.FLAG_ACTIVITY_NEW_TASK or
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        startActivity(intent)
+
+        overridePendingTransition(
+            android.R.anim.fade_in,
+            android.R.anim.fade_out
+        )
+
+        finish()
     }
 
     override fun onDestroy() {

@@ -15,8 +15,7 @@ import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
+
 import java.util.Locale
 
 class SeleccionarEmpresaActivity : AppCompatActivity() {
@@ -41,15 +40,15 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
+        // Si no existe sesión, vuelve al login.
         if (auth.currentUser == null) {
             abrirLogin()
             return
         }
 
-        binding =
-            ActivitySeleccionarEmpresaBinding.inflate(
-                layoutInflater
-            )
+        binding = ActivitySeleccionarEmpresaBinding.inflate(
+            layoutInflater
+        )
 
         setContentView(binding.root)
 
@@ -76,10 +75,10 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
         }
 
         binding.recyclerEmpresas.apply {
-            layoutManager =
-                LinearLayoutManager(
-                    this@SeleccionarEmpresaActivity
-                )
+
+            layoutManager = LinearLayoutManager(
+                this@SeleccionarEmpresaActivity
+            )
 
             adapter = empresaAdapter
             setHasFixedSize(true)
@@ -89,6 +88,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
     private fun configurarEventos() {
 
         binding.etBuscarEmpresa.doAfterTextChanged { texto ->
+
             empresaAdapter.filtrar(
                 texto?.toString().orEmpty()
             )
@@ -101,17 +101,21 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
     private fun cargarNombreUsuario() {
 
-        val usuario = auth.currentUser ?: return
+        val usuarioActual = auth.currentUser ?: return
 
         binding.tvSaludoUsuario.text = "¡Hola!"
 
         firestore.collection(COLECCION_USUARIOS)
-            .document(usuario.uid)
+            .document(usuarioActual.uid)
             .get()
             .addOnSuccessListener { documento ->
 
+                if (!documento.exists()) {
+                    return@addOnSuccessListener
+                }
+
                 val nombres = documento
-                    .getString("nombres")
+                    .getString(CAMPO_NOMBRES)
                     .orEmpty()
                     .trim()
 
@@ -127,82 +131,106 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                         "¡Hola, $primerNombre!"
                     }
             }
+            .addOnFailureListener {
+
+                binding.tvSaludoUsuario.text = "¡Hola!"
+            }
     }
 
     private fun escucharEmpresas() {
 
         mostrarCargando(true)
 
-        listenerEmpresas =
-            firestore.collection(COLECCION_EMPRESAS)
-                .addSnapshotListener { resultado, error ->
+        listenerEmpresas?.remove()
 
-                    mostrarCargando(false)
+        listenerEmpresas = firestore
+            .collection(COLECCION_EMPRESAS)
+            .addSnapshotListener { resultado, error ->
 
-                    if (error != null) {
+                mostrarCargando(false)
 
-                        mostrarSinEmpresas(
-                            true,
-                            "No se pudieron cargar las empresas. " +
-                                    "Revisa tu conexión."
-                        )
-
-                        Toast.makeText(
-                            this,
-                            error.localizedMessage
-                                ?: "Error al cargar empresas",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        return@addSnapshotListener
-                    }
-
-                    val empresas = resultado
-                        ?.documents
-                        ?.mapNotNull { documento ->
-
-                            documento
-                                .toObject(Empresa::class.java)
-                                ?.copy(id = documento.id)
-                        }
-                        ?.filter { empresa ->
-
-                            empresa.estado
-                                .trim()
-                                .lowercase(Locale.ROOT) ==
-                                    ESTADO_ACTIVO &&
-                                    empresa.visibleUsuarios
-                        }
-                        ?.sortedWith(
-                            compareBy<Empresa> {
-                                it.orden
-                            }.thenBy {
-                                it.nombre
-                            }
-                        )
-                        .orEmpty()
+                if (error != null) {
 
                     empresaAdapter.actualizarEmpresas(
-                        empresas
+                        emptyList()
                     )
 
                     mostrarSinEmpresas(
-                        empresas.isEmpty(),
-                        "Pronto se agregarán nuevas " +
-                                "empresas de transporte."
+                        mostrar = true,
+                        mensaje = "No se pudieron cargar las empresas. " +
+                                "Revisa tu conexión a internet."
                     )
+
+                    Toast.makeText(
+                        this,
+                        error.localizedMessage
+                            ?: "Error al cargar las empresas.",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    return@addSnapshotListener
                 }
+
+                val empresas = resultado
+                    ?.documents
+                    ?.mapNotNull { documento ->
+
+                        documento
+                            .toObject(Empresa::class.java)
+                            ?.copy(id = documento.id)
+                    }
+                    ?.filter { empresa ->
+
+                        val estadoEmpresa = empresa.estado
+                            .trim()
+                            .lowercase(Locale.ROOT)
+
+                        estadoEmpresa == ESTADO_ACTIVO &&
+                                empresa.visibleUsuarios
+                    }
+                    ?.sortedWith(
+                        compareBy<Empresa> { empresa ->
+                            empresa.orden
+                        }.thenBy { empresa ->
+                            empresa.nombre.lowercase(Locale.ROOT)
+                        }
+                    )
+                    .orEmpty()
+
+                empresaAdapter.actualizarEmpresas(empresas)
+
+                mostrarSinEmpresas(
+                    mostrar = empresas.isEmpty(),
+                    mensaje = "Pronto se agregarán nuevas " +
+                            "empresas de transporte."
+                )
+            }
     }
 
     private fun confirmarSeleccionEmpresa(
         empresa: Empresa
     ) {
 
+        if (empresa.id.isBlank()) {
+
+            Toast.makeText(
+                this,
+                "No se pudo identificar esta empresa.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
         MaterialAlertDialogBuilder(this)
-            .setTitle(empresa.nombre)
+            .setTitle(
+                empresa.nombre.ifBlank {
+                    "Empresa de transporte"
+                }
+            )
             .setMessage(
-                "¿Deseas consultar las rutas y autos " +
-                        "disponibles de esta empresa?"
+                "¿Deseas consultar las rutas, viajes y " +
+                        "autos disponibles de esta empresa?"
             )
             .setNegativeButton(
                 "CANCELAR",
@@ -212,13 +240,20 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                 "CONTINUAR"
             ) { _, _ ->
 
-                guardarEmpresaSeleccionada(empresa)
-                abrirEmpresa(empresa)
+                seleccionarEmpresa(empresa)
             }
             .show()
     }
 
-    private fun guardarEmpresaSeleccionada(
+    private fun seleccionarEmpresa(
+        empresa: Empresa
+    ) {
+
+        guardarEmpresaSeleccionadaLocalmente(empresa)
+        guardarUltimaEmpresaEnFirestore(empresa)
+    }
+
+    private fun guardarEmpresaSeleccionadaLocalmente(
         empresa: Empresa
     ) {
 
@@ -232,14 +267,47 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                 empresa.nombre
             )
             .putString(
-                CLAVE_EMPRESA_COLOR,
+                CLAVE_EMPRESA_COLOR_PRINCIPAL,
                 empresa.colorPrincipal
+            )
+            .putString(
+                CLAVE_EMPRESA_COLOR_SECUNDARIO,
+                empresa.colorSecundario
             )
             .putString(
                 CLAVE_EMPRESA_LOGO,
                 empresa.logoUrl
             )
             .apply()
+    }
+
+    private fun guardarUltimaEmpresaEnFirestore(
+        empresa: Empresa
+    ) {
+
+        val usuarioActual = auth.currentUser
+
+        if (usuarioActual == null) {
+            abrirLogin()
+            return
+        }
+
+        val datosActualizacion = mapOf(
+            CAMPO_ULTIMA_EMPRESA_ID to empresa.id,
+            CAMPO_ULTIMA_EMPRESA_NOMBRE to empresa.nombre
+        )
+
+        firestore.collection(COLECCION_USUARIOS)
+            .document(usuarioActual.uid)
+            .update(datosActualizacion)
+            .addOnCompleteListener {
+
+                /*
+                 * Aunque falle esta actualización,
+                 * la empresa ya está guardada en el teléfono.
+                 */
+                abrirEmpresa(empresa)
+            }
     }
 
     private fun abrirEmpresa(
@@ -261,12 +329,33 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                 empresa.nombre
             )
 
+            putExtra(
+                EXTRA_EMPRESA_COLOR_PRINCIPAL,
+                empresa.colorPrincipal
+            )
+
+            putExtra(
+                EXTRA_EMPRESA_COLOR_SECUNDARIO,
+                empresa.colorSecundario
+            )
+
+            putExtra(
+                EXTRA_EMPRESA_LOGO,
+                empresa.logoUrl
+            )
+
             flags =
                 Intent.FLAG_ACTIVITY_NEW_TASK or
                         Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
         startActivity(intent)
+
+        overridePendingTransition(
+            android.R.anim.fade_in,
+            android.R.anim.fade_out
+        )
+
         finish()
     }
 
@@ -281,12 +370,14 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                 View.GONE
             }
 
-        binding.recyclerEmpresas.visibility =
-            if (cargando) {
+        if (cargando) {
+
+            binding.recyclerEmpresas.visibility =
                 View.INVISIBLE
-            } else {
-                View.VISIBLE
-            }
+
+            binding.contenedorSinEmpresas.visibility =
+                View.GONE
+        }
     }
 
     private fun mostrarSinEmpresas(
@@ -326,15 +417,23 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                 "SALIR"
             ) { _, _ ->
 
-                auth.signOut()
-
-                preferenciasEmpresa.edit()
-                    .clear()
-                    .apply()
-
-                abrirLogin()
+                cerrarSesion()
             }
             .show()
+    }
+
+    private fun cerrarSesion() {
+
+        listenerEmpresas?.remove()
+        listenerEmpresas = null
+
+        auth.signOut()
+
+        preferenciasEmpresa.edit()
+            .clear()
+            .apply()
+
+        abrirLogin()
     }
 
     private fun abrirLogin() {
@@ -354,23 +453,35 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+
         listenerEmpresas?.remove()
+        listenerEmpresas = null
+
         super.onDestroy()
     }
 
     companion object {
 
         private const val COLECCION_EMPRESAS =
-            "empresas"
+            "empresaspasajes"
 
         private const val COLECCION_USUARIOS =
-            "usuariosapp"
+            "usuariospasajes"
+
+        private const val CAMPO_NOMBRES =
+            "nombres"
+
+        private const val CAMPO_ULTIMA_EMPRESA_ID =
+            "ultimaEmpresaId"
+
+        private const val CAMPO_ULTIMA_EMPRESA_NOMBRE =
+            "ultimaEmpresaNombre"
 
         private const val ESTADO_ACTIVO =
             "activo"
 
         private const val PREFERENCIAS_EMPRESA =
-            "preferencias_empresa"
+            "preferencias_empresa_pasajes"
 
         private const val CLAVE_EMPRESA_ID =
             "empresa_id"
@@ -378,8 +489,11 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
         private const val CLAVE_EMPRESA_NOMBRE =
             "empresa_nombre"
 
-        private const val CLAVE_EMPRESA_COLOR =
-            "empresa_color"
+        private const val CLAVE_EMPRESA_COLOR_PRINCIPAL =
+            "empresa_color_principal"
+
+        private const val CLAVE_EMPRESA_COLOR_SECUNDARIO =
+            "empresa_color_secundario"
 
         private const val CLAVE_EMPRESA_LOGO =
             "empresa_logo"
@@ -389,5 +503,14 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
         const val EXTRA_EMPRESA_NOMBRE =
             "extra_empresa_nombre"
+
+        const val EXTRA_EMPRESA_COLOR_PRINCIPAL =
+            "extra_empresa_color_principal"
+
+        const val EXTRA_EMPRESA_COLOR_SECUNDARIO =
+            "extra_empresa_color_secundario"
+
+        const val EXTRA_EMPRESA_LOGO =
+            "extra_empresa_logo"
     }
 }
