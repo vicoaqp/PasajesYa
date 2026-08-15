@@ -62,12 +62,12 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
             FirebaseFirestore.getInstance()
 
 
-        // Si no existe sesión,
-        // vuelve al login.
+        // ---------------------------------------------
+        // COMPROBAR SESIÓN
+        // ---------------------------------------------
 
         if (
-            auth.currentUser ==
-            null
+            auth.currentUser == null
         ) {
 
             abrirLogin()
@@ -75,6 +75,10 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
             return
         }
 
+
+        // ---------------------------------------------
+        // VIEW BINDING
+        // ---------------------------------------------
 
         binding =
             ActivitySeleccionarEmpresaBinding
@@ -87,6 +91,10 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
             binding.root
         )
 
+
+        // ---------------------------------------------
+        // CONFIGURAR
+        // ---------------------------------------------
 
         configurarPantalla()
 
@@ -101,7 +109,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
-    // PANTALLA
+    // CONFIGURAR PANTALLA
     // =================================================
 
     private fun configurarPantalla() {
@@ -120,7 +128,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
-    // RECYCLER EMPRESAS
+    // CONFIGURAR RECYCLER
     // =================================================
 
     private fun configurarRecycler() {
@@ -128,6 +136,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
         empresaAdapter =
             EmpresaAdapter {
                     empresa ->
+
 
                 confirmarSeleccionEmpresa(
                     empresa
@@ -160,6 +169,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
     private fun configurarEventos() {
 
+
         // ---------------------------------------------
         // BUSCAR EMPRESA
         // ---------------------------------------------
@@ -190,13 +200,34 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
         // ---------------------------------------------
         // MOVILIDAD LOCAL
-        // TAXI / MOTOTAXI
         // ---------------------------------------------
 
         binding.cardMovilidadLocal
             .setOnClickListener {
 
                 abrirMovilidadLocal()
+            }
+
+
+        // ---------------------------------------------
+        // ENCOMIENDA LOCAL
+        // ---------------------------------------------
+
+        binding.cardEncomiendaLocal
+            .setOnClickListener {
+
+                abrirEncomiendaLocal()
+            }
+
+
+        // ---------------------------------------------
+        // COMPRAS Y MANDADOS
+        // ---------------------------------------------
+
+        binding.cardCompraLocal
+            .setOnClickListener {
+
+                abrirCompraLocal()
             }
     }
 
@@ -227,7 +258,57 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
-    // NOMBRE DEL USUARIO
+    // ABRIR ENCOMIENDA LOCAL
+    // =================================================
+
+    private fun abrirEncomiendaLocal() {
+
+        val intent =
+            Intent(
+                this,
+                EncomiendaLocalActivity::class.java
+            )
+
+
+        startActivity(
+            intent
+        )
+
+
+        overridePendingTransition(
+            android.R.anim.fade_in,
+            android.R.anim.fade_out
+        )
+    }
+
+
+    // =================================================
+    // ABRIR COMPRAS Y MANDADOS
+    // =================================================
+
+    private fun abrirCompraLocal() {
+
+        val intent =
+            Intent(
+                this,
+                CompraLocalActivity::class.java
+            )
+
+
+        startActivity(
+            intent
+        )
+
+
+        overridePendingTransition(
+            android.R.anim.fade_in,
+            android.R.anim.fade_out
+        )
+    }
+
+
+    // =================================================
+    // CARGAR NOMBRE USUARIO
     // =================================================
 
     private fun cargarNombreUsuario() {
@@ -327,6 +408,10 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                     )
 
 
+                    // -------------------------------------
+                    // ERROR
+                    // -------------------------------------
+
                     if (
                         error != null
                     ) {
@@ -358,6 +443,10 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                         return@addSnapshotListener
                     }
 
+
+                    // -------------------------------------
+                    // LEER EMPRESAS
+                    // -------------------------------------
 
                     val empresas =
                         resultado
@@ -460,7 +549,8 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
         )
             .setTitle(
 
-                empresa.nombre
+                empresa
+                    .nombre
                     .ifBlank {
 
                         "Empresa de transporte"
@@ -549,7 +639,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
-    // GUARDAR ÚLTIMA EMPRESA EN FIRESTORE
+    // GUARDAR ULTIMA EMPRESA FIRESTORE
     // =================================================
 
     private fun guardarUltimaEmpresaEnFirestore(
@@ -592,12 +682,6 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                 datosActualizacion
             )
             .addOnCompleteListener {
-
-                /*
-                 * Aunque falle esta actualización,
-                 * la empresa ya está guardada
-                 * localmente en el teléfono.
-                 */
 
                 abrirEmpresa(
                     empresa
@@ -709,7 +793,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
-    // SIN EMPRESAS
+    // MOSTRAR SIN EMPRESAS
     // =================================================
 
     private fun mostrarSinEmpresas(
@@ -749,7 +833,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
-    // DIÁLOGO CERRAR SESIÓN
+    // DIALOGO CERRAR SESION
     // =================================================
 
     private fun mostrarDialogoCerrarSesion() {
@@ -780,7 +864,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
-    // CERRAR SESIÓN
+    // CERRAR SESION
     // =================================================
 
     private fun cerrarSesion() {
@@ -835,7 +919,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
-    // DESTRUIR
+    // ON DESTROY
     // =================================================
 
     override fun onDestroy() {

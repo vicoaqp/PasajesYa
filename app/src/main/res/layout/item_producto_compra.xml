@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="9dp"
+    app:cardBackgroundColor="@color/pasajes_surface"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/pasajes_border"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="13dp">
+
+
+        <!-- ICONO -->
+
+        <TextView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:gravity="center"
+            android:text="🛒"
+            android:textSize="22sp" />
+
+
+        <!-- DATOS DEL PRODUCTO -->
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/tvNombreProducto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Arroz"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="Arroz" />
+
+
+            <TextView
+                android:id="@+id/tvCantidadProducto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Cantidad: 1/2 kg"
+                android:textColor="@color/pasajes_primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="Cantidad: 1/2 kg" />
+
+
+            <TextView
+                android:id="@+id/tvObservacionProducto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Cualquier marca"
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="11sp"
+                tools:text="Preferible marca Costeño" />
+
+
+        </LinearLayout>
+
+
+        <!-- ELIMINAR -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEliminarProducto"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:text="✕"
+            android:textColor="#E5484D"
+            android:textSize="16sp"
+            app:backgroundTint="#FFF0F0"
+            app:cornerRadius="14dp" />
+
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

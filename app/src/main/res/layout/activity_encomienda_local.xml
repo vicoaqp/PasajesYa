@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pasajes_background"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    tools:context=".EncomiendaLocalActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <!-- ======================================= -->
+        <!-- ENCABEZADO -->
+        <!-- ======================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/pasajes_primary_dark"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="18dp">
+
+            <TextView
+                android:id="@+id/btnVolver"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="←"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Encomienda local"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Traslada paquetes y productos dentro de tu zona"
+                    android:textColor="#D9FFFFFF"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <!-- ======================================= -->
+        <!-- CONTENIDO -->
+        <!-- ======================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="18dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="35dp">
+
+
+            <!-- INTRODUCCION -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📦 ¿Qué deseas trasladar?"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Describe tu encomienda para que los conductores sepan qué deben recoger."
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="13sp" />
+
+
+            <!-- DESCRIPCION -->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:hint="¿Qué vas a enviar?"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDescripcion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLines="4"
+                    android:minLines="2"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="15sp"
+                    tools:text="Una caja con ropa" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- CANTIDAD -->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Cantidad de paquetes, cajas o bultos"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCantidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:textColor="@color/pasajes_text_primary"
+                    tools:text="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- PESO -->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Peso aproximado"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPeso"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textColor="@color/pasajes_text_primary"
+                    tools:text="5 kg" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- TAMAÑO -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:text="Tamaño aproximado"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/rgTamano"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rbPequeno"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="Pequeño"
+                    android:textColor="@color/pasajes_text_primary" />
+
+                <RadioButton
+                    android:id="@+id/rbMediano"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mediano"
+                    android:textColor="@color/pasajes_text_primary" />
+
+                <RadioButton
+                    android:id="@+id/rbGrande"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Grande"
+                    android:textColor="@color/pasajes_text_primary" />
+
+            </RadioGroup>
+
+
+            <!-- ======================================= -->
+            <!-- FOTO -->
+            <!-- ======================================= -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:text="Foto de la encomienda"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Opcional, pero ayuda al conductor a saber qué transportará."
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="12sp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="190dp"
+                android:layout_marginTop="12dp"
+                app:cardBackgroundColor="#E8EEF3"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/pasajes_border"
+                app:strokeWidth="1dp">
+
+                <ImageView
+                    android:id="@+id/imgEncomienda"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Foto de la encomienda"
+                    android:padding="18dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_empresa_transporte" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAgregarFoto"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="9dp"
+                android:text="AGREGAR FOTO"
+                android:textColor="@color/pasajes_primary"
+                app:backgroundTint="@color/pasajes_surface"
+                app:cornerRadius="14dp"
+                app:strokeColor="@color/pasajes_primary"
+                app:strokeWidth="1dp" />
+
+
+            <!-- ======================================= -->
+            <!-- RECOJO -->
+            <!-- ======================================= -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="📍 Lugar de recojo"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:hint="Dirección de recojo"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDireccionRecojo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPostalAddress|textCapSentences"
+                    android:textColor="@color/pasajes_text_primary"
+                    tools:text="Mercado de Aplao" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Referencia de recojo"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etReferenciaRecojo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
+                    android:textColor="@color/pasajes_text_primary"
+                    tools:text="Tienda N.º 12" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- ======================================= -->
+            <!-- ENTREGA -->
+            <!-- ======================================= -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="🏁 Lugar de entrega"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:hint="Dirección de entrega"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDireccionEntrega"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPostalAddress|textCapSentences"
+                    android:textColor="@color/pasajes_text_primary"
+                    tools:text="Huancarqui, calle principal" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Referencia de entrega"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etReferenciaEntrega"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
+                    android:textColor="@color/pasajes_text_primary"
+                    tools:text="Casa de color verde" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- ======================================= -->
+            <!-- INDICACIONES -->
+            <!-- ======================================= -->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:hint="Indicaciones adicionales"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etIndicaciones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLines="4"
+                    android:minLines="2"
+                    android:textColor="@color/pasajes_text_primary"
+                    tools:text="Llamar antes de recoger." />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- ======================================= -->
+            <!-- TIPO DE UNIDAD -->
+            <!-- ======================================= -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="🚘 ¿Qué unidad deseas?"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Selecciona quiénes podrán ofrecerte un precio."
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="13sp" />
+
+
+            <RadioGroup
+                android:id="@+id/rgTipoUnidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+
+                <RadioButton
+                    android:id="@+id/rbMototaxi"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="8dp"
+                    android:text="🛺  Mototaxi"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="15sp" />
+
+
+                <RadioButton
+                    android:id="@+id/rbTaxi"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="8dp"
+                    android:text="🚕  Taxi / vehículo"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="15sp" />
+
+
+                <RadioButton
+                    android:id="@+id/rbCualquierUnidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:checked="true"
+                    android:gravity="center_vertical"
+                    android:paddingStart="8dp"
+                    android:text="🚘  Cualquier unidad"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+
+            </RadioGroup>
+
+
+            <!-- ======================================= -->
+            <!-- AVISO -->
+            <!-- ======================================= -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="#EAF6F9"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp"
+                    android:text="💡 Al publicar, los conductores disponibles podrán revisar tu solicitud y ofrecerte cuánto cobrarían por realizar el traslado."
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="12sp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ======================================= -->
+            <!-- PUBLICAR -->
+            <!-- ======================================= -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPublicar"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginTop="22dp"
+                android:text="PUBLICAR ENCOMIENDA"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/pasajes_primary"
+                app:cornerRadius="16dp" />
+
+
+            <ProgressBar
+                android:id="@+id/progressPublicar"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:indeterminateTint="@color/pasajes_primary"
+                android:visibility="gone" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

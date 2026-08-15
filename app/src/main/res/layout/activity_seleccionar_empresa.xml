@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Elige tu transporte"
+                    android:text="¿Qué necesitas?"
                     android:textColor="@color/white"
                     android:textSize="27sp"
                     android:textStyle="bold" />
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Reserva un viaje o consulta taxis y mototaxis disponibles."
+            android:text="Viaja, encuentra movilidad, envía encomiendas o solicita una compra."
             android:textColor="@color/pasajes_text_soft"
             android:textSize="13sp" />
 
@@ -167,7 +167,7 @@
         android:layout_marginTop="22dp"
         android:layout_marginEnd="20dp"
         android:fontFamily="sans-serif-medium"
-        android:text="Empresas de transporte"
+        android:text="Viajes interprovinciales"
         android:textColor="@color/pasajes_text_primary"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -263,7 +263,7 @@
 
 
     <!-- ================================================= -->
-    <!-- MOVILIDAD LOCAL - ZONA INFERIOR -->
+    <!-- SERVICIOS LOCALES -->
     <!-- ================================================= -->
 
     <LinearLayout
@@ -275,7 +275,7 @@
         android:paddingStart="16dp"
         android:paddingTop="8dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="14dp"
+        android:paddingBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -288,13 +288,15 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="8dp"
-            android:text="Movilidad local"
+            android:text="Servicios locales"
             android:textColor="@color/pasajes_text_primary"
             android:textSize="15sp"
             android:textStyle="bold" />
 
 
-        <!-- TARJETA MOVILIDAD -->
+        <!-- ================================================= -->
+        <!-- MOVILIDAD LOCAL -->
+        <!-- ================================================= -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardMovilidadLocal"
@@ -304,8 +306,8 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             app:cardBackgroundColor="@color/pasajes_surface"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="5dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="3dp"
             app:strokeColor="@color/pasajes_primary"
             app:strokeWidth="1dp">
 
@@ -315,16 +317,14 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:padding="12dp">
 
-
-                <!-- ICONO -->
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
                     app:cardBackgroundColor="#E7F4F9"
-                    app:cardCornerRadius="18dp"
+                    app:cardCornerRadius="16dp"
                     app:cardElevation="0dp">
 
 
@@ -333,7 +333,211 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="🚕"
-                        android:textSize="30sp" />
+                        android:textSize="25sp" />
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Movilidad local"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Taxis y mototaxis disponibles"
+                        android:textColor="@color/pasajes_text_secondary"
+                        android:textSize="11sp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="● DISPONIBILIDAD EN TIEMPO REAL"
+                        android:textColor="@color/pasajes_success"
+                        android:textSize="8sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="44dp"
+                    android:gravity="center"
+                    android:text="›"
+                    android:textColor="@color/pasajes_primary"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ================================================= -->
+        <!-- ENCOMIENDA LOCAL -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardEncomiendaLocal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/pasajes_surface"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="3dp"
+            app:strokeColor="@color/pasajes_border"
+            app:strokeWidth="1dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    app:cardBackgroundColor="#FFF3D8"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="📦"
+                        android:textSize="25sp" />
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Encomienda local"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Traslada paquetes y productos"
+                        android:textColor="@color/pasajes_text_secondary"
+                        android:textSize="11sp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="RECIBE OFERTAS DE CONDUCTORES"
+                        android:textColor="@color/pasajes_primary"
+                        android:textSize="8sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="44dp"
+                    android:gravity="center"
+                    android:text="›"
+                    android:textColor="@color/pasajes_primary"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ================================================= -->
+        <!-- COMPRAS Y MANDADOS -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardCompraLocal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/pasajes_surface"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="3dp"
+            app:strokeColor="@color/pasajes_border"
+            app:strokeWidth="1dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+
+                <!-- ICONO -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    app:cardBackgroundColor="#E9F7ED"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="🛒"
+                        android:textSize="25sp" />
 
 
                 </com.google.android.material.card.MaterialCardView>
@@ -344,7 +548,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
+                    android:layout_marginStart="12dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -352,28 +556,28 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Taxi y Mototaxi"
+                        android:text="Compras y mandados"
                         android:textColor="@color/pasajes_text_primary"
-                        android:textSize="17sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:text="Consulta unidades disponibles ahora"
+                        android:layout_marginTop="2dp"
+                        android:text="Haz tu lista y recibe tu compra"
                         android:textColor="@color/pasajes_text_secondary"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="7dp"
-                        android:text="● DISPONIBILIDAD EN TIEMPO REAL"
+                        android:layout_marginTop="4dp"
+                        android:text="ARMA TU LISTA DE PRODUCTOS"
                         android:textColor="@color/pasajes_success"
-                        android:textSize="10sp"
+                        android:textSize="8sp"
                         android:textStyle="bold" />
 
 
@@ -383,12 +587,12 @@
                 <!-- FLECHA -->
 
                 <TextView
-                    android:layout_width="38dp"
-                    android:layout_height="52dp"
+                    android:layout_width="32dp"
+                    android:layout_height="44dp"
                     android:gravity="center"
                     android:text="›"
                     android:textColor="@color/pasajes_primary"
-                    android:textSize="34sp"
+                    android:textSize="30sp"
                     android:textStyle="bold" />
 
 
