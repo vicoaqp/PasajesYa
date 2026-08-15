@@ -23,8 +23,11 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
     private lateinit var binding:
             ActivitySeleccionarAsientoBinding
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth:
+            FirebaseAuth
+
+    private lateinit var firestore:
+            FirebaseFirestore
 
     private var listenerViaje:
             ListenerRegistration? = null
@@ -41,15 +44,31 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
     private var asientosReservados:
             Set<String> = emptySet()
 
+    /*
+     * Indica si el viaje todavía está visible
+     * y acepta nuevas reservas.
+     */
+    private var ventasDisponiblesViaje = true
+
+    /*
+     * Evita mostrar varias veces el mismo aviso
+     * cuando Firestore actualiza el documento.
+     */
+    private var avisoVentasCerradasMostrado = false
+
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
         super.onCreate(savedInstanceState)
 
-        auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
+        auth =
+            FirebaseAuth.getInstance()
+
+        firestore =
+            FirebaseFirestore.getInstance()
 
         if (auth.currentUser == null) {
+
             abrirLogin()
             return
         }
@@ -86,17 +105,20 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
 
     private fun recuperarDatos() {
 
-        empresaId = intent.getStringExtra(
-            EXTRA_EMPRESA_ID
-        ).orEmpty()
+        empresaId =
+            intent.getStringExtra(
+                EXTRA_EMPRESA_ID
+            ).orEmpty()
 
-        empresaNombre = intent.getStringExtra(
-            EXTRA_EMPRESA_NOMBRE
-        ).orEmpty()
+        empresaNombre =
+            intent.getStringExtra(
+                EXTRA_EMPRESA_NOMBRE
+            ).orEmpty()
 
-        viajeId = intent.getStringExtra(
-            EXTRA_VIAJE_ID
-        ).orEmpty()
+        viajeId =
+            intent.getStringExtra(
+                EXTRA_VIAJE_ID
+            ).orEmpty()
     }
 
     private fun configurarPantalla() {
@@ -115,23 +137,36 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
     private fun configurarEventos() {
 
         binding.btnVolver.setOnClickListener {
+
             finish()
         }
 
         binding.btnAsientoA1.setOnClickListener {
-            seleccionarAsiento(ASIENTO_A1)
+
+            seleccionarAsiento(
+                ASIENTO_A1
+            )
         }
 
         binding.btnAsientoB1.setOnClickListener {
-            seleccionarAsiento(ASIENTO_B1)
+
+            seleccionarAsiento(
+                ASIENTO_B1
+            )
         }
 
         binding.btnAsientoB2.setOnClickListener {
-            seleccionarAsiento(ASIENTO_B2)
+
+            seleccionarAsiento(
+                ASIENTO_B2
+            )
         }
 
         binding.btnAsientoB3.setOnClickListener {
-            seleccionarAsiento(ASIENTO_B3)
+
+            seleccionarAsiento(
+                ASIENTO_B3
+            )
         }
 
         binding.btnConfirmarAsiento
@@ -145,6 +180,7 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
 
         binding.tvEmpresa.text =
             empresaNombre.ifBlank {
+
                 "Empresa de transporte"
             }
 
@@ -158,140 +194,244 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
         actualizarResumen()
     }
 
+    // -------------------------------------------------
+    // ESCUCHAR EL VIAJE EN TIEMPO REAL
+    // -------------------------------------------------
+
     private fun escucharEstadoViaje() {
 
         listenerViaje?.remove()
         listenerViaje = null
 
-        listenerViaje = firestore
-            .collection(COLECCION_EMPRESAS)
-            .document(empresaId)
-            .collection(SUBCOLECCION_VIAJES)
-            .document(viajeId)
-            .addSnapshotListener {
-                    documento, error ->
+        listenerViaje =
+            firestore
+                .collection(
+                    COLECCION_EMPRESAS
+                )
+                .document(
+                    empresaId
+                )
+                .collection(
+                    SUBCOLECCION_VIAJES
+                )
+                .document(
+                    viajeId
+                )
+                .addSnapshotListener {
+                        documento, error ->
 
-                if (error != null) {
+                    if (error != null) {
 
-                    Toast.makeText(
-                        this,
-                        "No se pudo actualizar el viaje: " +
-                                (
-                                        error.localizedMessage
-                                            ?: "error desconocido"
-                                        ),
-                        Toast.LENGTH_LONG
-                    ).show()
+                        Toast.makeText(
+                            this,
+                            "No se pudo actualizar el viaje: " +
+                                    (
+                                            error.localizedMessage
+                                                ?: "error desconocido"
+                                            ),
+                            Toast.LENGTH_LONG
+                        ).show()
 
-                    return@addSnapshotListener
-                }
+                        return@addSnapshotListener
+                    }
 
-                if (
-                    documento == null ||
-                    !documento.exists()
-                ) {
+                    if (
+                        documento == null ||
+                        !documento.exists()
+                    ) {
 
-                    Toast.makeText(
-                        this,
-                        "El viaje ya no está disponible.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                        Toast.makeText(
+                            this,
+                            "El viaje ya no está disponible.",
+                            Toast.LENGTH_LONG
+                        ).show()
 
-                    finish()
-                    return@addSnapshotListener
-                }
+                        finish()
 
-                val origen = documento
-                    .getString(CAMPO_ORIGEN)
-                    .orEmpty()
+                        return@addSnapshotListener
+                    }
 
-                val destino = documento
-                    .getString(CAMPO_DESTINO)
-                    .orEmpty()
+                    /*
+                     * Verificar en tiempo real si la vendedora
+                     * cerró las ventas.
+                     */
+                    val ventasCerradas =
+                        documento.getBoolean(
+                            CAMPO_VENTAS_CERRADAS
+                        ) ?: false
 
-                val vehiculo = documento
-                    .getString(CAMPO_VEHICULO)
-                    .orEmpty()
+                    val aceptaReservas =
+                        documento.getBoolean(
+                            CAMPO_ACEPTA_RESERVAS
+                        ) ?: true
 
-                val placa = documento
-                    .getString(CAMPO_PLACA)
-                    .orEmpty()
+                    val visibleUsuarios =
+                        documento.getBoolean(
+                            CAMPO_VISIBLE_USUARIOS
+                        ) ?: true
 
-                precioViaje = (
-                        documento.get(CAMPO_PRECIO)
-                                as? Number
-                        )?.toDouble() ?: 0.0
+                    ventasDisponiblesViaje =
+                        !ventasCerradas &&
+                                aceptaReservas &&
+                                visibleUsuarios
 
-                asientosReservados = (
-                        documento.get(
-                            CAMPO_ASIENTOS_RESERVADOS
-                        ) as? List<*>
+                    if (!ventasDisponiblesViaje) {
+
+                        asientoSeleccionado =
+                            null
+
+                        if (
+                            !avisoVentasCerradasMostrado
+                        ) {
+
+                            avisoVentasCerradasMostrado =
+                                true
+
+                            Toast.makeText(
+                                this,
+                                "Las ventas de este viaje ya fueron cerradas.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                    } else {
+
+                        avisoVentasCerradasMostrado =
+                            false
+                    }
+
+                    val origen =
+                        documento
+                            .getString(
+                                CAMPO_ORIGEN
+                            )
+                            .orEmpty()
+
+                    val destino =
+                        documento
+                            .getString(
+                                CAMPO_DESTINO
+                            )
+                            .orEmpty()
+
+                    val vehiculo =
+                        documento
+                            .getString(
+                                CAMPO_VEHICULO
+                            )
+                            .orEmpty()
+
+                    val placa =
+                        documento
+                            .getString(
+                                CAMPO_PLACA
+                            )
+                            .orEmpty()
+
+                    precioViaje =
+                        (
+                                documento.get(
+                                    CAMPO_PRECIO
+                                ) as? Number
+                                )
+                            ?.toDouble()
+                            ?: 0.0
+
+                    asientosReservados =
+                        (
+                                documento.get(
+                                    CAMPO_ASIENTOS_RESERVADOS
+                                ) as? List<*>
+                                )
+                            ?.mapNotNull {
+                                    valor ->
+
+                                valor as? String
+                            }
+                            ?.map {
+                                    codigo ->
+
+                                codigo
+                                    .trim()
+                                    .uppercase(
+                                        Locale.ROOT
+                                    )
+                            }
+                            ?.toSet()
+                            .orEmpty()
+
+                    binding.tvRuta.text =
+                        "$origen → $destino"
+
+                    binding.tvVehiculo.text =
+                        when {
+
+                            vehiculo.isNotBlank() &&
+                                    placa.isNotBlank() -> {
+
+                                "$vehiculo · $placa"
+                            }
+
+                            vehiculo.isNotBlank() -> {
+
+                                vehiculo
+                            }
+
+                            placa.isNotBlank() -> {
+
+                                "Vehículo · $placa"
+                            }
+
+                            else -> {
+
+                                "Vehículo asignado"
+                            }
+                        }
+
+                    val asientoActual =
+                        asientoSeleccionado
+
+                    if (
+                        asientoActual != null &&
+                        asientosReservados.contains(
+                            asientoActual
                         )
-                    ?.mapNotNull { valor ->
-                        valor as? String
-                    }
-                    ?.map { codigo ->
+                    ) {
 
-                        codigo
-                            .trim()
-                            .uppercase(Locale.ROOT)
-                    }
-                    ?.toSet()
-                    .orEmpty()
+                        asientoSeleccionado =
+                            null
 
-                binding.tvRuta.text =
-                    "$origen → $destino"
-
-                binding.tvVehiculo.text =
-                    when {
-
-                        vehiculo.isNotBlank() &&
-                                placa.isNotBlank() -> {
-
-                            "$vehiculo · $placa"
-                        }
-
-                        vehiculo.isNotBlank() -> {
-                            vehiculo
-                        }
-
-                        placa.isNotBlank() -> {
-                            "Vehículo · $placa"
-                        }
-
-                        else -> {
-                            "Vehículo asignado"
-                        }
+                        Toast.makeText(
+                            this,
+                            "Ese asiento acaba de ser " +
+                                    "reservado. Selecciona otro.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
 
-                val asientoActual =
-                    asientoSeleccionado
-
-                if (
-                    asientoActual != null &&
-                    asientosReservados.contains(
-                        asientoActual
-                    )
-                ) {
-
-                    asientoSeleccionado = null
-
-                    Toast.makeText(
-                        this,
-                        "Ese asiento acaba de ser " +
-                                "reservado. Selecciona otro.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    actualizarMapaAsientos()
+                    actualizarResumen()
                 }
-
-                actualizarMapaAsientos()
-                actualizarResumen()
-            }
     }
+
+    // -------------------------------------------------
+    // SELECCIÓN DEL ASIENTO
+    // -------------------------------------------------
 
     private fun seleccionarAsiento(
         codigoAsiento: String
     ) {
+
+        if (!ventasDisponiblesViaje) {
+
+            Toast.makeText(
+                this,
+                "Las ventas de este viaje ya fueron cerradas.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
 
         if (
             asientosReservados.contains(
@@ -328,27 +468,47 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
     private fun actualizarMapaAsientos() {
 
         configurarBotonAsiento(
-            boton = binding.btnAsientoA1,
-            codigo = ASIENTO_A1,
-            descripcion = "DELANTERO"
+            boton =
+                binding.btnAsientoA1,
+
+            codigo =
+                ASIENTO_A1,
+
+            descripcion =
+                "DELANTERO"
         )
 
         configurarBotonAsiento(
-            boton = binding.btnAsientoB1,
-            codigo = ASIENTO_B1,
-            descripcion = "VENTANA IZQ."
+            boton =
+                binding.btnAsientoB1,
+
+            codigo =
+                ASIENTO_B1,
+
+            descripcion =
+                "VENTANA IZQ."
         )
 
         configurarBotonAsiento(
-            boton = binding.btnAsientoB2,
-            codigo = ASIENTO_B2,
-            descripcion = "CENTRO"
+            boton =
+                binding.btnAsientoB2,
+
+            codigo =
+                ASIENTO_B2,
+
+            descripcion =
+                "CENTRO"
         )
 
         configurarBotonAsiento(
-            boton = binding.btnAsientoB3,
-            codigo = ASIENTO_B3,
-            descripcion = "VENTANA DER."
+            boton =
+                binding.btnAsientoB3,
+
+            codigo =
+                ASIENTO_B3,
+
+            descripcion =
+                "VENTANA DER."
         )
     }
 
@@ -359,16 +519,55 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
     ) {
 
         val ocupado =
-            asientosReservados.contains(codigo)
+            asientosReservados.contains(
+                codigo
+            )
 
         val seleccionado =
-            asientoSeleccionado == codigo
+            asientoSeleccionado ==
+                    codigo
 
         when {
 
+            !ventasDisponiblesViaje -> {
+
+                boton.isEnabled =
+                    false
+
+                boton.text =
+                    "$codigo\nNO DISPONIBLE"
+
+                boton.backgroundTintList =
+                    ColorStateList.valueOf(
+                        getColor(
+                            R.color
+                                .pasajes_asiento_ocupado
+                        )
+                    )
+
+                boton.setTextColor(
+                    getColor(
+                        R.color
+                            .pasajes_text_secondary
+                    )
+                )
+
+                boton.iconTint =
+                    ColorStateList.valueOf(
+                        getColor(
+                            R.color
+                                .pasajes_text_secondary
+                        )
+                    )
+
+                boton.strokeWidth =
+                    0
+            }
+
             ocupado -> {
 
-                boton.isEnabled = false
+                boton.isEnabled =
+                    false
 
                 boton.text =
                     "$codigo\nOCUPADO"
@@ -396,12 +595,14 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
                         )
                     )
 
-                boton.strokeWidth = 0
+                boton.strokeWidth =
+                    0
             }
 
             seleccionado -> {
 
-                boton.isEnabled = true
+                boton.isEnabled =
+                    true
 
                 boton.text =
                     "$codigo\nSELECCIONADO"
@@ -437,12 +638,14 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
                         )
                     )
 
-                boton.strokeWidth = 2
+                boton.strokeWidth =
+                    2
             }
 
             else -> {
 
-                boton.isEnabled = true
+                boton.isEnabled =
+                    true
 
                 boton.text =
                     "$codigo\n$descripcion"
@@ -475,7 +678,8 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
                         )
                     )
 
-                boton.strokeWidth = 1
+                boton.strokeWidth =
+                    1
             }
         }
     }
@@ -483,7 +687,8 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
     private fun actualizarResumen() {
 
         binding.tvAsientoSeleccionado.text =
-            asientoSeleccionado ?: "Ninguno"
+            asientoSeleccionado
+                ?: "Ninguno"
 
         binding.tvPrecio.text =
             String.format(
@@ -493,12 +698,29 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
             )
 
         binding.btnConfirmarAsiento.isEnabled =
-            asientoSeleccionado != null
+            ventasDisponiblesViaje &&
+                    asientoSeleccionado != null
     }
+
+    // -------------------------------------------------
+    // DATOS DEL PASAJERO
+    // -------------------------------------------------
 
     private fun mostrarOpcionesPasajero() {
 
-        val asiento = asientoSeleccionado
+        if (!ventasDisponiblesViaje) {
+
+            Toast.makeText(
+                this,
+                "Las ventas de este viaje ya fueron cerradas.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
+
+        val asiento =
+            asientoSeleccionado
 
         if (asiento == null) {
 
@@ -511,34 +733,39 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
             return
         }
 
-        val opciones = arrayOf(
-            "YO VIAJARÉ",
-            "OTRA PERSONA",
-            "COMPLETAR DATOS DESPUÉS"
-        )
+        val opciones =
+            arrayOf(
+                "YO VIAJARÉ",
+                "OTRA PERSONA",
+                "COMPLETAR DATOS DESPUÉS"
+            )
 
         MaterialAlertDialogBuilder(this)
             .setTitle(
                 "¿Quién ocupará el asiento $asiento?"
             )
-            .setItems(opciones) {
-                    _, posicion ->
+            .setItems(
+                opciones
+            ) { _, posicion ->
 
                 when (posicion) {
 
                     0 -> {
+
                         reservarParaTitular(
                             asiento
                         )
                     }
 
                     1 -> {
+
                         mostrarFormularioOtraPersona(
                             asiento
                         )
                     }
 
                     2 -> {
+
                         reservarConDatosPendientes(
                             asiento
                         )
@@ -559,10 +786,11 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
         cargarDatosComprador {
                 comprador ->
 
-            val pasajero = comprador.copy(
-                esTitular = true,
-                datosPendientes = false
-            )
+            val pasajero =
+                comprador.copy(
+                    esTitular = true,
+                    datosPendientes = false
+                )
 
             mostrarConfirmacionReserva(
                 asiento = asiento,
@@ -583,8 +811,12 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
 
         val dialog =
             MaterialAlertDialogBuilder(this)
-                .setTitle("Datos del pasajero")
-                .setView(dialogBinding.root)
+                .setTitle(
+                    "Datos del pasajero"
+                )
+                .setView(
+                    dialogBinding.root
+                )
                 .setNegativeButton(
                     "CANCELAR",
                     null
@@ -602,94 +834,115 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
             ).setOnClickListener {
 
                 dialogBinding
-                    .tilDniPasajero.error = null
+                    .tilDniPasajero
+                    .error = null
 
                 dialogBinding
-                    .tilNombresPasajero.error = null
+                    .tilNombresPasajero
+                    .error = null
 
                 dialogBinding
-                    .tilApellidosPasajero.error = null
+                    .tilApellidosPasajero
+                    .error = null
 
                 dialogBinding
-                    .tilCelularPasajero.error = null
+                    .tilCelularPasajero
+                    .error = null
 
-                val dni = dialogBinding
-                    .etDniPasajero
-                    .text
-                    ?.toString()
-                    ?.trim()
-                    .orEmpty()
+                val dni =
+                    dialogBinding
+                        .etDniPasajero
+                        .text
+                        ?.toString()
+                        ?.trim()
+                        .orEmpty()
 
-                val nombres = dialogBinding
-                    .etNombresPasajero
-                    .text
-                    ?.toString()
-                    ?.trim()
-                    .orEmpty()
+                val nombres =
+                    dialogBinding
+                        .etNombresPasajero
+                        .text
+                        ?.toString()
+                        ?.trim()
+                        .orEmpty()
 
-                val apellidos = dialogBinding
-                    .etApellidosPasajero
-                    .text
-                    ?.toString()
-                    ?.trim()
-                    .orEmpty()
+                val apellidos =
+                    dialogBinding
+                        .etApellidosPasajero
+                        .text
+                        ?.toString()
+                        ?.trim()
+                        .orEmpty()
 
-                val celular = dialogBinding
-                    .etCelularPasajero
-                    .text
-                    ?.toString()
-                    ?.trim()
-                    .orEmpty()
+                val celular =
+                    dialogBinding
+                        .etCelularPasajero
+                        .text
+                        ?.toString()
+                        ?.trim()
+                        .orEmpty()
 
-                var formularioValido = true
+                var formularioValido =
+                    true
 
                 if (
                     dni.length != 8 ||
-                    !dni.all { caracter ->
+                    !dni.all {
+                            caracter ->
+
                         caracter.isDigit()
                     }
                 ) {
 
                     dialogBinding
-                        .tilDniPasajero.error =
+                        .tilDniPasajero
+                        .error =
                         "El DNI debe tener 8 dígitos"
 
-                    formularioValido = false
+                    formularioValido =
+                        false
                 }
 
                 if (nombres.length < 2) {
 
                     dialogBinding
-                        .tilNombresPasajero.error =
+                        .tilNombresPasajero
+                        .error =
                         "Ingresa los nombres"
 
-                    formularioValido = false
+                    formularioValido =
+                        false
                 }
 
                 if (apellidos.length < 2) {
 
                     dialogBinding
-                        .tilApellidosPasajero.error =
+                        .tilApellidosPasajero
+                        .error =
                         "Ingresa los apellidos"
 
-                    formularioValido = false
+                    formularioValido =
+                        false
                 }
 
                 if (
                     celular.isNotBlank() &&
                     (
                             celular.length != 9 ||
-                                    !celular.all { caracter ->
+                                    !celular.all {
+                                            caracter ->
+
                                         caracter.isDigit()
                                     }
                             )
                 ) {
 
                     dialogBinding
-                        .tilCelularPasajero.error =
+                        .tilCelularPasajero
+                        .error =
                         "El celular debe tener 9 dígitos"
 
-                    formularioValido = false
+                    formularioValido =
+                        false
                 }
 
                 if (!formularioValido) {
@@ -697,14 +950,15 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                val pasajero = DatosPasajero(
-                    dni = dni,
-                    nombres = nombres,
-                    apellidos = apellidos,
-                    celular = celular,
-                    esTitular = false,
-                    datosPendientes = false
-                )
+                val pasajero =
+                    DatosPasajero(
+                        dni = dni,
+                        nombres = nombres,
+                        apellidos = apellidos,
+                        celular = celular,
+                        esTitular = false,
+                        datosPendientes = false
+                    )
 
                 dialog.dismiss()
 
@@ -752,23 +1006,33 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
         alCargar: (DatosPasajero) -> Unit
     ) {
 
-        val usuarioActual = auth.currentUser
+        val usuarioActual =
+            auth.currentUser
 
         if (usuarioActual == null) {
+
             abrirLogin()
             return
         }
 
-        mostrarCargando(true)
+        mostrarCargando(
+            true
+        )
 
         firestore
-            .collection(COLECCION_USUARIOS)
-            .document(usuarioActual.uid)
+            .collection(
+                COLECCION_USUARIOS
+            )
+            .document(
+                usuarioActual.uid
+            )
             .get()
             .addOnSuccessListener {
                     documento ->
 
-                mostrarCargando(false)
+                mostrarCargando(
+                    false
+                )
 
                 if (!documento.exists()) {
 
@@ -784,28 +1048,43 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
                 val comprador =
                     DatosPasajero(
 
-                        dni = documento
-                            .getString(CAMPO_DNI)
-                            .orEmpty()
-                            .trim(),
+                        dni =
+                            documento
+                                .getString(
+                                    CAMPO_DNI
+                                )
+                                .orEmpty()
+                                .trim(),
 
-                        nombres = documento
-                            .getString(CAMPO_NOMBRES)
-                            .orEmpty()
-                            .trim(),
+                        nombres =
+                            documento
+                                .getString(
+                                    CAMPO_NOMBRES
+                                )
+                                .orEmpty()
+                                .trim(),
 
-                        apellidos = documento
-                            .getString(CAMPO_APELLIDOS)
-                            .orEmpty()
-                            .trim(),
+                        apellidos =
+                            documento
+                                .getString(
+                                    CAMPO_APELLIDOS
+                                )
+                                .orEmpty()
+                                .trim(),
 
-                        celular = documento
-                            .getString(CAMPO_CELULAR)
-                            .orEmpty()
-                            .trim(),
+                        celular =
+                            documento
+                                .getString(
+                                    CAMPO_CELULAR
+                                )
+                                .orEmpty()
+                                .trim(),
 
-                        esTitular = true,
-                        datosPendientes = false
+                        esTitular =
+                            true,
+
+                        datosPendientes =
+                            false
                     )
 
                 if (
@@ -823,12 +1102,16 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
                     return@addOnSuccessListener
                 }
 
-                alCargar(comprador)
+                alCargar(
+                    comprador
+                )
             }
             .addOnFailureListener {
                     error ->
 
-                mostrarCargando(false)
+                mostrarCargando(
+                    false
+                )
 
                 Toast.makeText(
                     this,
@@ -848,9 +1131,22 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
         pasajero: DatosPasajero
     ) {
 
+        if (!ventasDisponiblesViaje) {
+
+            Toast.makeText(
+                this,
+                "Las ventas de este viaje ya fueron cerradas.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
+
         val nombreComprador =
-            comprador.nombreCompleto()
+            comprador
+                .nombreCompleto()
                 .ifBlank {
+
                     "Usuario registrado"
                 }
 
@@ -858,6 +1154,7 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
             when {
 
                 pasajero.datosPendientes -> {
+
                     "Datos por completar"
                 }
 
@@ -887,44 +1184,51 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
                 }
             }
 
-        val mensaje = buildString {
-
-            append(
-                "Empresa: $empresaNombre\n"
-            )
-
-            append(
-                "Comprador: $nombreComprador\n\n"
-            )
-
-            append(
-                "Asiento: $asiento\n"
-            )
-
-            append(
-                "Pasajero: $informacionPasajero\n\n"
-            )
-
-            append(
-                String.format(
-                    Locale("es", "PE"),
-                    "Precio: S/ %.2f",
-                    precioViaje
-                )
-            )
-
-            if (pasajero.datosPendientes) {
+        val mensaje =
+            buildString {
 
                 append(
-                    "\n\nDeberás completar los datos " +
-                            "del pasajero antes del viaje."
+                    "Empresa: $empresaNombre\n"
                 )
+
+                append(
+                    "Comprador: $nombreComprador\n\n"
+                )
+
+                append(
+                    "Asiento: $asiento\n"
+                )
+
+                append(
+                    "Pasajero: $informacionPasajero\n\n"
+                )
+
+                append(
+                    String.format(
+                        Locale("es", "PE"),
+                        "Precio: S/ %.2f",
+                        precioViaje
+                    )
+                )
+
+                if (
+                    pasajero.datosPendientes
+                ) {
+
+                    append(
+                        "\n\nDeberás completar los datos " +
+                                "del pasajero antes del viaje."
+                    )
+                }
             }
-        }
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("Confirmar reserva")
-            .setMessage(mensaje)
+            .setTitle(
+                "Confirmar reserva"
+            )
+            .setMessage(
+                mensaje
+            )
             .setNegativeButton(
                 "CANCELAR",
                 null
@@ -942,315 +1246,518 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
             .show()
     }
 
+    // -------------------------------------------------
+    // REGISTRAR RESERVA
+    // -------------------------------------------------
+
     private fun reservarAsiento(
         asiento: String,
         comprador: DatosPasajero,
         pasajero: DatosPasajero
     ) {
 
-        val usuarioActual = auth.currentUser
+        val usuarioActual =
+            auth.currentUser
 
         if (usuarioActual == null) {
+
             abrirLogin()
             return
         }
 
-        mostrarCargando(true)
+        mostrarCargando(
+            true
+        )
 
-        val viajeReferencia = firestore
-            .collection(COLECCION_EMPRESAS)
-            .document(empresaId)
-            .collection(SUBCOLECCION_VIAJES)
-            .document(viajeId)
+        val viajeReferencia =
+            firestore
+                .collection(
+                    COLECCION_EMPRESAS
+                )
+                .document(
+                    empresaId
+                )
+                .collection(
+                    SUBCOLECCION_VIAJES
+                )
+                .document(
+                    viajeId
+                )
 
         /*
-         * ID automático.
+         * Se crea un ID automático.
          * Cada asiento tendrá una reserva diferente.
          */
-        val reservaReferencia = firestore
-            .collection(COLECCION_RESERVAS)
-            .document()
+        val reservaReferencia =
+            firestore
+                .collection(
+                    COLECCION_RESERVAS
+                )
+                .document()
 
         val reservaId =
             reservaReferencia.id
 
-        firestore.runTransaction {
-                transaccion ->
+        firestore
+            .runTransaction {
+                    transaccion ->
 
-            val viajeDocumento =
-                transaccion.get(
-                    viajeReferencia
-                )
-
-            if (!viajeDocumento.exists()) {
-
-                throw FirebaseFirestoreException(
-                    "El viaje ya no existe.",
-                    FirebaseFirestoreException
-                        .Code.NOT_FOUND
-                )
-            }
-
-            val estadoViaje =
-                viajeDocumento
-                    .getString(CAMPO_ESTADO)
-                    .orEmpty()
-                    .trim()
-                    .lowercase(Locale.ROOT)
-
-            if (
-                estadoViaje != ESTADO_ACTIVO &&
-                estadoViaje != ESTADO_DISPONIBLE &&
-                estadoViaje != ESTADO_RECIBIENDO
-            ) {
-
-                throw FirebaseFirestoreException(
-                    "El viaje ya no recibe pasajeros.",
-                    FirebaseFirestoreException
-                        .Code.ABORTED
-                )
-            }
-
-            if (
-                !ASIENTOS_VALIDOS.contains(
-                    asiento
-                )
-            ) {
-
-                throw FirebaseFirestoreException(
-                    "El asiento seleccionado " +
-                            "no es válido.",
-                    FirebaseFirestoreException
-                        .Code.INVALID_ARGUMENT
-                )
-            }
-
-            val capacidad = (
-                    viajeDocumento.get(
-                        CAMPO_CAPACIDAD
-                    ) as? Number
-                    )?.toInt() ?: 4
-
-            val listaActual = (
-                    viajeDocumento.get(
-                        CAMPO_ASIENTOS_RESERVADOS
-                    ) as? List<*>
+                /*
+                 * Primero se realiza la lectura del viaje.
+                 */
+                val viajeDocumento =
+                    transaccion.get(
+                        viajeReferencia
                     )
-                ?.mapNotNull { valor ->
-                    valor as? String
-                }
-                ?.map { codigo ->
 
-                    codigo
+                if (!viajeDocumento.exists()) {
+
+                    throw FirebaseFirestoreException(
+                        "El viaje ya no existe.",
+                        FirebaseFirestoreException
+                            .Code.NOT_FOUND
+                    )
+                }
+
+                /*
+                 * Validación obligatoria dentro de la transacción.
+                 *
+                 * Esto impide que un usuario reserve cuando tenía
+                 * abierta la pantalla antes del cierre de ventas.
+                 */
+                val ventasCerradas =
+                    viajeDocumento.getBoolean(
+                        CAMPO_VENTAS_CERRADAS
+                    ) ?: false
+
+                val aceptaReservas =
+                    viajeDocumento.getBoolean(
+                        CAMPO_ACEPTA_RESERVAS
+                    ) ?: true
+
+                val visibleUsuarios =
+                    viajeDocumento.getBoolean(
+                        CAMPO_VISIBLE_USUARIOS
+                    ) ?: true
+
+                if (
+                    ventasCerradas ||
+                    !aceptaReservas ||
+                    !visibleUsuarios
+                ) {
+
+                    throw FirebaseFirestoreException(
+                        "Las ventas de este viaje ya fueron cerradas.",
+                        FirebaseFirestoreException
+                            .Code.ABORTED
+                    )
+                }
+
+                val estadoViaje =
+                    viajeDocumento
+                        .getString(
+                            CAMPO_ESTADO
+                        )
+                        .orEmpty()
                         .trim()
-                        .uppercase(Locale.ROOT)
-                }
-                ?.toMutableList()
-                ?: mutableListOf()
+                        .lowercase(
+                            Locale.ROOT
+                        )
 
-            if (
-                listaActual.contains(
+                if (
+                    estadoViaje !=
+                    ESTADO_ACTIVO &&
+
+                    estadoViaje !=
+                    ESTADO_DISPONIBLE &&
+
+                    estadoViaje !=
+                    ESTADO_RECIBIENDO
+                ) {
+
+                    throw FirebaseFirestoreException(
+                        "El viaje ya no recibe pasajeros.",
+                        FirebaseFirestoreException
+                            .Code.ABORTED
+                    )
+                }
+
+                if (
+                    !ASIENTOS_VALIDOS.contains(
+                        asiento
+                    )
+                ) {
+
+                    throw FirebaseFirestoreException(
+                        "El asiento seleccionado no es válido.",
+                        FirebaseFirestoreException
+                            .Code.INVALID_ARGUMENT
+                    )
+                }
+
+                val capacidad =
+                    (
+                            viajeDocumento.get(
+                                CAMPO_CAPACIDAD
+                            ) as? Number
+                            )
+                        ?.toInt()
+                        ?: 4
+
+                val listaActual =
+                    (
+                            viajeDocumento.get(
+                                CAMPO_ASIENTOS_RESERVADOS
+                            ) as? List<*>
+                            )
+                        ?.mapNotNull {
+                                valor ->
+
+                            valor as? String
+                        }
+                        ?.map {
+                                codigo ->
+
+                            codigo
+                                .trim()
+                                .uppercase(
+                                    Locale.ROOT
+                                )
+                        }
+                        ?.distinct()
+                        ?.toMutableList()
+                        ?: mutableListOf()
+
+                if (
+                    listaActual.contains(
+                        asiento
+                    )
+                ) {
+
+                    throw FirebaseFirestoreException(
+                        "El asiento acaba de ser reservado.",
+                        FirebaseFirestoreException
+                            .Code.ABORTED
+                    )
+                }
+
+                if (
+                    listaActual.size >=
+                    capacidad
+                ) {
+
+                    throw FirebaseFirestoreException(
+                        "La unidad ya está completa.",
+                        FirebaseFirestoreException
+                            .Code.ABORTED
+                    )
+                }
+
+                val origen =
+                    viajeDocumento
+                        .getString(
+                            CAMPO_ORIGEN
+                        )
+                        .orEmpty()
+
+                val destino =
+                    viajeDocumento
+                        .getString(
+                            CAMPO_DESTINO
+                        )
+                        .orEmpty()
+
+                val fechaSalida =
+                    viajeDocumento
+                        .getString(
+                            CAMPO_FECHA_SALIDA
+                        )
+                        .orEmpty()
+
+                val horaSalida =
+                    viajeDocumento
+                        .getString(
+                            CAMPO_HORA_SALIDA
+                        )
+                        .orEmpty()
+
+                val puntoEmbarque =
+                    viajeDocumento
+                        .getString(
+                            CAMPO_PUNTO_EMBARQUE
+                        )
+                        .orEmpty()
+
+                val placa =
+                    viajeDocumento
+                        .getString(
+                            CAMPO_PLACA
+                        )
+                        .orEmpty()
+
+                val vehiculoDescripcion =
+                    viajeDocumento
+                        .getString(
+                            CAMPO_VEHICULO
+                        )
+                        .orEmpty()
+
+                val precio =
+                    (
+                            viajeDocumento.get(
+                                CAMPO_PRECIO
+                            ) as? Number
+                            )
+                        ?.toDouble()
+                        ?: precioViaje
+
+                listaActual.add(
                     asiento
                 )
-            ) {
 
-                throw FirebaseFirestoreException(
-                    "El asiento acaba de ser reservado.",
-                    FirebaseFirestoreException
-                        .Code.ABORTED
+                val asientosActualizados =
+                    listaActual
+                        .distinct()
+
+                val asientosDisponibles =
+                    ASIENTOS_VALIDOS.filter {
+                            codigo ->
+
+                        !asientosActualizados.contains(
+                            codigo
+                        )
+                    }
+
+                val cuposDisponibles =
+                    (
+                            capacidad -
+                                    asientosActualizados.size
+                            ).coerceAtLeast(0)
+
+                val tipoPasajero =
+                    when {
+
+                        pasajero.datosPendientes -> {
+
+                            TIPO_PASAJERO_PENDIENTE
+                        }
+
+                        pasajero.esTitular -> {
+
+                            TIPO_PASAJERO_TITULAR
+                        }
+
+                        else -> {
+
+                            TIPO_PASAJERO_OTRA_PERSONA
+                        }
+                    }
+
+                val nombrePasajero =
+                    pasajero
+                        .nombreCompleto()
+                        .ifBlank {
+
+                            if (
+                                pasajero.datosPendientes
+                            ) {
+
+                                "Datos por completar"
+
+                            } else {
+
+                                "Pasajero"
+                            }
+                        }
+
+                val datosReserva =
+                    hashMapOf<String, Any>(
+
+                        "reservaId" to
+                                reservaId,
+
+                        "empresaId" to
+                                empresaId,
+
+                        "empresaNombre" to
+                                empresaNombre,
+
+                        "viajeId" to
+                                viajeId,
+
+                        /*
+                         * Cuenta que realizó la reserva.
+                         */
+                        "usuarioId" to
+                                usuarioActual.uid,
+
+                        "compradorUid" to
+                                usuarioActual.uid,
+
+                        "usuarioCorreo" to
+                                usuarioActual.email
+                                    .orEmpty(),
+
+                        "compradorDni" to
+                                comprador.dni,
+
+                        "compradorNombres" to
+                                comprador.nombres,
+
+                        "compradorApellidos" to
+                                comprador.apellidos,
+
+                        "compradorCelular" to
+                                comprador.celular,
+
+                        /*
+                         * Datos del pasajero.
+                         */
+                        "pasajeroNombre" to
+                                nombrePasajero,
+
+                        "nombrePasajero" to
+                                nombrePasajero,
+
+                        "pasajeroDni" to
+                                pasajero.dni,
+
+                        "pasajeroNombres" to
+                                pasajero.nombres,
+
+                        "pasajeroApellidos" to
+                                pasajero.apellidos,
+
+                        "pasajeroCelular" to
+                                pasajero.celular,
+
+                        "esTitular" to
+                                pasajero.esTitular,
+
+                        "datosPasajeroPendientes" to
+                                pasajero.datosPendientes,
+
+                        "tipoPasajero" to
+                                tipoPasajero,
+
+                        /*
+                         * Datos del viaje.
+                         */
+                        "origen" to
+                                origen,
+
+                        "destino" to
+                                destino,
+
+                        "asiento" to
+                                asiento,
+
+                        "numeroAsiento" to
+                                asiento,
+
+                        "cantidadPasajeros" to
+                                1,
+
+                        "precio" to
+                                precio,
+
+                        "precioTotal" to
+                                precio,
+
+                        /*
+                         * Estado oficial de la reserva.
+                         */
+                        "estadoReserva" to
+                                ESTADO_RESERVA_PENDIENTE,
+
+                        "estadoPago" to
+                                ESTADO_PAGO_PENDIENTE,
+
+                        "estadoAbordaje" to
+                                ESTADO_ABORDAJE_PENDIENTE,
+
+                        "boletoValidado" to
+                                false,
+
+                        "fechaSalida" to
+                                fechaSalida,
+
+                        "horaSalida" to
+                                horaSalida,
+
+                        "puntoEmbarque" to
+                                puntoEmbarque,
+
+                        "placa" to
+                                placa,
+
+                        "vehiculoDescripcion" to
+                                vehiculoDescripcion,
+
+                        "fechaReserva" to
+                                FieldValue
+                                    .serverTimestamp(),
+
+                        "fechaActualizacion" to
+                                FieldValue
+                                    .serverTimestamp(),
+
+                        "ultimaActualizacion" to
+                                FieldValue
+                                    .serverTimestamp()
+                    )
+
+                /*
+                 * Actualizar la disponibilidad del viaje.
+                 */
+                transaccion.update(
+                    viajeReferencia,
+                    mapOf(
+
+                        CAMPO_ASIENTOS_RESERVADOS to
+                                asientosActualizados,
+
+                        CAMPO_ASIENTOS_OCUPADOS to
+                                asientosActualizados.size,
+
+                        CAMPO_CUPOS_DISPONIBLES to
+                                cuposDisponibles,
+
+                        CAMPO_ASIENTOS_DISPONIBLES to
+                                asientosDisponibles,
+
+                        CAMPO_FECHA_ACTUALIZACION to
+                                FieldValue
+                                    .serverTimestamp(),
+
+                        CAMPO_ULTIMA_ACTUALIZACION to
+                                FieldValue
+                                    .serverTimestamp()
+                    )
                 )
+
+                /*
+                 * Crear la reserva.
+                 */
+                transaccion.set(
+                    reservaReferencia,
+                    datosReserva
+                )
+
+                reservaId
             }
-
-            if (
-                listaActual.size >= capacidad
-            ) {
-
-                throw FirebaseFirestoreException(
-                    "La unidad ya está completa.",
-                    FirebaseFirestoreException
-                        .Code.ABORTED
-                )
-            }
-
-            val origen =
-                viajeDocumento
-                    .getString(CAMPO_ORIGEN)
-                    .orEmpty()
-
-            val destino =
-                viajeDocumento
-                    .getString(CAMPO_DESTINO)
-                    .orEmpty()
-
-            val fechaSalida =
-                viajeDocumento
-                    .getString(CAMPO_FECHA_SALIDA)
-                    .orEmpty()
-
-            val horaSalida =
-                viajeDocumento
-                    .getString(CAMPO_HORA_SALIDA)
-                    .orEmpty()
-
-            val puntoEmbarque =
-                viajeDocumento
-                    .getString(CAMPO_PUNTO_EMBARQUE)
-                    .orEmpty()
-
-            val placa =
-                viajeDocumento
-                    .getString(CAMPO_PLACA)
-                    .orEmpty()
-
-            val vehiculoDescripcion =
-                viajeDocumento
-                    .getString(CAMPO_VEHICULO)
-                    .orEmpty()
-
-            val precio = (
-                    viajeDocumento.get(
-                        CAMPO_PRECIO
-                    ) as? Number
-                    )?.toDouble() ?: precioViaje
-
-            listaActual.add(asiento)
-
-            val tipoPasajero =
-                when {
-
-                    pasajero.datosPendientes -> {
-                        TIPO_PASAJERO_PENDIENTE
-                    }
-
-                    pasajero.esTitular -> {
-                        TIPO_PASAJERO_TITULAR
-                    }
-
-                    else -> {
-                        TIPO_PASAJERO_OTRA_PERSONA
-                    }
-                }
-
-            val datosReserva =
-                hashMapOf<String, Any>(
-
-                    "reservaId" to reservaId,
-
-                    "empresaId" to empresaId,
-
-                    "empresaNombre" to
-                            empresaNombre,
-
-                    "viajeId" to viajeId,
-
-                    /*
-                     * UID de la cuenta que compró.
-                     */
-                    "usuarioId" to
-                            usuarioActual.uid,
-
-                    "compradorUid" to
-                            usuarioActual.uid,
-
-                    "usuarioCorreo" to
-                            usuarioActual.email
-                                .orEmpty(),
-
-                    "compradorDni" to
-                            comprador.dni,
-
-                    "compradorNombres" to
-                            comprador.nombres,
-
-                    "compradorApellidos" to
-                            comprador.apellidos,
-
-                    "compradorCelular" to
-                            comprador.celular,
-
-                    "pasajeroDni" to
-                            pasajero.dni,
-
-                    "pasajeroNombres" to
-                            pasajero.nombres,
-
-                    "pasajeroApellidos" to
-                            pasajero.apellidos,
-
-                    "pasajeroCelular" to
-                            pasajero.celular,
-
-                    "esTitular" to
-                            pasajero.esTitular,
-
-                    "datosPasajeroPendientes" to
-                            pasajero.datosPendientes,
-
-                    "tipoPasajero" to
-                            tipoPasajero,
-
-                    "origen" to origen,
-                    "destino" to destino,
-
-                    "asiento" to asiento,
-                    "precio" to precio,
-
-                    "estadoReserva" to
-                            ESTADO_RESERVA_PENDIENTE,
-
-                    "estadoPago" to
-                            ESTADO_PAGO_PENDIENTE,
-
-                    "fechaSalida" to
-                            fechaSalida,
-
-                    "horaSalida" to
-                            horaSalida,
-
-                    "puntoEmbarque" to
-                            puntoEmbarque,
-
-                    "placa" to placa,
-
-                    "vehiculoDescripcion" to
-                            vehiculoDescripcion,
-
-                    "fechaReserva" to
-                            FieldValue
-                                .serverTimestamp()
-                )
-
-            transaccion.update(
-                viajeReferencia,
-                mapOf(
-
-                    CAMPO_ASIENTOS_RESERVADOS to
-                            listaActual,
-
-                    CAMPO_ASIENTOS_OCUPADOS to
-                            listaActual.size,
-
-                    CAMPO_ULTIMA_ACTUALIZACION to
-                            FieldValue
-                                .serverTimestamp()
-                )
-            )
-
-            transaccion.set(
-                reservaReferencia,
-                datosReserva
-            )
-
-            reservaId
-        }
             .addOnSuccessListener {
 
-                mostrarCargando(false)
+                mostrarCargando(
+                    false
+                )
 
                 asientosReservados =
-                    asientosReservados + asiento
+                    asientosReservados +
+                            asiento
 
-                asientoSeleccionado = null
+                asientoSeleccionado =
+                    null
 
                 actualizarMapaAsientos()
                 actualizarResumen()
@@ -1260,27 +1767,29 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
                         pasajero.datosPendientes
                     ) {
 
-                        "El asiento $asiento fue " +
-                                "reservado.\n\n" +
-                                "Los datos del pasajero " +
-                                "quedaron pendientes."
+                        "El asiento $asiento fue reservado.\n\n" +
+                                "Los datos del pasajero quedaron pendientes."
 
                     } else {
 
-                        "El asiento $asiento fue " +
-                                "reservado para " +
+                        "El asiento $asiento fue reservado para " +
                                 pasajero.nombreCompleto() +
                                 "."
                     }
 
                 MaterialAlertDialogBuilder(this)
-                    .setTitle("Reserva realizada")
-                    .setMessage(mensajeResultado)
+                    .setTitle(
+                        "Reserva realizada"
+                    )
+                    .setMessage(
+                        mensajeResultado
+                    )
                     .setNegativeButton(
                         "RESERVAR OTRO"
                     ) { _, _ ->
 
-                        asientoSeleccionado = null
+                        asientoSeleccionado =
+                            null
 
                         actualizarMapaAsientos()
                         actualizarResumen()
@@ -1297,23 +1806,30 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
 
                         abrirMisReservas()
                     }
-                    .setCancelable(false)
+                    .setCancelable(
+                        false
+                    )
                     .show()
             }
             .addOnFailureListener {
                     error ->
 
-                mostrarCargando(false)
+                mostrarCargando(
+                    false
+                )
 
                 Toast.makeText(
                     this,
                     error.localizedMessage
-                        ?: "No se pudo reservar " +
-                        "el asiento.",
+                        ?: "No se pudo reservar el asiento.",
                     Toast.LENGTH_LONG
                 ).show()
             }
     }
+
+    // -------------------------------------------------
+    // ESTADO DE CARGA
+    // -------------------------------------------------
 
     private fun mostrarCargando(
         cargando: Boolean
@@ -1321,20 +1837,27 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
 
         binding.progressConfirmar.visibility =
             if (cargando) {
+
                 View.VISIBLE
+
             } else {
+
                 View.GONE
             }
 
         binding.btnConfirmarAsiento.text =
             if (cargando) {
+
                 ""
+
             } else {
+
                 "CONFIRMAR ASIENTO"
             }
 
         binding.btnConfirmarAsiento.isEnabled =
             !cargando &&
+                    ventasDisponiblesViaje &&
                     asientoSeleccionado != null
 
         binding.btnVolver.isEnabled =
@@ -1342,24 +1865,28 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
 
         binding.btnAsientoA1.isEnabled =
             !cargando &&
+                    ventasDisponiblesViaje &&
                     !asientosReservados.contains(
                         ASIENTO_A1
                     )
 
         binding.btnAsientoB1.isEnabled =
             !cargando &&
+                    ventasDisponiblesViaje &&
                     !asientosReservados.contains(
                         ASIENTO_B1
                     )
 
         binding.btnAsientoB2.isEnabled =
             !cargando &&
+                    ventasDisponiblesViaje &&
                     !asientosReservados.contains(
                         ASIENTO_B2
                     )
 
         binding.btnAsientoB3.isEnabled =
             !cargando &&
+                    ventasDisponiblesViaje &&
                     !asientosReservados.contains(
                         ASIENTO_B3
                     )
@@ -1367,33 +1894,41 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
 
     private fun abrirMisReservas() {
 
-        val intent = Intent(
-            this,
-            MisReservasActivity::class.java
-        ).apply {
+        val intent =
+            Intent(
+                this,
+                MisReservasActivity::class.java
+            ).apply {
 
-            flags =
-                Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
+                flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
 
-        startActivity(intent)
+        startActivity(
+            intent
+        )
+
         finish()
     }
 
     private fun abrirLogin() {
 
-        val intent = Intent(
-            this,
-            LoginActivity::class.java
-        ).apply {
+        val intent =
+            Intent(
+                this,
+                LoginActivity::class.java
+            ).apply {
 
-            flags =
-                Intent.FLAG_ACTIVITY_NEW_TASK or
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+                flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
 
-        startActivity(intent)
+        startActivity(
+            intent
+        )
+
         finish()
     }
 
@@ -1448,6 +1983,24 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
 
         private const val CAMPO_ASIENTOS_OCUPADOS =
             "asientosOcupados"
+
+        private const val CAMPO_ASIENTOS_DISPONIBLES =
+            "asientosDisponibles"
+
+        private const val CAMPO_CUPOS_DISPONIBLES =
+            "cuposDisponibles"
+
+        private const val CAMPO_VENTAS_CERRADAS =
+            "ventasCerradas"
+
+        private const val CAMPO_ACEPTA_RESERVAS =
+            "aceptaReservas"
+
+        private const val CAMPO_VISIBLE_USUARIOS =
+            "visibleUsuarios"
+
+        private const val CAMPO_FECHA_ACTUALIZACION =
+            "fechaActualizacion"
 
         private const val CAMPO_FECHA_SALIDA =
             "fechaSalida"
@@ -1512,6 +2065,9 @@ class SeleccionarAsientoActivity : AppCompatActivity() {
             "pendiente"
 
         private const val ESTADO_PAGO_PENDIENTE =
+            "pendiente"
+
+        private const val ESTADO_ABORDAJE_PENDIENTE =
             "pendiente"
 
         private const val TIPO_PASAJERO_TITULAR =

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,6 +10,11 @@
     android:fitsSystemWindows="true"
     tools:context=".SeleccionarEmpresaActivity">
 
+
+    <!-- ================================================= -->
+    <!-- FONDO DEL ENCABEZADO -->
+    <!-- ================================================= -->
+
     <View
         android:id="@+id/fondoEncabezado"
         android:layout_width="match_parent"
@@ -17,6 +23,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <!-- ================================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ================================================= -->
 
     <LinearLayout
         android:id="@+id/contenedorEncabezado"
@@ -30,17 +41,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
 
                 <TextView
                     android:id="@+id/tvSaludoUsuario"
@@ -51,17 +65,20 @@
                     android:textSize="14sp"
                     tools:text="¡Hola, Víctor!" />
 
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Elige una empresa"
+                    android:text="Elige tu transporte"
                     android:textColor="@color/white"
                     android:textSize="27sp"
                     android:textStyle="bold" />
 
+
             </LinearLayout>
+
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCerrarSesion"
@@ -79,17 +96,25 @@
                 app:strokeColor="#60FFFFFF"
                 app:strokeWidth="1dp" />
 
+
         </LinearLayout>
+
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Consulta sus rutas, autos disponibles y reserva tu asiento."
+            android:text="Reserva un viaje o consulta taxis y mototaxis disponibles."
             android:textColor="@color/pasajes_text_soft"
             android:textSize="13sp" />
 
+
     </LinearLayout>
+
+
+    <!-- ================================================= -->
+    <!-- BUSCADOR DE EMPRESAS -->
+    <!-- ================================================= -->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilBuscarEmpresa"
@@ -115,6 +140,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etBuscarEmpresa"
             android:layout_width="match_parent"
@@ -125,7 +151,13 @@
             android:textColor="@color/pasajes_text_primary"
             android:textSize="15sp" />
 
+
     </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!-- ================================================= -->
+    <!-- TITULO EMPRESAS -->
+    <!-- ================================================= -->
 
     <TextView
         android:id="@+id/tvEmpresasDisponibles"
@@ -135,7 +167,7 @@
         android:layout_marginTop="22dp"
         android:layout_marginEnd="20dp"
         android:fontFamily="sans-serif-medium"
-        android:text="Empresas disponibles"
+        android:text="Empresas de transporte"
         android:textColor="@color/pasajes_text_primary"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -143,19 +175,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tilBuscarEmpresa" />
 
+
+    <!-- ================================================= -->
+    <!-- LISTA DE EMPRESAS -->
+    <!-- ================================================= -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerEmpresas"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingTop="8dp"
-        android:paddingBottom="25dp"
+        android:paddingBottom="12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/contenedorMovilidadLocal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvEmpresasDisponibles"
         tools:listitem="@layout/item_empresa" />
+
+
+    <!-- ================================================= -->
+    <!-- CARGANDO EMPRESAS -->
+    <!-- ================================================= -->
 
     <ProgressBar
         android:id="@+id/progressEmpresas"
@@ -167,6 +209,11 @@
         app:layout_constraintEnd_toEndOf="@id/recyclerEmpresas"
         app:layout_constraintStart_toStartOf="@id/recyclerEmpresas"
         app:layout_constraintTop_toTopOf="@id/recyclerEmpresas" />
+
+
+    <!-- ================================================= -->
+    <!-- SIN EMPRESAS -->
+    <!-- ================================================= -->
 
     <LinearLayout
         android:id="@+id/contenedorSinEmpresas"
@@ -180,7 +227,8 @@
         app:layout_constraintEnd_toEndOf="@id/recyclerEmpresas"
         app:layout_constraintStart_toStartOf="@id/recyclerEmpresas"
         app:layout_constraintTop_toTopOf="@id/recyclerEmpresas"
-        tools:visibility="visible">
+        tools:visibility="gone">
+
 
         <ImageView
             android:layout_width="70dp"
@@ -188,6 +236,7 @@
             android:alpha="0.55"
             android:contentDescription="Sin empresas"
             android:src="@drawable/ic_empresa_transporte" />
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -197,6 +246,7 @@
             android:textColor="@color/pasajes_text_primary"
             android:textSize="17sp"
             android:textStyle="bold" />
+
 
         <TextView
             android:id="@+id/tvMensajeSinEmpresas"
@@ -208,6 +258,147 @@
             android:textColor="@color/pasajes_text_secondary"
             android:textSize="13sp" />
 
+
     </LinearLayout>
+
+
+    <!-- ================================================= -->
+    <!-- MOVILIDAD LOCAL - ZONA INFERIOR -->
+    <!-- ================================================= -->
+
+    <LinearLayout
+        android:id="@+id/contenedorMovilidadLocal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/pasajes_background"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <!-- TITULO -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="8dp"
+            android:text="Movilidad local"
+            android:textColor="@color/pasajes_text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+
+        <!-- TARJETA MOVILIDAD -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardMovilidadLocal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/pasajes_surface"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="5dp"
+            app:strokeColor="@color/pasajes_primary"
+            app:strokeWidth="1dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+
+                <!-- ICONO -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    app:cardBackgroundColor="#E7F4F9"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="0dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="🚕"
+                        android:textSize="30sp" />
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!-- INFORMACION -->
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Taxi y Mototaxi"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="Consulta unidades disponibles ahora"
+                        android:textColor="@color/pasajes_text_secondary"
+                        android:textSize="12sp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7dp"
+                        android:text="● DISPONIBILIDAD EN TIEMPO REAL"
+                        android:textColor="@color/pasajes_success"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+
+                <!-- FLECHA -->
+
+                <TextView
+                    android:layout_width="38dp"
+                    android:layout_height="52dp"
+                    android:gravity="center"
+                    android:text="›"
+                    android:textColor="@color/pasajes_primary"
+                    android:textSize="34sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

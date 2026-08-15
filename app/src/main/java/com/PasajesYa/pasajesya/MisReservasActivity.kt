@@ -19,12 +19,20 @@ import java.util.Locale
 
 class MisReservasActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMisReservasBinding
-    private lateinit var auth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var reservaAdapter: ReservaAdapter
+    private lateinit var binding:
+            ActivityMisReservasBinding
 
-    private var listenerReservas: ListenerRegistration? = null
+    private lateinit var auth:
+            FirebaseAuth
+
+    private lateinit var firestore:
+            FirebaseFirestore
+
+    private lateinit var reservaAdapter:
+            ReservaAdapter
+
+    private var listenerReservas:
+            ListenerRegistration? = null
 
     private val reservasCompletas =
         mutableListOf<Reserva>()
@@ -32,20 +40,27 @@ class MisReservasActivity : AppCompatActivity() {
     private var filtroActual =
         FILTRO_TODAS
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
         super.onCreate(savedInstanceState)
 
-        auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
+        auth =
+            FirebaseAuth.getInstance()
+
+        firestore =
+            FirebaseFirestore.getInstance()
 
         if (auth.currentUser == null) {
+
             abrirLogin()
             return
         }
 
-        binding = ActivityMisReservasBinding.inflate(
-            layoutInflater
-        )
+        binding =
+            ActivityMisReservasBinding.inflate(
+                layoutInflater
+            )
 
         setContentView(binding.root)
 
@@ -59,32 +74,45 @@ class MisReservasActivity : AppCompatActivity() {
     private fun configurarPantalla() {
 
         window.statusBarColor =
-            getColor(R.color.pasajes_primary_dark)
+            getColor(
+                R.color.pasajes_primary_dark
+            )
 
         window.navigationBarColor =
-            getColor(R.color.pasajes_background)
+            getColor(
+                R.color.pasajes_background
+            )
     }
 
     private fun configurarRecycler() {
 
-        reservaAdapter = ReservaAdapter(
+        reservaAdapter =
+            ReservaAdapter(
 
-            onVerDetalle = { reserva ->
-                mostrarDetalleReserva(reserva)
-            },
+                onVerDetalle = { reserva ->
 
-            onCancelar = { reserva ->
-                confirmarCancelacion(reserva)
-            }
-        )
+                    mostrarDetalleReserva(
+                        reserva
+                    )
+                },
+
+                onCancelar = { reserva ->
+
+                    confirmarCancelacion(
+                        reserva
+                    )
+                }
+            )
 
         binding.recyclerReservas.apply {
 
-            layoutManager = LinearLayoutManager(
-                this@MisReservasActivity
-            )
+            layoutManager =
+                LinearLayoutManager(
+                    this@MisReservasActivity
+                )
 
-            adapter = reservaAdapter
+            adapter =
+                reservaAdapter
 
             setHasFixedSize(false)
         }
@@ -92,43 +120,63 @@ class MisReservasActivity : AppCompatActivity() {
 
     private fun configurarFiltros() {
 
-        binding.chipTodas.setOnClickListener {
+        binding.chipTodas
+            .setOnClickListener {
 
-            filtroActual = FILTRO_TODAS
-            aplicarFiltro()
-        }
+                filtroActual =
+                    FILTRO_TODAS
 
-        binding.chipPendientes.setOnClickListener {
+                aplicarFiltro()
+            }
 
-            filtroActual = ESTADO_PENDIENTE
-            aplicarFiltro()
-        }
+        binding.chipPendientes
+            .setOnClickListener {
 
-        binding.chipConfirmadas.setOnClickListener {
+                filtroActual =
+                    ESTADO_PENDIENTE
 
-            filtroActual = ESTADO_CONFIRMADA
-            aplicarFiltro()
-        }
+                aplicarFiltro()
+            }
 
-        binding.chipCanceladas.setOnClickListener {
+        binding.chipConfirmadas
+            .setOnClickListener {
 
-            filtroActual = ESTADO_CANCELADA
-            aplicarFiltro()
-        }
+                filtroActual =
+                    ESTADO_CONFIRMADA
+
+                aplicarFiltro()
+            }
+
+        binding.chipCanceladas
+            .setOnClickListener {
+
+                filtroActual =
+                    ESTADO_CANCELADA
+
+                aplicarFiltro()
+            }
     }
 
     private fun configurarEventos() {
 
-        binding.btnVolver.setOnClickListener {
-            finish()
-        }
+        binding.btnVolver
+            .setOnClickListener {
+
+                finish()
+            }
     }
+
+    // -------------------------------------------------
+    // ESCUCHAR RESERVAS DEL USUARIO
+    // -------------------------------------------------
 
     private fun escucharReservas() {
 
-        val usuarioActual = auth.currentUser
+        val usuarioActual =
+            auth.currentUser
 
         if (usuarioActual == null) {
+
             abrirLogin()
             return
         }
@@ -138,229 +186,324 @@ class MisReservasActivity : AppCompatActivity() {
         listenerReservas?.remove()
         listenerReservas = null
 
-        /*
-         * Busca todos los boletos comprados por la
-         * cuenta que actualmente inició sesión.
-         *
-         * Cada boleto tiene un documento diferente,
-         * pero todos conservan el mismo usuarioId.
-         */
-        listenerReservas = firestore
-            .collection(COLECCION_RESERVAS)
-            .whereEqualTo(
-                CAMPO_USUARIO_ID,
-                usuarioActual.uid
-            )
-            .addSnapshotListener { resultado, error ->
+        listenerReservas =
+            firestore
+                .collection(
+                    COLECCION_RESERVAS
+                )
+                .whereEqualTo(
+                    CAMPO_USUARIO_ID,
+                    usuarioActual.uid
+                )
+                .addSnapshotListener {
+                        resultado, error ->
 
-                mostrarCargando(false)
+                    mostrarCargando(false)
 
-                if (error != null) {
+                    if (error != null) {
 
-                    reservasCompletas.clear()
+                        reservasCompletas.clear()
 
-                    reservaAdapter.actualizarReservas(
-                        emptyList()
-                    )
+                        reservaAdapter
+                            .actualizarReservas(
+                                emptyList()
+                            )
 
-                    mostrarSinReservas(
-                        mostrar = true,
-                        mensaje = "No se pudieron cargar " +
-                                "tus reservas.\n" +
-                                (
-                                        error.localizedMessage
-                                            ?: "Error desconocido"
-                                        )
-                    )
-
-                    Toast.makeText(
-                        this,
-                        "Error al cargar reservas: " +
-                                (
-                                        error.localizedMessage
-                                            ?: "error desconocido"
-                                        ),
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                    return@addSnapshotListener
-                }
-
-                if (resultado == null) {
-
-                    reservasCompletas.clear()
-
-                    reservaAdapter.actualizarReservas(
-                        emptyList()
-                    )
-
-                    mostrarSinReservas(
-                        mostrar = true,
-                        mensaje = "No se recibió información " +
-                                "de tus reservas."
-                    )
-
-                    return@addSnapshotListener
-                }
-
-                val reservas = resultado.documents
-                    .map { documento ->
-
-                        Reserva(
-
-                            id = documento.id,
-
-                            documentoPath =
-                                documento.reference.path,
-
-                            empresaId = documento
-                                .getString(CAMPO_EMPRESA_ID)
-                                .orEmpty(),
-
-                            empresaNombre = documento
-                                .getString(CAMPO_EMPRESA_NOMBRE)
-                                .orEmpty(),
-
-                            viajeId = documento
-                                .getString(CAMPO_VIAJE_ID)
-                                .orEmpty(),
-
-                            /*
-                             * Cuenta que realizó la compra.
-                             */
-                            usuarioId = documento
-                                .getString(CAMPO_USUARIO_ID)
-                                .orEmpty(),
-
-                            usuarioCorreo = documento
-                                .getString(CAMPO_USUARIO_CORREO)
-                                .orEmpty(),
-
-                            compradorDni = documento
-                                .getString(CAMPO_COMPRADOR_DNI)
-                                .orEmpty(),
-
-                            compradorNombres = documento
-                                .getString(CAMPO_COMPRADOR_NOMBRES)
-                                .orEmpty(),
-
-                            compradorApellidos = documento
-                                .getString(CAMPO_COMPRADOR_APELLIDOS)
-                                .orEmpty(),
-
-                            compradorCelular = documento
-                                .getString(CAMPO_COMPRADOR_CELULAR)
-                                .orEmpty(),
-
-                            /*
-                             * Persona que ocupará el asiento.
-                             */
-                            pasajeroDni = documento
-                                .getString(CAMPO_PASAJERO_DNI)
-                                .orEmpty(),
-
-                            pasajeroNombres = documento
-                                .getString(CAMPO_PASAJERO_NOMBRES)
-                                .orEmpty(),
-
-                            pasajeroApellidos = documento
-                                .getString(CAMPO_PASAJERO_APELLIDOS)
-                                .orEmpty(),
-
-                            pasajeroCelular = documento
-                                .getString(CAMPO_PASAJERO_CELULAR)
-                                .orEmpty(),
-
-                            esTitular = documento
-                                .getBoolean(CAMPO_ES_TITULAR)
-                                ?: false,
-
-                            datosPasajeroPendientes = documento
-                                .getBoolean(
-                                    CAMPO_DATOS_PASAJERO_PENDIENTES
-                                ) ?: false,
-
-                            tipoPasajero = documento
-                                .getString(CAMPO_TIPO_PASAJERO)
-                                .orEmpty(),
-
-                            origen = documento
-                                .getString(CAMPO_ORIGEN)
-                                .orEmpty(),
-
-                            destino = documento
-                                .getString(CAMPO_DESTINO)
-                                .orEmpty(),
-
-                            asiento = documento
-                                .getString(CAMPO_ASIENTO)
-                                .orEmpty(),
-
-                            precio = (
-                                    documento.get(CAMPO_PRECIO)
-                                            as? Number
-                                    )?.toDouble() ?: 0.0,
-
-                            estadoReserva = documento
-                                .getString(CAMPO_ESTADO_RESERVA)
-                                .orEmpty(),
-
-                            estadoPago = documento
-                                .getString(CAMPO_ESTADO_PAGO)
-                                .orEmpty(),
-
-                            fechaReserva = documento
-                                .getTimestamp(CAMPO_FECHA_RESERVA),
-
-                            fechaSalida = documento
-                                .getString(CAMPO_FECHA_SALIDA)
-                                .orEmpty(),
-
-                            horaSalida = documento
-                                .getString(CAMPO_HORA_SALIDA)
-                                .orEmpty(),
-
-                            puntoEmbarque = documento
-                                .getString(CAMPO_PUNTO_EMBARQUE)
-                                .orEmpty(),
-
-                            placa = documento
-                                .getString(CAMPO_PLACA)
-                                .orEmpty(),
-
-                            vehiculoDescripcion = documento
-                                .getString(CAMPO_VEHICULO)
-                                .orEmpty()
+                        mostrarSinReservas(
+                            mostrar = true,
+                            mensaje =
+                                "No se pudieron cargar tus reservas.\n" +
+                                        (
+                                                error.localizedMessage
+                                                    ?: "Error desconocido"
+                                                )
                         )
+
+                        Toast.makeText(
+                            this,
+                            "Error al cargar reservas: " +
+                                    (
+                                            error.localizedMessage
+                                                ?: "error desconocido"
+                                            ),
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        return@addSnapshotListener
                     }
-                    .sortedByDescending { reserva ->
 
-                        reserva.fechaReserva?.seconds
-                            ?: 0L
+                    if (resultado == null) {
+
+                        reservasCompletas.clear()
+
+                        reservaAdapter
+                            .actualizarReservas(
+                                emptyList()
+                            )
+
+                        mostrarSinReservas(
+                            mostrar = true,
+                            mensaje =
+                                "No se recibió información de tus reservas."
+                        )
+
+                        return@addSnapshotListener
                     }
 
-                reservasCompletas.clear()
-                reservasCompletas.addAll(reservas)
+                    val reservas =
+                        resultado.documents
+                            .map { documento ->
 
-                aplicarFiltro()
-            }
+                                Reserva(
+
+                                    id =
+                                        documento.id,
+
+                                    documentoPath =
+                                        documento
+                                            .reference
+                                            .path,
+
+                                    empresaId =
+                                        documento
+                                            .getString(
+                                                CAMPO_EMPRESA_ID
+                                            )
+                                            .orEmpty(),
+
+                                    empresaNombre =
+                                        documento
+                                            .getString(
+                                                CAMPO_EMPRESA_NOMBRE
+                                            )
+                                            .orEmpty(),
+
+                                    viajeId =
+                                        documento
+                                            .getString(
+                                                CAMPO_VIAJE_ID
+                                            )
+                                            .orEmpty(),
+
+                                    usuarioId =
+                                        documento
+                                            .getString(
+                                                CAMPO_USUARIO_ID
+                                            )
+                                            .orEmpty(),
+
+                                    usuarioCorreo =
+                                        documento
+                                            .getString(
+                                                CAMPO_USUARIO_CORREO
+                                            )
+                                            .orEmpty(),
+
+                                    compradorDni =
+                                        documento
+                                            .getString(
+                                                CAMPO_COMPRADOR_DNI
+                                            )
+                                            .orEmpty(),
+
+                                    compradorNombres =
+                                        documento
+                                            .getString(
+                                                CAMPO_COMPRADOR_NOMBRES
+                                            )
+                                            .orEmpty(),
+
+                                    compradorApellidos =
+                                        documento
+                                            .getString(
+                                                CAMPO_COMPRADOR_APELLIDOS
+                                            )
+                                            .orEmpty(),
+
+                                    compradorCelular =
+                                        documento
+                                            .getString(
+                                                CAMPO_COMPRADOR_CELULAR
+                                            )
+                                            .orEmpty(),
+
+                                    pasajeroDni =
+                                        documento
+                                            .getString(
+                                                CAMPO_PASAJERO_DNI
+                                            )
+                                            .orEmpty(),
+
+                                    pasajeroNombres =
+                                        documento
+                                            .getString(
+                                                CAMPO_PASAJERO_NOMBRES
+                                            )
+                                            .orEmpty(),
+
+                                    pasajeroApellidos =
+                                        documento
+                                            .getString(
+                                                CAMPO_PASAJERO_APELLIDOS
+                                            )
+                                            .orEmpty(),
+
+                                    pasajeroCelular =
+                                        documento
+                                            .getString(
+                                                CAMPO_PASAJERO_CELULAR
+                                            )
+                                            .orEmpty(),
+
+                                    esTitular =
+                                        documento
+                                            .getBoolean(
+                                                CAMPO_ES_TITULAR
+                                            )
+                                            ?: false,
+
+                                    datosPasajeroPendientes =
+                                        documento
+                                            .getBoolean(
+                                                CAMPO_DATOS_PASAJERO_PENDIENTES
+                                            )
+                                            ?: false,
+
+                                    tipoPasajero =
+                                        documento
+                                            .getString(
+                                                CAMPO_TIPO_PASAJERO
+                                            )
+                                            .orEmpty(),
+
+                                    origen =
+                                        documento
+                                            .getString(
+                                                CAMPO_ORIGEN
+                                            )
+                                            .orEmpty(),
+
+                                    destino =
+                                        documento
+                                            .getString(
+                                                CAMPO_DESTINO
+                                            )
+                                            .orEmpty(),
+
+                                    asiento =
+                                        documento
+                                            .getString(
+                                                CAMPO_ASIENTO
+                                            )
+                                            .orEmpty(),
+
+                                    precio =
+                                        (
+                                                documento.get(
+                                                    CAMPO_PRECIO
+                                                ) as? Number
+                                                )
+                                            ?.toDouble()
+                                            ?: 0.0,
+
+                                    estadoReserva =
+                                        documento
+                                            .getString(
+                                                CAMPO_ESTADO_RESERVA
+                                            )
+                                            .orEmpty(),
+
+                                    estadoPago =
+                                        documento
+                                            .getString(
+                                                CAMPO_ESTADO_PAGO
+                                            )
+                                            .orEmpty(),
+
+                                    fechaReserva =
+                                        documento
+                                            .getTimestamp(
+                                                CAMPO_FECHA_RESERVA
+                                            ),
+
+                                    fechaSalida =
+                                        documento
+                                            .getString(
+                                                CAMPO_FECHA_SALIDA
+                                            )
+                                            .orEmpty(),
+
+                                    horaSalida =
+                                        documento
+                                            .getString(
+                                                CAMPO_HORA_SALIDA
+                                            )
+                                            .orEmpty(),
+
+                                    puntoEmbarque =
+                                        documento
+                                            .getString(
+                                                CAMPO_PUNTO_EMBARQUE
+                                            )
+                                            .orEmpty(),
+
+                                    placa =
+                                        documento
+                                            .getString(
+                                                CAMPO_PLACA
+                                            )
+                                            .orEmpty(),
+
+                                    vehiculoDescripcion =
+                                        documento
+                                            .getString(
+                                                CAMPO_VEHICULO
+                                            )
+                                            .orEmpty()
+                                )
+                            }
+                            .sortedByDescending {
+                                    reserva ->
+
+                                reserva.fechaReserva
+                                    ?.seconds
+                                    ?: 0L
+                            }
+
+                    reservasCompletas.clear()
+
+                    reservasCompletas.addAll(
+                        reservas
+                    )
+
+                    aplicarFiltro()
+                }
     }
+
+    // -------------------------------------------------
+    // FILTROS
+    // -------------------------------------------------
 
     private fun aplicarFiltro() {
 
         val reservasFiltradas =
-            if (filtroActual == FILTRO_TODAS) {
+            if (
+                filtroActual ==
+                FILTRO_TODAS
+            ) {
 
                 reservasCompletas.toList()
 
             } else {
 
-                reservasCompletas.filter { reserva ->
+                reservasCompletas.filter {
+                        reserva ->
 
                     reserva.estadoReserva
                         .trim()
-                        .lowercase(Locale.ROOT) ==
-                            filtroActual
+                        .lowercase(
+                            Locale.ROOT
+                        ) == filtroActual
                 }
             }
 
@@ -369,17 +512,22 @@ class MisReservasActivity : AppCompatActivity() {
         )
 
         binding.tvCantidadReservas.text =
-            when (reservasCompletas.size) {
+            when (
+                reservasCompletas.size
+            ) {
 
                 0 -> {
+
                     "No tienes reservas registradas"
                 }
 
                 1 -> {
+
                     "Tienes 1 reserva registrada"
                 }
 
                 else -> {
+
                     "Tienes ${reservasCompletas.size} " +
                             "reservas registradas"
                 }
@@ -399,10 +547,17 @@ class MisReservasActivity : AppCompatActivity() {
             }
 
         mostrarSinReservas(
-            mostrar = reservasFiltradas.isEmpty(),
-            mensaje = mensajeVacio
+            mostrar =
+                reservasFiltradas.isEmpty(),
+
+            mensaje =
+                mensajeVacio
         )
     }
+
+    // -------------------------------------------------
+    // DETALLE DE LA RESERVA
+    // -------------------------------------------------
 
     private fun mostrarDetalleReserva(
         reserva: Reserva
@@ -410,23 +565,31 @@ class MisReservasActivity : AppCompatActivity() {
 
         val nombreComprador =
             obtenerNombreCompleto(
-                nombres = reserva.compradorNombres,
-                apellidos = reserva.compradorApellidos
+                nombres =
+                    reserva.compradorNombres,
+
+                apellidos =
+                    reserva.compradorApellidos
             ).ifBlank {
+
                 "Usuario de PasajesYa"
             }
 
         val nombrePasajero =
-            obtenerNombrePasajero(reserva)
+            obtenerNombrePasajero(
+                reserva
+            )
 
         val tipoPasajeroTexto =
             when {
 
                 reserva.datosPasajeroPendientes -> {
+
                     "Datos por completar"
                 }
 
                 reserva.esTitular -> {
+
                     "Titular de la cuenta"
                 }
 
@@ -437,168 +600,207 @@ class MisReservasActivity : AppCompatActivity() {
                 }
 
                 else -> {
+
                     "Pasajero"
                 }
             }
 
-        val mensaje = buildString {
+        val mensaje =
+            buildString {
 
-            append(
-                "Empresa: ${
-                    reserva.empresaNombre.ifBlank {
-                        "Empresa de transporte"
+                append(
+                    "Empresa: ${
+                        reserva.empresaNombre.ifBlank {
+                            "Empresa de transporte"
+                        }
+                    }\n\n"
+                )
+
+                append(
+                    "Ruta: ${reserva.origen} → " +
+                            "${reserva.destino}\n"
+                )
+
+                if (
+                    reserva.fechaSalida
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "Fecha de salida: " +
+                                "${reserva.fechaSalida}\n"
+                    )
+                }
+
+                if (
+                    reserva.horaSalida
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "Hora de salida: " +
+                                "${reserva.horaSalida}\n"
+                    )
+                }
+
+                if (
+                    reserva.puntoEmbarque
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "Embarque: " +
+                                "${reserva.puntoEmbarque}\n"
+                    )
+                }
+
+                append("\n")
+
+                append(
+                    "Comprador: $nombreComprador\n"
+                )
+
+                if (
+                    reserva.compradorDni
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "DNI del comprador: " +
+                                "${reserva.compradorDni}\n"
+                    )
+                }
+
+                if (
+                    reserva.compradorCelular
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "Celular del comprador: " +
+                                "${reserva.compradorCelular}\n"
+                    )
+                }
+
+                append("\n")
+
+                append(
+                    "Pasajero: $nombrePasajero\n"
+                )
+
+                append(
+                    "Tipo: $tipoPasajeroTexto\n"
+                )
+
+                if (
+                    reserva.pasajeroDni
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "DNI del pasajero: " +
+                                "${reserva.pasajeroDni}\n"
+                    )
+                }
+
+                if (
+                    reserva.pasajeroCelular
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "Celular del pasajero: " +
+                                "${reserva.pasajeroCelular}\n"
+                    )
+                }
+
+                if (
+                    reserva.datosPasajeroPendientes
+                ) {
+
+                    append(
+                        "Estado de los datos: " +
+                                "PENDIENTES DE COMPLETAR\n"
+                    )
+                }
+
+                append("\n")
+
+                append(
+                    "Asiento: ${reserva.asiento}\n"
+                )
+
+                append(
+                    String.format(
+                        Locale("es", "PE"),
+                        "Precio: S/ %.2f\n",
+                        reserva.precio
+                    )
+                )
+
+                append(
+                    "Reserva: ${
+                        reserva.estadoReserva
+                            .ifBlank {
+                                "sin estado"
+                            }
+                            .uppercase(
+                                Locale.ROOT
+                            )
+                    }\n"
+                )
+
+                append(
+                    "Pago: ${
+                        reserva.estadoPago
+                            .ifBlank {
+                                "pendiente"
+                            }
+                            .uppercase(
+                                Locale.ROOT
+                            )
+                    }\n"
+                )
+
+                if (
+                    reserva.vehiculoDescripcion
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "Vehículo: " +
+                                "${reserva.vehiculoDescripcion}\n"
+                    )
+                }
+
+                if (
+                    reserva.placa.isNotBlank()
+                ) {
+
+                    append(
+                        "Placa: ${reserva.placa}\n"
+                    )
+                }
+
+                reserva.fechaReserva
+                    ?.let { fecha ->
+
+                        append(
+                            "\nReservado el: " +
+                                    formatearFecha(
+                                        fecha
+                                    )
+                        )
                     }
-                }\n\n"
-            )
-
-            append(
-                "Ruta: ${reserva.origen} → " +
-                        "${reserva.destino}\n"
-            )
-
-            if (reserva.fechaSalida.isNotBlank()) {
-
-                append(
-                    "Fecha de salida: " +
-                            "${reserva.fechaSalida}\n"
-                )
             }
-
-            if (reserva.horaSalida.isNotBlank()) {
-
-                append(
-                    "Hora de salida: " +
-                            "${reserva.horaSalida}\n"
-                )
-            }
-
-            if (reserva.puntoEmbarque.isNotBlank()) {
-
-                append(
-                    "Embarque: " +
-                            "${reserva.puntoEmbarque}\n"
-                )
-            }
-
-            append("\n")
-
-            append(
-                "Comprador: $nombreComprador\n"
-            )
-
-            if (reserva.compradorDni.isNotBlank()) {
-
-                append(
-                    "DNI del comprador: " +
-                            "${reserva.compradorDni}\n"
-                )
-            }
-
-            if (reserva.compradorCelular.isNotBlank()) {
-
-                append(
-                    "Celular del comprador: " +
-                            "${reserva.compradorCelular}\n"
-                )
-            }
-
-            append("\n")
-
-            append(
-                "Pasajero: $nombrePasajero\n"
-            )
-
-            append(
-                "Tipo: $tipoPasajeroTexto\n"
-            )
-
-            if (reserva.pasajeroDni.isNotBlank()) {
-
-                append(
-                    "DNI del pasajero: " +
-                            "${reserva.pasajeroDni}\n"
-                )
-            }
-
-            if (reserva.pasajeroCelular.isNotBlank()) {
-
-                append(
-                    "Celular del pasajero: " +
-                            "${reserva.pasajeroCelular}\n"
-                )
-            }
-
-            if (reserva.datosPasajeroPendientes) {
-
-                append(
-                    "Estado de los datos: " +
-                            "PENDIENTES DE COMPLETAR\n"
-                )
-            }
-
-            append("\n")
-
-            append(
-                "Asiento: ${reserva.asiento}\n"
-            )
-
-            append(
-                String.format(
-                    Locale("es", "PE"),
-                    "Precio: S/ %.2f\n",
-                    reserva.precio
-                )
-            )
-
-            append(
-                "Reserva: ${
-                    reserva.estadoReserva
-                        .ifBlank {
-                            "sin estado"
-                        }
-                        .uppercase(Locale.ROOT)
-                }\n"
-            )
-
-            append(
-                "Pago: ${
-                    reserva.estadoPago
-                        .ifBlank {
-                            "pendiente"
-                        }
-                        .uppercase(Locale.ROOT)
-                }\n"
-            )
-
-            if (
-                reserva.vehiculoDescripcion.isNotBlank()
-            ) {
-
-                append(
-                    "Vehículo: " +
-                            "${reserva.vehiculoDescripcion}\n"
-                )
-            }
-
-            if (reserva.placa.isNotBlank()) {
-
-                append(
-                    "Placa: ${reserva.placa}\n"
-                )
-            }
-
-            reserva.fechaReserva?.let { fecha ->
-
-                append(
-                    "\nReservado el: " +
-                            formatearFecha(fecha)
-                )
-            }
-        }
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("Detalle de la reserva")
-            .setMessage(mensaje)
+            .setTitle(
+                "Detalle de la reserva"
+            )
+            .setMessage(
+                mensaje
+            )
             .setPositiveButton(
                 "CERRAR",
                 null
@@ -610,31 +812,40 @@ class MisReservasActivity : AppCompatActivity() {
         reserva: Reserva
     ): String {
 
-        if (reserva.datosPasajeroPendientes) {
+        if (
+            reserva.datosPasajeroPendientes
+        ) {
+
             return "Datos por completar"
         }
 
         val nombrePasajero =
             obtenerNombreCompleto(
-                nombres = reserva.pasajeroNombres,
-                apellidos = reserva.pasajeroApellidos
+                nombres =
+                    reserva.pasajeroNombres,
+
+                apellidos =
+                    reserva.pasajeroApellidos
             )
 
-        if (nombrePasajero.isNotBlank()) {
+        if (
+            nombrePasajero.isNotBlank()
+        ) {
+
             return nombrePasajero
         }
 
-        /*
-         * Compatibilidad con reservas antiguas que
-         * todavía no tienen campos del pasajero.
-         */
         val nombreComprador =
             obtenerNombreCompleto(
-                nombres = reserva.compradorNombres,
-                apellidos = reserva.compradorApellidos
+                nombres =
+                    reserva.compradorNombres,
+
+                apellidos =
+                    reserva.compradorApellidos
             )
 
         return nombreComprador.ifBlank {
+
             "Pasajero no registrado"
         }
     }
@@ -648,26 +859,36 @@ class MisReservasActivity : AppCompatActivity() {
             nombres.trim(),
             apellidos.trim()
         )
-            .filter { texto ->
+            .filter {
+                    texto ->
+
                 texto.isNotBlank()
             }
             .joinToString(" ")
     }
 
+    // -------------------------------------------------
+    // CANCELACIÓN
+    // -------------------------------------------------
+
     private fun confirmarCancelacion(
         reserva: Reserva
     ) {
 
-        val estado = reserva.estadoReserva
-            .trim()
-            .lowercase(Locale.ROOT)
+        val estado =
+            reserva.estadoReserva
+                .trim()
+                .lowercase(
+                    Locale.ROOT
+                )
 
-        if (estado != ESTADO_PENDIENTE) {
+        if (
+            estado != ESTADO_PENDIENTE
+        ) {
 
             Toast.makeText(
                 this,
-                "Solo se pueden cancelar " +
-                        "reservas pendientes.",
+                "Solo se pueden cancelar reservas pendientes.",
                 Toast.LENGTH_SHORT
             ).show()
 
@@ -675,10 +896,14 @@ class MisReservasActivity : AppCompatActivity() {
         }
 
         val pasajero =
-            obtenerNombrePasajero(reserva)
+            obtenerNombrePasajero(
+                reserva
+            )
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("Cancelar reserva")
+            .setTitle(
+                "Cancelar reserva"
+            )
             .setMessage(
                 "¿Deseas cancelar esta reserva?\n\n" +
                         "Ruta: ${reserva.origen} → " +
@@ -695,7 +920,9 @@ class MisReservasActivity : AppCompatActivity() {
                 "SÍ, CANCELAR"
             ) { _, _ ->
 
-                cancelarReserva(reserva)
+                cancelarReserva(
+                    reserva
+                )
             }
             .show()
     }
@@ -727,113 +954,291 @@ class MisReservasActivity : AppCompatActivity() {
                 reserva.documentoPath
             )
 
-        val viajeReferencia = firestore
-            .collection(COLECCION_EMPRESAS)
-            .document(reserva.empresaId)
-            .collection(SUBCOLECCION_VIAJES)
-            .document(reserva.viajeId)
-
-        firestore.runTransaction { transaccion ->
-
-            /*
-             * Todas las lecturas se realizan antes
-             * de comenzar las escrituras.
-             */
-            val documentoReserva =
-                transaccion.get(
-                    reservaReferencia
+        val viajeReferencia =
+            firestore
+                .collection(
+                    COLECCION_EMPRESAS
+                )
+                .document(
+                    reserva.empresaId
+                )
+                .collection(
+                    SUBCOLECCION_VIAJES
+                )
+                .document(
+                    reserva.viajeId
                 )
 
-            val documentoViaje =
-                transaccion.get(
-                    viajeReferencia
-                )
+        firestore
+            .runTransaction {
+                    transaccion ->
 
-            if (!documentoReserva.exists()) {
+                /*
+                 * Todas las lecturas deben realizarse
+                 * antes de comenzar las escrituras.
+                 */
+                val documentoReserva =
+                    transaccion.get(
+                        reservaReferencia
+                    )
 
-                throw FirebaseFirestoreException(
-                    "La reserva ya no existe.",
-                    FirebaseFirestoreException
-                        .Code.NOT_FOUND
-                )
-            }
+                val documentoViaje =
+                    transaccion.get(
+                        viajeReferencia
+                    )
 
-            val estadoActual = documentoReserva
-                .getString(CAMPO_ESTADO_RESERVA)
-                .orEmpty()
-                .trim()
-                .lowercase(Locale.ROOT)
+                if (
+                    !documentoReserva.exists()
+                ) {
 
-            if (
-                estadoActual != ESTADO_PENDIENTE
-            ) {
-
-                throw FirebaseFirestoreException(
-                    "La reserva ya no está pendiente.",
-                    FirebaseFirestoreException
-                        .Code.ABORTED
-                )
-            }
-
-            val asiento = documentoReserva
-                .getString(CAMPO_ASIENTO)
-                .orEmpty()
-                .trim()
-                .uppercase(Locale.ROOT)
-
-            if (documentoViaje.exists()) {
-
-                val listaActual = (
-                        documentoViaje.get(
-                            CAMPO_ASIENTOS_RESERVADOS
-                        ) as? List<*>
-                        )
-                    ?.mapNotNull { valor ->
-                        valor as? String
-                    }
-                    ?.map { codigo ->
-
-                        codigo
-                            .trim()
-                            .uppercase(Locale.ROOT)
-                    }
-                    ?.toMutableList()
-                    ?: mutableListOf()
-
-                listaActual.removeAll { codigo ->
-                    codigo == asiento
+                    throw FirebaseFirestoreException(
+                        "La reserva ya no existe.",
+                        FirebaseFirestoreException
+                            .Code.NOT_FOUND
+                    )
                 }
 
+                val estadoActual =
+                    documentoReserva
+                        .getString(
+                            CAMPO_ESTADO_RESERVA
+                        )
+                        .orEmpty()
+                        .trim()
+                        .lowercase(
+                            Locale.ROOT
+                        )
+
+                if (
+                    estadoActual !=
+                    ESTADO_PENDIENTE
+                ) {
+
+                    throw FirebaseFirestoreException(
+                        "La reserva ya no está pendiente.",
+                        FirebaseFirestoreException
+                            .Code.ABORTED
+                    )
+                }
+
+                val asientoReserva =
+                    documentoReserva
+                        .getString(
+                            CAMPO_ASIENTO
+                        )
+                        .orEmpty()
+                        .trim()
+                        .uppercase(
+                            Locale.ROOT
+                        )
+
+                if (
+                    asientoReserva.isBlank()
+                ) {
+
+                    throw FirebaseFirestoreException(
+                        "La reserva no tiene un asiento válido.",
+                        FirebaseFirestoreException
+                            .Code.INVALID_ARGUMENT
+                    )
+                }
+
+                /*
+                 * Si el viaje todavía existe, se devuelve
+                 * el asiento y se actualizan los cupos.
+                 *
+                 * No se modifican ventasCerradas,
+                 * aceptaReservas ni visibleUsuarios.
+                 * Por lo tanto, cancelar no reabre el viaje.
+                 */
+                if (
+                    documentoViaje.exists()
+                ) {
+
+                    val capacidad =
+                        (
+                                documentoViaje.get(
+                                    CAMPO_CAPACIDAD
+                                ) as? Number
+                                )
+                            ?.toInt()
+                            ?.coerceAtLeast(1)
+                            ?: 4
+
+                    val asientoNormalizado =
+                        normalizarAsiento(
+                            asientoRecibido =
+                                asientoReserva,
+
+                            capacidad =
+                                capacidad
+                        )
+
+                    val reservadosAntes =
+                        (
+                                documentoViaje.get(
+                                    CAMPO_ASIENTOS_RESERVADOS
+                                ) as? List<*>
+                                )
+                            ?.mapNotNull {
+                                    valor ->
+
+                                valor
+                                    ?.toString()
+                                    ?.trim()
+                            }
+                            ?.filter {
+                                    codigo ->
+
+                                codigo.isNotBlank()
+                            }
+                            ?.map {
+                                    codigo ->
+
+                                normalizarAsiento(
+                                    asientoRecibido =
+                                        codigo,
+
+                                    capacidad =
+                                        capacidad
+                                )
+                            }
+                            ?.distinct()
+                            .orEmpty()
+
+                    val disponiblesAntes =
+                        (
+                                documentoViaje.get(
+                                    CAMPO_ASIENTOS_DISPONIBLES
+                                ) as? List<*>
+                                )
+                            ?.mapNotNull {
+                                    valor ->
+
+                                valor
+                                    ?.toString()
+                                    ?.trim()
+                            }
+                            ?.filter {
+                                    codigo ->
+
+                                codigo.isNotBlank()
+                            }
+                            ?.map {
+                                    codigo ->
+
+                                normalizarAsiento(
+                                    asientoRecibido =
+                                        codigo,
+
+                                    capacidad =
+                                        capacidad
+                                )
+                            }
+                            ?.distinct()
+                            .orEmpty()
+
+                    val todosLosAsientos =
+                        obtenerAsientosTotales(
+                            capacidad =
+                                capacidad,
+
+                            disponiblesDocumento =
+                                disponiblesAntes,
+
+                            reservadosDocumento =
+                                reservadosAntes
+                        )
+
+                    val reservadosActualizados =
+                        reservadosAntes
+                            .filter {
+                                    codigo ->
+
+                                codigo !=
+                                        asientoNormalizado
+                            }
+                            .distinct()
+
+                    val disponiblesActualizados =
+                        todosLosAsientos
+                            .filter {
+                                    codigo ->
+
+                                !reservadosActualizados
+                                    .contains(
+                                        codigo
+                                    )
+                            }
+
+                    val cuposDisponibles =
+                        (
+                                capacidad -
+                                        reservadosActualizados.size
+                                ).coerceAtLeast(0)
+
+                    transaccion.update(
+                        viajeReferencia,
+                        mapOf(
+
+                            CAMPO_ASIENTOS_RESERVADOS to
+                                    reservadosActualizados,
+
+                            CAMPO_ASIENTOS_DISPONIBLES to
+                                    disponiblesActualizados,
+
+                            CAMPO_ASIENTOS_OCUPADOS to
+                                    reservadosActualizados.size,
+
+                            CAMPO_CUPOS_DISPONIBLES to
+                                    cuposDisponibles,
+
+                            CAMPO_FECHA_ACTUALIZACION to
+                                    FieldValue
+                                        .serverTimestamp(),
+
+                            CAMPO_ULTIMA_ACTUALIZACION to
+                                    FieldValue
+                                        .serverTimestamp()
+                        )
+                    )
+                }
+
+                /*
+                 * Estados oficiales de una reserva cancelada.
+                 */
                 transaccion.update(
-                    viajeReferencia,
+                    reservaReferencia,
                     mapOf(
 
-                        CAMPO_ASIENTOS_RESERVADOS to
-                                listaActual,
+                        CAMPO_ESTADO_RESERVA to
+                                ESTADO_CANCELADA,
 
-                        CAMPO_ASIENTOS_OCUPADOS to
-                                listaActual.size,
+                        CAMPO_ESTADO_PAGO to
+                                ESTADO_PAGO_CANCELADO,
+
+                        CAMPO_ESTADO_ABORDAJE to
+                                ESTADO_ABORDAJE_CANCELADO,
+
+                        CAMPO_BOLETO_VALIDADO to
+                                false,
+
+                        CAMPO_FECHA_CANCELACION to
+                                FieldValue
+                                    .serverTimestamp(),
+
+                        CAMPO_FECHA_ACTUALIZACION to
+                                FieldValue
+                                    .serverTimestamp(),
 
                         CAMPO_ULTIMA_ACTUALIZACION to
-                                FieldValue.serverTimestamp()
+                                FieldValue
+                                    .serverTimestamp()
                     )
                 )
+
+                true
             }
-
-            transaccion.update(
-                reservaReferencia,
-                mapOf(
-
-                    CAMPO_ESTADO_RESERVA to
-                            ESTADO_CANCELADA,
-
-                    CAMPO_FECHA_CANCELACION to
-                            FieldValue.serverTimestamp()
-                )
-            )
-
-            true
-        }
             .addOnSuccessListener {
 
                 binding.progressReservas.visibility =
@@ -846,7 +1251,8 @@ class MisReservasActivity : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
             }
-            .addOnFailureListener { error ->
+            .addOnFailureListener {
+                    error ->
 
                 binding.progressReservas.visibility =
                     View.GONE
@@ -860,14 +1266,130 @@ class MisReservasActivity : AppCompatActivity() {
             }
     }
 
+    // -------------------------------------------------
+    // ASIENTOS
+    // -------------------------------------------------
+
+    private fun obtenerAsientosTotales(
+        capacidad: Int,
+        disponiblesDocumento: List<String>,
+        reservadosDocumento: List<String>
+    ): List<String> {
+
+        if (
+            capacidad == 4
+        ) {
+
+            return listOf(
+                ASIENTO_A1,
+                ASIENTO_B1,
+                ASIENTO_B2,
+                ASIENTO_B3
+            )
+        }
+
+        val existentes =
+            (
+                    disponiblesDocumento +
+                            reservadosDocumento
+                    )
+                .map {
+                        codigo ->
+
+                    codigo
+                        .trim()
+                        .uppercase(
+                            Locale.ROOT
+                        )
+                }
+                .filter {
+                        codigo ->
+
+                    codigo.isNotBlank()
+                }
+                .distinct()
+
+        val generados =
+            (1..capacidad)
+                .map {
+                        numero ->
+
+                    numero.toString()
+                }
+
+        return (
+                existentes +
+                        generados
+                )
+            .distinct()
+            .take(
+                capacidad
+            )
+    }
+
+    private fun normalizarAsiento(
+        asientoRecibido: String,
+        capacidad: Int
+    ): String {
+
+        val asiento =
+            asientoRecibido
+                .trim()
+                .uppercase(
+                    Locale.ROOT
+                )
+
+        if (
+            capacidad == 4
+        ) {
+
+            return when (
+                asiento
+            ) {
+
+                "1" -> {
+
+                    ASIENTO_A1
+                }
+
+                "2" -> {
+
+                    ASIENTO_B1
+                }
+
+                "3" -> {
+
+                    ASIENTO_B2
+                }
+
+                "4" -> {
+
+                    ASIENTO_B3
+                }
+
+                else -> {
+
+                    asiento
+                }
+            }
+        }
+
+        return asiento
+    }
+
+    // -------------------------------------------------
+    // UTILIDADES
+    // -------------------------------------------------
+
     private fun formatearFecha(
         timestamp: Timestamp
     ): String {
 
-        val formato = SimpleDateFormat(
-            "dd MMM yyyy · hh:mm a",
-            Locale("es", "PE")
-        )
+        val formato =
+            SimpleDateFormat(
+                "dd MMM yyyy · hh:mm a",
+                Locale("es", "PE")
+            )
 
         return formato.format(
             timestamp.toDate()
@@ -880,8 +1402,11 @@ class MisReservasActivity : AppCompatActivity() {
 
         binding.progressReservas.visibility =
             if (cargando) {
+
                 View.VISIBLE
+
             } else {
+
                 View.GONE
             }
 
@@ -902,15 +1427,21 @@ class MisReservasActivity : AppCompatActivity() {
 
         binding.contenedorSinReservas.visibility =
             if (mostrar) {
+
                 View.VISIBLE
+
             } else {
+
                 View.GONE
             }
 
         binding.recyclerReservas.visibility =
             if (mostrar) {
+
                 View.GONE
+
             } else {
+
                 View.VISIBLE
             }
 
@@ -920,17 +1451,19 @@ class MisReservasActivity : AppCompatActivity() {
 
     private fun abrirLogin() {
 
-        val intent = Intent(
-            this,
-            LoginActivity::class.java
-        ).apply {
+        val intent =
+            Intent(
+                this,
+                LoginActivity::class.java
+            ).apply {
 
-            flags =
-                Intent.FLAG_ACTIVITY_NEW_TASK or
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+                flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
 
         startActivity(intent)
+
         finish()
     }
 
@@ -1019,6 +1552,12 @@ class MisReservasActivity : AppCompatActivity() {
         private const val CAMPO_ESTADO_PAGO =
             "estadoPago"
 
+        private const val CAMPO_ESTADO_ABORDAJE =
+            "estadoAbordaje"
+
+        private const val CAMPO_BOLETO_VALIDADO =
+            "boletoValidado"
+
         private const val CAMPO_FECHA_RESERVA =
             "fechaReserva"
 
@@ -1037,11 +1576,23 @@ class MisReservasActivity : AppCompatActivity() {
         private const val CAMPO_VEHICULO =
             "vehiculoDescripcion"
 
+        private const val CAMPO_CAPACIDAD =
+            "capacidad"
+
         private const val CAMPO_ASIENTOS_RESERVADOS =
             "asientosReservados"
 
+        private const val CAMPO_ASIENTOS_DISPONIBLES =
+            "asientosDisponibles"
+
         private const val CAMPO_ASIENTOS_OCUPADOS =
             "asientosOcupados"
+
+        private const val CAMPO_CUPOS_DISPONIBLES =
+            "cuposDisponibles"
+
+        private const val CAMPO_FECHA_ACTUALIZACION =
+            "fechaActualizacion"
 
         private const val CAMPO_ULTIMA_ACTUALIZACION =
             "ultimaActualizacion"
@@ -1061,7 +1612,25 @@ class MisReservasActivity : AppCompatActivity() {
         private const val ESTADO_CANCELADA =
             "cancelada"
 
+        private const val ESTADO_PAGO_CANCELADO =
+            "cancelado"
+
+        private const val ESTADO_ABORDAJE_CANCELADO =
+            "cancelado"
+
         private const val TIPO_OTRA_PERSONA =
             "otra_persona"
+
+        private const val ASIENTO_A1 =
+            "A1"
+
+        private const val ASIENTO_B1 =
+            "B1"
+
+        private const val ASIENTO_B2 =
+            "B2"
+
+        private const val ASIENTO_B3 =
+            "B3"
     }
 }

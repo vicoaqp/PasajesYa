@@ -15,7 +15,10 @@ data class Viaje(
     val asientosOcupados: Long = 0L,
     val precio: Double = 0.0,
     val estado: String = "",
-    val orden: Long = 0L
+    val orden: Long = 0L,
+    val ventasCerradas: Boolean = false,
+    val aceptaReservas: Boolean = true,
+    val visibleUsuarios: Boolean = true
 ) {
 
     fun asientosDisponibles(): Long {

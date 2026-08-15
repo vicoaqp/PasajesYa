@@ -1,16 +1,13 @@
 package com.PasajesYa.pasajesya
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.net.Uri
+import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.PasajesYa.pasajesya.databinding.ActivityMainBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -19,35 +16,51 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import java.util.Locale
 
-
-
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var auth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var viajeAdapter: ViajeAdapter
 
-    private var listenerViajes: ListenerRegistration? = null
+    private lateinit var binding:
+            ActivityMainBinding
+
+    private lateinit var auth:
+            FirebaseAuth
+
+    private lateinit var firestore:
+            FirebaseFirestore
+
+    private lateinit var viajeAdapter:
+            ViajeAdapter
+
+    private var listenerViajes:
+            ListenerRegistration? = null
 
     private var empresaId = ""
     private var empresaNombre = ""
     private var empresaTelefono = ""
-    private var empresaColorPrincipal = COLOR_PREDETERMINADO
+
+    private var empresaColorPrincipal =
+        COLOR_PREDETERMINADO
 
     private val preferenciasEmpresa by lazy {
+
         getSharedPreferences(
             PREFERENCIAS_EMPRESA,
             MODE_PRIVATE
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
         super.onCreate(savedInstanceState)
 
-        auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
+        auth =
+            FirebaseAuth.getInstance()
+
+        firestore =
+            FirebaseFirestore.getInstance()
 
         if (auth.currentUser == null) {
+
             abrirLogin()
             return
         }
@@ -55,11 +68,16 @@ class MainActivity : AppCompatActivity() {
         recuperarEmpresaSeleccionada()
 
         if (empresaId.isBlank()) {
+
             abrirSeleccionEmpresa()
             return
         }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding =
+            ActivityMainBinding.inflate(
+                layoutInflater
+            )
+
         setContentView(binding.root)
 
         configurarPantalla()
@@ -73,58 +91,80 @@ class MainActivity : AppCompatActivity() {
 
     private fun recuperarEmpresaSeleccionada() {
 
-        empresaId = intent.getStringExtra(
-            SeleccionarEmpresaActivity.EXTRA_EMPRESA_ID
-        ).orEmpty()
+        empresaId =
+            intent.getStringExtra(
+                SeleccionarEmpresaActivity
+                    .EXTRA_EMPRESA_ID
+            ).orEmpty()
 
-        empresaNombre = intent.getStringExtra(
-            SeleccionarEmpresaActivity.EXTRA_EMPRESA_NOMBRE
-        ).orEmpty()
+        empresaNombre =
+            intent.getStringExtra(
+                SeleccionarEmpresaActivity
+                    .EXTRA_EMPRESA_NOMBRE
+            ).orEmpty()
 
-        empresaColorPrincipal = intent.getStringExtra(
-            SeleccionarEmpresaActivity.EXTRA_EMPRESA_COLOR_PRINCIPAL
-        ).orEmpty()
+        empresaColorPrincipal =
+            intent.getStringExtra(
+                SeleccionarEmpresaActivity
+                    .EXTRA_EMPRESA_COLOR_PRINCIPAL
+            ).orEmpty()
 
         if (empresaId.isBlank()) {
-            empresaId = preferenciasEmpresa.getString(
-                CLAVE_EMPRESA_ID,
-                ""
-            ).orEmpty()
+
+            empresaId =
+                preferenciasEmpresa.getString(
+                    CLAVE_EMPRESA_ID,
+                    ""
+                ).orEmpty()
         }
 
         if (empresaNombre.isBlank()) {
-            empresaNombre = preferenciasEmpresa.getString(
-                CLAVE_EMPRESA_NOMBRE,
-                ""
-            ).orEmpty()
+
+            empresaNombre =
+                preferenciasEmpresa.getString(
+                    CLAVE_EMPRESA_NOMBRE,
+                    ""
+                ).orEmpty()
         }
 
         if (empresaColorPrincipal.isBlank()) {
-            empresaColorPrincipal = preferenciasEmpresa.getString(
-                CLAVE_EMPRESA_COLOR_PRINCIPAL,
+
+            empresaColorPrincipal =
+                preferenciasEmpresa.getString(
+                    CLAVE_EMPRESA_COLOR_PRINCIPAL,
+                    COLOR_PREDETERMINADO
+                ).orEmpty()
+        }
+
+        if (empresaColorPrincipal.isBlank()) {
+
+            empresaColorPrincipal =
                 COLOR_PREDETERMINADO
-            ).orEmpty()
-        }
-
-        if (empresaColorPrincipal.isBlank()) {
-            empresaColorPrincipal = COLOR_PREDETERMINADO
         }
     }
 
     private fun configurarPantalla() {
 
         window.statusBarColor =
-            getColor(R.color.pasajes_primary_dark)
+            getColor(
+                R.color.pasajes_primary_dark
+            )
 
         window.navigationBarColor =
-            getColor(R.color.pasajes_background)
+            getColor(
+                R.color.pasajes_background
+            )
     }
 
     private fun configurarRecycler() {
 
-        viajeAdapter = ViajeAdapter { viaje ->
-            mostrarDetalleReserva(viaje)
-        }
+        viajeAdapter =
+            ViajeAdapter { viaje ->
+
+                mostrarDetalleReserva(
+                    viaje
+                )
+            }
 
         viajeAdapter.actualizarColorEmpresa(
             empresaColorPrincipal
@@ -132,49 +172,65 @@ class MainActivity : AppCompatActivity() {
 
         binding.recyclerViajes.apply {
 
-            layoutManager = LinearLayoutManager(
-                this@MainActivity
-            )
+            layoutManager =
+                LinearLayoutManager(
+                    this@MainActivity
+                )
 
-            adapter = viajeAdapter
+            adapter =
+                viajeAdapter
+
             setHasFixedSize(false)
-            isNestedScrollingEnabled = false
+
+            isNestedScrollingEnabled =
+                false
         }
     }
 
     private fun configurarEventos() {
 
-        binding.btnCambiarEmpresa.setOnClickListener {
-            mostrarDialogoCambiarEmpresa()
-        }
+        binding.btnCambiarEmpresa
+            .setOnClickListener {
 
-        binding.btnCerrarSesion.setOnClickListener {
-            mostrarDialogoCerrarSesion()
-        }
+                mostrarDialogoCambiarEmpresa()
+            }
 
-        binding.btnMisReservas.setOnClickListener {
-            abrirMisReservas()
-        }
+        binding.btnCerrarSesion
+            .setOnClickListener {
 
-        binding.btnPerfil.setOnClickListener {
+                mostrarDialogoCerrarSesion()
+            }
 
-            val intent = Intent(
-                this,
-                PerfilActivity::class.java
-            )
+        binding.btnMisReservas
+            .setOnClickListener {
 
-            startActivity(intent)
-        }
+                abrirMisReservas()
+            }
 
-        binding.btnContactar.setOnClickListener {
-            contactarEmpresa()
-        }
+        binding.btnPerfil
+            .setOnClickListener {
+
+                val intent =
+                    Intent(
+                        this,
+                        PerfilActivity::class.java
+                    )
+
+                startActivity(intent)
+            }
+
+        binding.btnContactar
+            .setOnClickListener {
+
+                contactarEmpresa()
+            }
     }
 
     private fun mostrarDatosTemporales() {
 
         binding.tvNombreEmpresa.text =
             empresaNombre.ifBlank {
+
                 "Empresa de transporte"
             }
 
@@ -187,7 +243,8 @@ class MainActivity : AppCompatActivity() {
         binding.tvDireccionEmpresa.text =
             "Dirección: no disponible"
 
-        binding.btnContactar.isEnabled = false
+        binding.btnContactar.isEnabled =
+            false
 
         aplicarColorEmpresa(
             empresaColorPrincipal
@@ -196,29 +253,45 @@ class MainActivity : AppCompatActivity() {
 
     private fun cargarNombreUsuario() {
 
-        val usuarioActual = auth.currentUser ?: return
+        val usuarioActual =
+            auth.currentUser
+                ?: return
 
-        binding.tvSaludoUsuario.text = "¡Hola!"
+        binding.tvSaludoUsuario.text =
+            "¡Hola!"
 
-        firestore.collection(COLECCION_USUARIOS)
-            .document(usuarioActual.uid)
+        firestore
+            .collection(
+                COLECCION_USUARIOS
+            )
+            .document(
+                usuarioActual.uid
+            )
             .get()
-            .addOnSuccessListener { documento ->
+            .addOnSuccessListener {
+                    documento ->
 
-                val nombres = documento
-                    .getString(CAMPO_NOMBRES)
-                    .orEmpty()
-                    .trim()
+                val nombres =
+                    documento
+                        .getString(
+                            CAMPO_NOMBRES
+                        )
+                        .orEmpty()
+                        .trim()
 
-                val primerNombre = nombres
-                    .split(" ")
-                    .firstOrNull()
-                    .orEmpty()
+                val primerNombre =
+                    nombres
+                        .split(" ")
+                        .firstOrNull()
+                        .orEmpty()
 
                 binding.tvSaludoUsuario.text =
                     if (primerNombre.isBlank()) {
+
                         "¡Hola!"
+
                     } else {
+
                         "¡Hola, $primerNombre!"
                     }
             }
@@ -231,10 +304,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun cargarEmpresa() {
 
-        firestore.collection(COLECCION_EMPRESAS)
-            .document(empresaId)
+        firestore
+            .collection(
+                COLECCION_EMPRESAS
+            )
+            .document(
+                empresaId
+            )
             .get()
-            .addOnSuccessListener { documento ->
+            .addOnSuccessListener {
+                    documento ->
 
                 if (!documento.exists()) {
 
@@ -245,14 +324,20 @@ class MainActivity : AppCompatActivity() {
                     ).show()
 
                     abrirSeleccionEmpresa()
+
                     return@addOnSuccessListener
                 }
 
-                val estado = documento
-                    .getString(CAMPO_ESTADO)
-                    .orEmpty()
-                    .trim()
-                    .lowercase(Locale.ROOT)
+                val estado =
+                    documento
+                        .getString(
+                            CAMPO_ESTADO
+                        )
+                        .orEmpty()
+                        .trim()
+                        .lowercase(
+                            Locale.ROOT
+                        )
 
                 val visibleUsuarios =
                     documento.getBoolean(
@@ -271,59 +356,85 @@ class MainActivity : AppCompatActivity() {
                     ).show()
 
                     abrirSeleccionEmpresa()
+
                     return@addOnSuccessListener
                 }
 
-                empresaNombre = documento
-                    .getString(CAMPO_NOMBRE)
-                    .orEmpty()
-                    .ifBlank {
-                        empresaNombre
-                    }
+                empresaNombre =
+                    documento
+                        .getString(
+                            CAMPO_NOMBRE
+                        )
+                        .orEmpty()
+                        .ifBlank {
 
-                empresaTelefono = documento
-                    .getString(CAMPO_TELEFONO)
-                    .orEmpty()
-                    .trim()
+                            empresaNombre
+                        }
 
-                val descripcion = documento
-                    .getString(CAMPO_DESCRIPCION)
-                    .orEmpty()
-                    .trim()
+                empresaTelefono =
+                    documento
+                        .getString(
+                            CAMPO_TELEFONO
+                        )
+                        .orEmpty()
+                        .trim()
 
-                val direccion = documento
-                    .getString(CAMPO_DIRECCION)
-                    .orEmpty()
-                    .trim()
+                val descripcion =
+                    documento
+                        .getString(
+                            CAMPO_DESCRIPCION
+                        )
+                        .orEmpty()
+                        .trim()
 
-                empresaColorPrincipal = documento
-                    .getString(CAMPO_COLOR_PRINCIPAL)
-                    .orEmpty()
-                    .ifBlank {
-                        COLOR_PREDETERMINADO
-                    }
+                val direccion =
+                    documento
+                        .getString(
+                            CAMPO_DIRECCION
+                        )
+                        .orEmpty()
+                        .trim()
+
+                empresaColorPrincipal =
+                    documento
+                        .getString(
+                            CAMPO_COLOR_PRINCIPAL
+                        )
+                        .orEmpty()
+                        .ifBlank {
+
+                            COLOR_PREDETERMINADO
+                        }
 
                 binding.tvNombreEmpresa.text =
                     empresaNombre.ifBlank {
+
                         "Empresa de transporte"
                     }
 
                 binding.tvDescripcionEmpresa.text =
                     descripcion.ifBlank {
+
                         "Servicio de transporte de pasajeros"
                     }
 
                 binding.tvTelefonoEmpresa.text =
                     if (empresaTelefono.isBlank()) {
+
                         "Teléfono: no disponible"
+
                     } else {
+
                         "Teléfono: $empresaTelefono"
                     }
 
                 binding.tvDireccionEmpresa.text =
                     if (direccion.isBlank()) {
+
                         "Dirección: no disponible"
+
                     } else {
+
                         "Dirección: $direccion"
                     }
 
@@ -336,190 +447,338 @@ class MainActivity : AppCompatActivity() {
 
                 guardarEmpresaEnPreferencias()
             }
-            .addOnFailureListener { error ->
+            .addOnFailureListener {
+                    error ->
 
                 Toast.makeText(
                     this,
                     "Error al cargar la empresa: " +
-                            (error.localizedMessage
-                                ?: "error desconocido"),
+                            (
+                                    error.localizedMessage
+                                        ?: "error desconocido"
+                                    ),
                     Toast.LENGTH_LONG
                 ).show()
             }
     }
 
+    // -------------------------------------------------
+    // VIAJES DISPONIBLES
+    // -------------------------------------------------
+
     private fun escucharViajes() {
 
-        mostrarCargandoViajes(true)
+        mostrarCargandoViajes(
+            true
+        )
 
         listenerViajes?.remove()
         listenerViajes = null
 
-        listenerViajes = firestore
-            .collection(COLECCION_EMPRESAS)
-            .document(empresaId)
-            .collection(SUBCOLECCION_VIAJES)
-            .addSnapshotListener { resultado, error ->
-
-                mostrarCargandoViajes(false)
-
-                if (error != null) {
-
-                    viajeAdapter.actualizarViajes(
-                        emptyList()
-                    )
-
-                    binding.tvCantidadViajes.text =
-                        "0 disponibles"
-
-                    mostrarSinViajes(
-                        mostrar = true,
-                        mensaje = "No se pudieron cargar los viajes.\n" +
-                                (error.localizedMessage
-                                    ?: "Error desconocido")
-                    )
-
-                    Toast.makeText(
-                        this,
-                        "Error al cargar viajes: " +
-                                (error.localizedMessage
-                                    ?: "error desconocido"),
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                    return@addSnapshotListener
-                }
-
-                if (resultado == null) {
-
-                    viajeAdapter.actualizarViajes(
-                        emptyList()
-                    )
-
-                    binding.tvCantidadViajes.text =
-                        "0 disponibles"
-
-                    mostrarSinViajes(
-                        mostrar = true,
-                        mensaje = "No se recibió información de los viajes."
-                    )
-
-                    return@addSnapshotListener
-                }
-
-                val viajes = resultado.documents
-                    .map { documento ->
-
-                        Viaje(
-                            id = documento.id,
-
-                            rutaId = documento
-                                .getString(CAMPO_RUTA_ID)
-                                .orEmpty(),
-
-                            origen = documento
-                                .getString(CAMPO_ORIGEN)
-                                .orEmpty(),
-
-                            destino = documento
-                                .getString(CAMPO_DESTINO)
-                                .orEmpty(),
-
-                            fechaSalida = documento
-                                .getString(CAMPO_FECHA_SALIDA)
-                                .orEmpty(),
-
-                            horaSalida = documento
-                                .getString(CAMPO_HORA_SALIDA)
-                                .orEmpty(),
-
-                            puntoEmbarque = documento
-                                .getString(CAMPO_PUNTO_EMBARQUE)
-                                .orEmpty(),
-
-                            choferNombre = documento
-                                .getString(CAMPO_CHOFER)
-                                .orEmpty(),
-
-                            vehiculoDescripcion = documento
-                                .getString(CAMPO_VEHICULO)
-                                .orEmpty(),
-
-                            placa = documento
-                                .getString(CAMPO_PLACA)
-                                .orEmpty(),
-
-                            capacidad = (
-                                    documento.get(CAMPO_CAPACIDAD)
-                                            as? Number
-                                    )?.toLong() ?: 4L,
-
-                            asientosOcupados = (
-                                    documento.get(CAMPO_ASIENTOS_OCUPADOS)
-                                            as? Number
-                                    )?.toLong() ?: 0L,
-
-                            precio = (
-                                    documento.get(CAMPO_PRECIO)
-                                            as? Number
-                                    )?.toDouble() ?: 0.0,
-
-                            estado = documento
-                                .getString(CAMPO_ESTADO)
-                                .orEmpty(),
-
-                            orden = (
-                                    documento.get(CAMPO_ORDEN)
-                                            as? Number
-                                    )?.toLong() ?: 0L
-                        )
-                    }
-                    .filter { viaje ->
-
-                        val estadoViaje = viaje.estado
-                            .trim()
-                            .lowercase(Locale.ROOT)
-
-                        estadoViaje == ESTADO_RECIBIENDO ||
-                                estadoViaje == ESTADO_DISPONIBLE ||
-                                estadoViaje == ESTADO_ACTIVO
-                    }
-                    .sortedWith(
-                        compareBy<Viaje> {
-                            it.orden
-                        }.thenBy {
-                            it.origen
-                        }
-                    )
-
-                viajeAdapter.actualizarViajes(
-                    viajes
+        listenerViajes =
+            firestore
+                .collection(
+                    COLECCION_EMPRESAS
                 )
+                .document(
+                    empresaId
+                )
+                .collection(
+                    SUBCOLECCION_VIAJES
+                )
+                .addSnapshotListener {
+                        resultado, error ->
 
-                binding.tvCantidadViajes.text =
-                    when (viajes.size) {
+                    mostrarCargandoViajes(
+                        false
+                    )
 
-                        0 ->
+                    if (error != null) {
+
+                        viajeAdapter.actualizarViajes(
+                            emptyList()
+                        )
+
+                        binding.tvCantidadViajes.text =
                             "0 disponibles"
 
-                        1 ->
-                            "1 disponible"
+                        mostrarSinViajes(
+                            mostrar = true,
+                            mensaje =
+                                "No se pudieron cargar los viajes.\n" +
+                                        (
+                                                error.localizedMessage
+                                                    ?: "Error desconocido"
+                                                )
+                        )
 
-                        else ->
-                            "${viajes.size} disponibles"
+                        Toast.makeText(
+                            this,
+                            "Error al cargar viajes: " +
+                                    (
+                                            error.localizedMessage
+                                                ?: "error desconocido"
+                                            ),
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        return@addSnapshotListener
                     }
 
-                mostrarSinViajes(
-                    mostrar = viajes.isEmpty(),
-                    mensaje = "La empresa todavía no ha activado " +
-                            "una unidad para recibir pasajeros."
-                )
-            }
+                    if (resultado == null) {
+
+                        viajeAdapter.actualizarViajes(
+                            emptyList()
+                        )
+
+                        binding.tvCantidadViajes.text =
+                            "0 disponibles"
+
+                        mostrarSinViajes(
+                            mostrar = true,
+                            mensaje =
+                                "No se recibió información de los viajes."
+                        )
+
+                        return@addSnapshotListener
+                    }
+
+                    val viajes =
+                        resultado.documents
+                            .map {
+                                    documento ->
+
+                                Viaje(
+
+                                    id =
+                                        documento.id,
+
+                                    rutaId =
+                                        documento
+                                            .getString(
+                                                CAMPO_RUTA_ID
+                                            )
+                                            .orEmpty(),
+
+                                    origen =
+                                        documento
+                                            .getString(
+                                                CAMPO_ORIGEN
+                                            )
+                                            .orEmpty(),
+
+                                    destino =
+                                        documento
+                                            .getString(
+                                                CAMPO_DESTINO
+                                            )
+                                            .orEmpty(),
+
+                                    fechaSalida =
+                                        documento
+                                            .getString(
+                                                CAMPO_FECHA_SALIDA
+                                            )
+                                            .orEmpty(),
+
+                                    horaSalida =
+                                        documento
+                                            .getString(
+                                                CAMPO_HORA_SALIDA
+                                            )
+                                            .orEmpty(),
+
+                                    puntoEmbarque =
+                                        documento
+                                            .getString(
+                                                CAMPO_PUNTO_EMBARQUE
+                                            )
+                                            .orEmpty(),
+
+                                    choferNombre =
+                                        documento
+                                            .getString(
+                                                CAMPO_CHOFER
+                                            )
+                                            .orEmpty(),
+
+                                    vehiculoDescripcion =
+                                        documento
+                                            .getString(
+                                                CAMPO_VEHICULO
+                                            )
+                                            .orEmpty(),
+
+                                    placa =
+                                        documento
+                                            .getString(
+                                                CAMPO_PLACA
+                                            )
+                                            .orEmpty(),
+
+                                    capacidad =
+                                        (
+                                                documento.get(
+                                                    CAMPO_CAPACIDAD
+                                                ) as? Number
+                                                )
+                                            ?.toLong()
+                                            ?: 4L,
+
+                                    asientosOcupados =
+                                        (
+                                                documento.get(
+                                                    CAMPO_ASIENTOS_OCUPADOS
+                                                ) as? Number
+                                                )
+                                            ?.toLong()
+                                            ?: 0L,
+
+                                    precio =
+                                        (
+                                                documento.get(
+                                                    CAMPO_PRECIO
+                                                ) as? Number
+                                                )
+                                            ?.toDouble()
+                                            ?: 0.0,
+
+                                    estado =
+                                        documento
+                                            .getString(
+                                                CAMPO_ESTADO
+                                            )
+                                            .orEmpty(),
+
+                                    orden =
+                                        documento
+                                            .getTimestamp(
+                                                CAMPO_FECHA_SALIDA_ORDEN
+                                            )
+                                            ?.toDate()
+                                            ?.time
+                                            ?: 0L,
+
+                                    /*
+                                     * Nuevos campos de control.
+                                     *
+                                     * Los valores predeterminados
+                                     * permiten que los viajes antiguos
+                                     * continúen funcionando.
+                                     */
+                                    ventasCerradas =
+                                        documento.getBoolean(
+                                            CAMPO_VENTAS_CERRADAS
+                                        ) ?: false,
+
+                                    aceptaReservas =
+                                        documento.getBoolean(
+                                            CAMPO_ACEPTA_RESERVAS
+                                        ) ?: true,
+
+                                    visibleUsuarios =
+                                        documento.getBoolean(
+                                            CAMPO_VISIBLE_USUARIOS
+                                        ) ?: true
+                                )
+                            }
+                            .filter {
+                                    viaje ->
+
+                                val estadoViaje =
+                                    viaje.estado
+                                        .trim()
+                                        .lowercase(
+                                            Locale.ROOT
+                                        )
+
+                                val estadoDisponible =
+                                    estadoViaje ==
+                                            ESTADO_RECIBIENDO ||
+
+                                            estadoViaje ==
+                                            ESTADO_DISPONIBLE ||
+
+                                            estadoViaje ==
+                                            ESTADO_ACTIVO
+
+                                estadoDisponible &&
+                                        !viaje.ventasCerradas &&
+                                        viaje.aceptaReservas &&
+                                        viaje.visibleUsuarios
+                            }
+                            .sortedWith(
+
+                                compareBy<Viaje> {
+
+                                    it.orden
+
+                                }.thenBy {
+
+                                    it.origen
+                                }
+                            )
+
+                    viajeAdapter.actualizarViajes(
+                        viajes
+                    )
+
+                    binding.tvCantidadViajes.text =
+                        when (viajes.size) {
+
+                            0 -> {
+                                "0 disponibles"
+                            }
+
+                            1 -> {
+                                "1 disponible"
+                            }
+
+                            else -> {
+                                "${viajes.size} disponibles"
+                            }
+                        }
+
+                    mostrarSinViajes(
+                        mostrar =
+                            viajes.isEmpty(),
+
+                        mensaje =
+                            "La empresa todavía no ha activado " +
+                                    "una unidad para recibir pasajeros."
+                    )
+                }
     }
+
+    // -------------------------------------------------
+    // DETALLE DEL VIAJE
+    // -------------------------------------------------
 
     private fun mostrarDetalleReserva(
         viaje: Viaje
     ) {
+
+        /*
+         * Validación defensiva.
+         *
+         * Normalmente los viajes cerrados ya no
+         * estarán en la lista, pero esta comprobación
+         * evita continuar con un objeto antiguo.
+         */
+        if (
+            viaje.ventasCerradas ||
+            !viaje.aceptaReservas ||
+            !viaje.visibleUsuarios
+        ) {
+
+            Toast.makeText(
+                this,
+                "Las ventas de este viaje ya fueron cerradas.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
 
         val disponibles =
             viaje.asientosDisponibles()
@@ -535,42 +794,66 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val mensaje = buildString {
+        val mensaje =
+            buildString {
 
-            append(
-                "${viaje.origen} → ${viaje.destino}\n\n"
-            )
-
-            append(
-                "Asientos disponibles: $disponibles\n"
-            )
-
-            append(
-                String.format(
-                    Locale("es", "PE"),
-                    "Precio: S/ %.2f",
-                    viaje.precio
-                )
-            )
-
-            if (viaje.fechaSalida.isNotBlank()) {
-                append("\nFecha: ${viaje.fechaSalida}")
-            }
-
-            if (viaje.horaSalida.isNotBlank()) {
-                append("\nSalida: ${viaje.horaSalida}")
-            }
-
-            if (viaje.puntoEmbarque.isNotBlank()) {
                 append(
-                    "\nEmbarque: ${viaje.puntoEmbarque}"
+                    "${viaje.origen} → " +
+                            "${viaje.destino}\n\n"
                 )
+
+                append(
+                    "Asientos disponibles: " +
+                            "$disponibles\n"
+                )
+
+                append(
+                    String.format(
+                        Locale("es", "PE"),
+                        "Precio: S/ %.2f",
+                        viaje.precio
+                    )
+                )
+
+                if (
+                    viaje.fechaSalida
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "\nFecha: ${viaje.fechaSalida}"
+                    )
+                }
+
+                if (
+                    viaje.horaSalida
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "\nSalida: ${viaje.horaSalida}"
+                    )
+                }
+
+                if (
+                    viaje.puntoEmbarque
+                        .isNotBlank()
+                ) {
+
+                    append(
+                        "\nEmbarque: " +
+                                viaje.puntoEmbarque
+                    )
+                }
             }
-        }
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("Reservar asiento")
-            .setMessage(mensaje)
+            .setTitle(
+                "Reservar asiento"
+            )
+            .setMessage(
+                mensaje
+            )
             .setNegativeButton(
                 "CANCELAR",
                 null
@@ -579,7 +862,9 @@ class MainActivity : AppCompatActivity() {
                 "CONTINUAR"
             ) { _, _ ->
 
-                abrirSeleccionAsiento(viaje)
+                abrirSeleccionAsiento(
+                    viaje
+                )
             }
             .show()
     }
@@ -599,90 +884,137 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val intent = Intent(
-            this,
-            SeleccionarAsientoActivity::class.java
-        ).apply {
+        /*
+         * Segunda validación defensiva.
+         */
+        if (
+            viaje.ventasCerradas ||
+            !viaje.aceptaReservas ||
+            !viaje.visibleUsuarios
+        ) {
 
-            putExtra(
-                SeleccionarAsientoActivity.EXTRA_EMPRESA_ID,
-                empresaId
-            )
+            Toast.makeText(
+                this,
+                "Este viaje ya no acepta reservas.",
+                Toast.LENGTH_LONG
+            ).show()
 
-            putExtra(
-                SeleccionarAsientoActivity.EXTRA_EMPRESA_NOMBRE,
-                empresaNombre
-            )
-
-            putExtra(
-                SeleccionarAsientoActivity.EXTRA_VIAJE_ID,
-                viaje.id
-            )
+            return
         }
+
+        val intent =
+            Intent(
+                this,
+                SeleccionarAsientoActivity::class.java
+            ).apply {
+
+                putExtra(
+                    SeleccionarAsientoActivity
+                        .EXTRA_EMPRESA_ID,
+                    empresaId
+                )
+
+                putExtra(
+                    SeleccionarAsientoActivity
+                        .EXTRA_EMPRESA_NOMBRE,
+                    empresaNombre
+                )
+
+                putExtra(
+                    SeleccionarAsientoActivity
+                        .EXTRA_VIAJE_ID,
+                    viaje.id
+                )
+            }
 
         startActivity(intent)
     }
 
     private fun abrirMisReservas() {
 
-        val intent = Intent(
-            this,
-            MisReservasActivity::class.java
-        )
+        val intent =
+            Intent(
+                this,
+                MisReservasActivity::class.java
+            )
 
         startActivity(intent)
     }
+
+    // -------------------------------------------------
+    // COLORES DE LA EMPRESA
+    // -------------------------------------------------
 
     private fun aplicarColorEmpresa(
         colorHexadecimal: String
     ) {
 
-        val color = try {
+        val color =
+            try {
 
-            Color.parseColor(
-                colorHexadecimal
+                Color.parseColor(
+                    colorHexadecimal
+                )
+
+            } catch (
+                _: IllegalArgumentException
+            ) {
+
+                Color.parseColor(
+                    COLOR_PREDETERMINADO
+                )
+            }
+
+        binding.cardEncabezado
+            .setCardBackgroundColor(
+                color
             )
 
-        } catch (_: IllegalArgumentException) {
-
-            Color.parseColor(
-                COLOR_PREDETERMINADO
+        binding.btnContactar
+            .backgroundTintList =
+            ColorStateList.valueOf(
+                color
             )
-        }
 
-        binding.cardEncabezado.setCardBackgroundColor(
-            color
-        )
-
-        binding.btnContactar.backgroundTintList =
-            ColorStateList.valueOf(color)
-
-        binding.tvCantidadViajes.setTextColor(
-            color
-        )
+        binding.tvCantidadViajes
+            .setTextColor(
+                color
+            )
 
         viajeAdapter.actualizarColorEmpresa(
             colorHexadecimal
         )
 
         window.statusBarColor =
-            oscurecerColor(color)
+            oscurecerColor(
+                color
+            )
     }
 
     private fun oscurecerColor(
         color: Int
     ): Int {
 
-        val factor = 0.75f
+        val factor =
+            0.75f
 
         val rojo =
-            (Color.red(color) * factor).toInt()
+            (
+                    Color.red(color) *
+                            factor
+                    ).toInt()
 
         val verde =
-            (Color.green(color) * factor).toInt()
+            (
+                    Color.green(color) *
+                            factor
+                    ).toInt()
 
         val azul =
-            (Color.blue(color) * factor).toInt()
+            (
+                    Color.blue(color) *
+                            factor
+                    ).toInt()
 
         return Color.rgb(
             rojo,
@@ -691,14 +1023,21 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    // -------------------------------------------------
+    // ESTADOS DE LA PANTALLA
+    // -------------------------------------------------
+
     private fun mostrarCargandoViajes(
         cargando: Boolean
     ) {
 
         binding.progressViajes.visibility =
             if (cargando) {
+
                 View.VISIBLE
+
             } else {
+
                 View.GONE
             }
 
@@ -719,21 +1058,31 @@ class MainActivity : AppCompatActivity() {
 
         binding.contenedorSinViajes.visibility =
             if (mostrar) {
+
                 View.VISIBLE
+
             } else {
+
                 View.GONE
             }
 
         binding.recyclerViajes.visibility =
             if (mostrar) {
+
                 View.GONE
+
             } else {
+
                 View.VISIBLE
             }
 
         binding.tvMensajeSinViajes.text =
             mensaje
     }
+
+    // -------------------------------------------------
+    // CONTACTO
+    // -------------------------------------------------
 
     private fun contactarEmpresa() {
 
@@ -748,21 +1097,30 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val telefonoLimpio = empresaTelefono
-            .replace(" ", "")
-            .replace("-", "")
+        val telefonoLimpio =
+            empresaTelefono
+                .replace(" ", "")
+                .replace("-", "")
 
-        val intent = Intent(
-            Intent.ACTION_DIAL,
-            Uri.parse("tel:$telefonoLimpio")
-        )
+        val intent =
+            Intent(
+                Intent.ACTION_DIAL,
+                Uri.parse(
+                    "tel:$telefonoLimpio"
+                )
+            )
 
         startActivity(intent)
     }
 
+    // -------------------------------------------------
+    // PREFERENCIAS
+    // -------------------------------------------------
+
     private fun guardarEmpresaEnPreferencias() {
 
-        preferenciasEmpresa.edit()
+        preferenciasEmpresa
+            .edit()
             .putString(
                 CLAVE_EMPRESA_ID,
                 empresaId
@@ -778,10 +1136,16 @@ class MainActivity : AppCompatActivity() {
             .apply()
     }
 
+    // -------------------------------------------------
+    // DIÁLOGOS
+    // -------------------------------------------------
+
     private fun mostrarDialogoCambiarEmpresa() {
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("Cambiar empresa")
+            .setTitle(
+                "Cambiar empresa"
+            )
             .setMessage(
                 "Actualmente estás consultando " +
                         "$empresaNombre. " +
@@ -803,7 +1167,9 @@ class MainActivity : AppCompatActivity() {
     private fun mostrarDialogoCerrarSesion() {
 
         MaterialAlertDialogBuilder(this)
-            .setTitle("Cerrar sesión")
+            .setTitle(
+                "Cerrar sesión"
+            )
             .setMessage(
                 "¿Deseas salir de PasajesYa?"
             )
@@ -827,7 +1193,8 @@ class MainActivity : AppCompatActivity() {
 
         auth.signOut()
 
-        preferenciasEmpresa.edit()
+        preferenciasEmpresa
+            .edit()
             .clear()
             .apply()
 
@@ -839,45 +1206,48 @@ class MainActivity : AppCompatActivity() {
         listenerViajes?.remove()
         listenerViajes = null
 
-        val intent = Intent(
-            this,
-            SeleccionarEmpresaActivity::class.java
-        ).apply {
+        val intent =
+            Intent(
+                this,
+                SeleccionarEmpresaActivity::class.java
+            ).apply {
 
-            flags =
-                Intent.FLAG_ACTIVITY_NEW_TASK or
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+                flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
 
         startActivity(intent)
+
         finish()
     }
 
     private fun abrirLogin() {
 
-        val intent = Intent(
-            this,
-            LoginActivity::class.java
-        ).apply {
+        val intent =
+            Intent(
+                this,
+                LoginActivity::class.java
+            ).apply {
 
-            flags =
-                Intent.FLAG_ACTIVITY_NEW_TASK or
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+                flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
 
         startActivity(intent)
+
         finish()
     }
-
 
     override fun onResume() {
         super.onResume()
 
         if (::binding.isInitialized) {
+
             cargarNombreUsuario()
         }
     }
-
 
     override fun onDestroy() {
 
@@ -919,6 +1289,15 @@ class MainActivity : AppCompatActivity() {
         private const val CAMPO_VISIBLE_USUARIOS =
             "visibleUsuarios"
 
+        /*
+         * Campos nuevos para el cierre de ventas.
+         */
+        private const val CAMPO_VENTAS_CERRADAS =
+            "ventasCerradas"
+
+        private const val CAMPO_ACEPTA_RESERVAS =
+            "aceptaReservas"
+
         private const val CAMPO_RUTA_ID =
             "rutaId"
 
@@ -958,8 +1337,8 @@ class MainActivity : AppCompatActivity() {
         private const val CAMPO_ESTADO =
             "estado"
 
-        private const val CAMPO_ORDEN =
-            "orden"
+        private const val CAMPO_FECHA_SALIDA_ORDEN =
+            "fechaSalidaOrden"
 
         private const val ESTADO_ACTIVO =
             "activo"

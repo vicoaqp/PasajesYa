@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/pasajes_surface"
+    app:cardCornerRadius="22dp"
+    app:cardElevation="3dp"
+    app:strokeColor="@color/pasajes_border"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- FOTO DE LA UNIDAD -->
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="190dp">
+
+            <ImageView
+                android:id="@+id/img_unidad"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#E8EEF3"
+                android:contentDescription="Foto de la unidad"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_empresa_transporte"
+                tools:ignore="ImageContrastCheck" />
+
+            <TextView
+                android:id="@+id/tv_tipo_servicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_margin="12dp"
+                android:background="@drawable/bg_estado_disponible"
+                android:paddingStart="12dp"
+                android:paddingTop="7dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="7dp"
+                android:text="🚕 TAXI"
+                android:textColor="@color/white"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                tools:text="🛺 MOTOTAXI" />
+
+        </FrameLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <!-- CONDUCTOR -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    app:cardBackgroundColor="#EEF3F6"
+                    app:cardCornerRadius="36dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/pasajes_border"
+                    app:strokeWidth="1dp">
+
+                    <ImageView
+                        android:id="@+id/img_conductor"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Foto del conductor"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_persona_pasajes" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_nombre_conductor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="2"
+                        android:text="Carlos Quispe"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:text="Carlos Quispe" />
+
+                    <TextView
+                        android:id="@+id/tv_disponible"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="● DISPONIBLE"
+                        android:textColor="@color/pasajes_success"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!-- DATOS DE LA UNIDAD -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Datos de la unidad"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/tv_vehiculo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Toyota Yaris"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="14sp"
+                tools:text="Bajaj RE" />
+
+
+            <TextView
+                android:id="@+id/tv_placa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Placa: V8A-123"
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="13sp" />
+
+
+            <TextView
+                android:id="@+id/tv_color"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Color: Blanco"
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="13sp" />
+
+
+            <!-- CONTACTAR -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_llamar"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="18dp"
+                android:text="LLAMAR AL CONDUCTOR"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/pasajes_primary"
+                app:cornerRadius="16dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -456,7 +456,7 @@ class LoginActivity : AppCompatActivity() {
     companion object {
 
         private const val COLECCION_USUARIOS =
-            "usuariosapp"
+            "usuariospasajes"
 
         private const val CAMPO_ROL =
             "rol"

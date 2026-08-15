@@ -13,13 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PasajesYa">
         <activity
+            android:name=".MovilidadDisponibleActivity"
+            android:exported="false" />
+        <activity
             android:name=".PerfilActivity"
             android:exported="false" />
         <activity
             android:name=".MisReservasActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ReservaAdapter"
             android:exported="false" />
         <activity
             android:name=".SeleccionarAsientoActivity"
