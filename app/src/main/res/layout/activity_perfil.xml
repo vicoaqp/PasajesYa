@@ -59,22 +59,26 @@
 
             </LinearLayout>
 
-            <FrameLayout
-                android:layout_width="92dp"
-                android:layout_height="92dp"
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="22dp"
-                android:background="@drawable/bg_logo_pasajes"
-                android:elevation="7dp"
-                android:padding="22dp">
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="48dp"
+                app:cardElevation="7dp"
+                app:strokeColor="#80FFFFFF"
+                app:strokeWidth="3dp">
 
                 <ImageView
+                    android:id="@+id/iv_foto_perfil"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:contentDescription="Perfil del pasajero"
+                    android:contentDescription="Foto del pasajero"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_persona_pasajes" />
 
-            </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/tv_nombre_perfil"
@@ -335,9 +339,228 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+
+            <!-- Mis ubicaciones -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Mis ubicaciones"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Guarda lugares frecuentes para usarlos rápidamente en los servicios de PasajesYa."
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="13sp" />
+
+            <!-- Casa -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_ubicacion_casa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                app:cardBackgroundColor="@color/pasajes_surface"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/pasajes_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="19dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="46dp"
+                            android:layout_height="46dp"
+                            android:gravity="center"
+                            android:text="🏠"
+                            android:textSize="25sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Casa"
+                                android:textColor="@color/pasajes_text_primary"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Ubicación principal"
+                                android:textColor="@color/pasajes_primary"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_direccion_casa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Aún no has registrado la ubicación de tu casa."
+                        android:textColor="@color/pasajes_text_secondary"
+                        android:textSize="14sp"
+                        tools:text="Aplao, Castilla, Arequipa" />
+
+                    <TextView
+                        android:id="@+id/tv_referencia_casa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Referencia no registrada"
+                        android:textColor="@color/pasajes_text_secondary"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        tools:text="Referencia: Frente al mercado"
+                        tools:visibility="visible" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_ubicacion_casa"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="15dp"
+                        android:text="AGREGAR UBICACIÓN"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/pasajes_primary"
+                        app:cornerRadius="15dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Trabajo -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_ubicacion_trabajo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                app:cardBackgroundColor="@color/pasajes_surface"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/pasajes_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="19dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="46dp"
+                            android:layout_height="46dp"
+                            android:gravity="center"
+                            android:text="💼"
+                            android:textSize="25sp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Trabajo"
+                                android:textColor="@color/pasajes_text_primary"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Opcional"
+                                android:textColor="@color/pasajes_text_secondary"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_direccion_trabajo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Aún no has registrado la ubicación de tu trabajo."
+                        android:textColor="@color/pasajes_text_secondary"
+                        android:textSize="14sp"
+                        tools:text="Municipalidad Provincial de Castilla - Aplao" />
+
+                    <TextView
+                        android:id="@+id/tv_referencia_trabajo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Referencia no registrada"
+                        android:textColor="@color/pasajes_text_secondary"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        tools:text="Referencia: Ingreso principal"
+                        tools:visibility="visible" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_ubicacion_trabajo"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="15dp"
+                        android:text="AGREGAR UBICACIÓN"
+                        android:textColor="@color/pasajes_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/pasajes_surface"
+                        app:cornerRadius="15dp"
+                        app:strokeColor="@color/pasajes_primary"
+                        app:strokeWidth="1dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- Seguridad -->
 
             <TextView
+                android:id="@+id/tv_seccion_seguridad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="27dp"
@@ -347,6 +570,7 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_seguridad"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"

@@ -13,7 +13,20 @@
           "package_name": "com.PasajesYa.pasajesya"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "833843640782-mhc8ul08261qg37unpimat3ei4h9a46d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.PasajesYa.pasajesya",
+            "certificate_hash": "cd654b2f223eb9842c4c03f03ae1abaa7d9a350c"
+          }
+        },
+        {
+          "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCnfVI2aO2V1kTAmxFOcoA_A-pW9qM4aUU"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -32,7 +50,12 @@
           "package_name": "com.combi.waiky"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCnfVI2aO2V1kTAmxFOcoA_A-pW9qM4aUU"
@@ -40,7 +63,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -51,7 +79,12 @@
           "package_name": "com.goldenjanosadmin.gjadmin"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCnfVI2aO2V1kTAmxFOcoA_A-pW9qM4aUU"
@@ -59,7 +92,99 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833843640782:android:27b91e133c499512a2d39f",
+        "android_client_info": {
+          "package_name": "com.pasajesya.adminya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnfVI2aO2V1kTAmxFOcoA_A-pW9qM4aUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833843640782:android:25b56c03fcc1b405a2d39f",
+        "android_client_info": {
+          "package_name": "com.pasajesya.choferya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnfVI2aO2V1kTAmxFOcoA_A-pW9qM4aUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833843640782:android:74457ea21f3ac4a1a2d39f",
+        "android_client_info": {
+          "package_name": "com.pasajesya.movilya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnfVI2aO2V1kTAmxFOcoA_A-pW9qM4aUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -70,7 +195,12 @@
           "package_name": "com.reciclaje.agenteverde"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCnfVI2aO2V1kTAmxFOcoA_A-pW9qM4aUU"
@@ -78,7 +208,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -89,7 +224,12 @@
           "package_name": "com.serenazgompc.agentesverdes"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCnfVI2aO2V1kTAmxFOcoA_A-pW9qM4aUU"
@@ -97,7 +237,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -108,7 +253,20 @@
           "package_name": "com.serenazgompc.serenompc"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "833843640782-ejsb1jorbaanv9kmrnerbnok0ji1lucl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.serenazgompc.serenompc",
+            "certificate_hash": "ed99a54f59bb86688f7b1719e228adf212be2e31"
+          }
+        },
+        {
+          "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCnfVI2aO2V1kTAmxFOcoA_A-pW9qM4aUU"
@@ -116,7 +274,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "833843640782-83v52h2nfag5c2kb1iahhfvkgjcmqltb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

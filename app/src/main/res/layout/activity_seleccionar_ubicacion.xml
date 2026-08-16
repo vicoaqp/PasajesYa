@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pasajes_background"
+    android:fitsSystemWindows="true"
+    tools:context=".SeleccionarUbicacionActivity">
+
+
+    <!-- ===================================================== -->
+    <!-- CABECERA FIJA -->
+    <!-- ===================================================== -->
+
+    <LinearLayout
+        android:id="@+id/headerUbicacion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/pasajes_primary_dark"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVolverUbicacion"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:minWidth="0dp"
+            android:text="←"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:backgroundTint="#25FFFFFF"
+            app:cornerRadius="15dp"
+            app:strokeColor="#60FFFFFF"
+            app:strokeWidth="1dp" />
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/tvTituloUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ubicación de mi casa"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/tvSubtituloUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Mueve el mapa hasta el punto exacto"
+                android:textColor="#D9FFFFFF"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- ===================================================== -->
+    <!-- GUÍA PARA DIVIDIR MAPA Y PANEL INFERIOR -->
+    <!-- ===================================================== -->
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineMapa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.55" />
+
+
+    <!-- ===================================================== -->
+    <!-- MAPA FIJO -->
+    <!-- NO ESTÁ DENTRO DEL SCROLL -->
+    <!-- ===================================================== -->
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardMapa"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="22dp"
+        app:cardElevation="3dp"
+        app:strokeColor="@color/pasajes_border"
+        app:strokeWidth="1dp"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMapa"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerUbicacion">
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <!-- GOOGLE MAP -->
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/mapFragment"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+            <!-- MARCADOR FIJO AL CENTRO -->
+
+            <TextView
+                android:id="@+id/tvMarcadorCentro"
+                android:layout_width="56dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:focusable="false"
+                android:gravity="center"
+                android:importantForAccessibility="no"
+                android:text="📍"
+                android:textSize="44sp"
+                android:translationY="-25dp" />
+
+
+            <!-- CARGANDO -->
+
+            <ProgressBar
+                android:id="@+id/progressMapa"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+
+            <!-- MENSAJE -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:clickable="false"
+                android:focusable="false"
+                app:cardBackgroundColor="#EEFFFFFF"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="4dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="14dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="8dp"
+                    android:text="Mueve el mapa para ajustar el punto"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </FrameLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <!-- ===================================================== -->
+    <!-- PANEL INFERIOR -->
+    <!-- SOLO ESTA PARTE SE DESPLAZA -->
+    <!-- ===================================================== -->
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollUbicacion"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/pasajes_background"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guidelineMapa">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="18dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="30dp">
+
+
+            <!-- ================================================= -->
+            <!-- UBICACIÓN ACTUAL -->
+            <!-- ================================================= -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMiUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="📍  USAR MI UBICACIÓN ACTUAL"
+                android:textColor="@color/pasajes_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/pasajes_surface"
+                app:cornerRadius="16dp"
+                app:strokeColor="@color/pasajes_primary"
+                app:strokeWidth="1dp" />
+
+
+            <!-- ================================================= -->
+            <!-- DIRECCIÓN -->
+            <!-- ================================================= -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Dirección seleccionada"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                app:cardBackgroundColor="@color/pasajes_surface"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/pasajes_border"
+                app:strokeWidth="1dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="15dp">
+
+
+                    <TextView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:gravity="center"
+                        android:text="📍"
+                        android:textSize="22sp" />
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="9dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:id="@+id/tvDireccionSeleccionada"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Selecciona un punto en el mapa"
+                            android:textColor="@color/pasajes_text_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="WG55+F34, Aplao, Perú" />
+
+
+                        <TextView
+                            android:id="@+id/tvCoordenadas"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Coordenadas pendientes"
+                            android:textColor="@color/pasajes_text_secondary"
+                            android:textSize="11sp"
+                            tools:text="-16.076500, -72.492300" />
+
+                    </LinearLayout>
+
+
+                    <ProgressBar
+                        android:id="@+id/progressDireccion"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginStart="6dp"
+                        android:visibility="gone" />
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ================================================= -->
+            <!-- REFERENCIA -->
+            <!-- ================================================= -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Referencia"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Opcional. Ayuda al conductor a encontrar el lugar con mayor facilidad."
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="12sp" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilReferencia"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Ej. Casa azul frente al colegio"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp"
+                app:boxStrokeColor="@color/pasajes_primary"
+                app:counterEnabled="true"
+                app:counterMaxLength="120">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etReferencia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|start"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLength="120"
+                    android:maxLines="3"
+                    android:minLines="2"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="14dp"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="14sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- ================================================= -->
+            <!-- MENSAJE -->
+            <!-- ================================================= -->
+
+            <TextView
+                android:id="@+id/tvMensajeUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:text="Esta será tu ubicación principal"
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="11sp" />
+
+
+            <!-- ================================================= -->
+            <!-- GUARDAR -->
+            <!-- ================================================= -->
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="14dp">
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGuardarUbicacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="GUARDAR UBICACIÓN"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/pasajes_primary"
+                    app:cornerRadius="17dp"
+                    app:elevation="3dp" />
+
+
+                <ProgressBar
+                    android:id="@+id/progressGuardarUbicacion"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

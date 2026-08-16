@@ -14,28 +14,38 @@
     android:paddingBottom="22dp">
 
 
+    <!-- FOTO DEL USUARIO -->
+
     <com.google.android.material.card.MaterialCardView
         android:layout_width="62dp"
         android:layout_height="62dp"
         app:cardBackgroundColor="#25FFFFFF"
         app:cardCornerRadius="31dp"
-        app:cardElevation="0dp">
+        app:cardElevation="0dp"
+        app:strokeColor="#50FFFFFF"
+        app:strokeWidth="1dp">
 
-        <TextView
+
+        <ImageView
+            android:id="@+id/ivMenuFotoUsuario"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="👤"
-            android:textSize="30sp" />
+            android:contentDescription="Foto del usuario"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_persona_pasajes" />
+
 
     </com.google.android.material.card.MaterialCardView>
 
+
+    <!-- NOMBRE -->
 
     <TextView
         android:id="@+id/tvMenuNombreUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="13dp"
+        android:ellipsize="end"
         android:maxLines="1"
         android:text="Usuario PasajesYa"
         android:textColor="@color/white"
@@ -43,11 +53,14 @@
         android:textStyle="bold" />
 
 
+    <!-- CORREO -->
+
     <TextView
         android:id="@+id/tvMenuCorreoUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:ellipsize="end"
         android:maxLines="1"
         android:text="usuario@correo.com"
         android:textColor="#D9FFFFFF"

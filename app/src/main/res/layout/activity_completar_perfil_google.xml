@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pasajes_background"
+    android:fitsSystemWindows="true"
+    tools:context=".CompletarPerfilGoogleActivity">
+
+
+    <!-- Fondo superior -->
+
+    <View
+        android:id="@+id/fondoSuperior"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:background="@drawable/bg_login_pasajes"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingStart="22dp"
+            android:paddingTop="38dp"
+            android:paddingEnd="22dp"
+            android:paddingBottom="35dp">
+
+
+            <!-- Logo -->
+
+            <FrameLayout
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:background="@drawable/bg_logo_pasajes"
+                android:elevation="8dp"
+                android:padding="18dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="PasajesYa"
+                    android:src="@drawable/ic_pasajes_ticket" />
+
+            </FrameLayout>
+
+
+            <!-- PASAJES YA -->
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pasajes"
+                    android:textColor="@color/white"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ya"
+                    android:textColor="@color/pasajes_secondary_light"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Solo falta un paso"
+                android:textColor="@color/pasajes_text_soft"
+                android:textSize="13sp" />
+
+
+            <!-- TARJETA -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                app:cardBackgroundColor="@color/pasajes_surface"
+                app:cardCornerRadius="26dp"
+                app:cardElevation="9dp"
+                app:strokeColor="@color/pasajes_border"
+                app:strokeWidth="1dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Completa tu perfil"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Tu cuenta de Google ya fue verificada. Necesitamos algunos datos para completar tu registro como pasajero."
+                        android:textColor="@color/pasajes_text_secondary"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="2dp" />
+
+
+                    <!-- Información Google -->
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="22dp"
+                        app:cardBackgroundColor="@color/pasajes_background"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/pasajes_border"
+                        app:strokeWidth="1dp">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Cuenta de Google"
+                                android:textColor="@color/pasajes_text_secondary"
+                                android:textSize="12sp" />
+
+
+                            <TextView
+                                android:id="@+id/tvNombreGoogle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="Nombre del usuario"
+                                android:textColor="@color/pasajes_text_primary"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                tools:text="Víctor Alfonso Orccoapaza López" />
+
+
+                            <TextView
+                                android:id="@+id/tvCorreoGoogle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="3dp"
+                                android:text="correo@gmail.com"
+                                android:textColor="@color/pasajes_primary"
+                                android:textSize="13sp"
+                                tools:text="usuario@gmail.com" />
+
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                    <!-- DNI -->
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilDni"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:hint="DNI"
+                        app:boxBackgroundColor="@color/pasajes_surface"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusBottomEnd="15dp"
+                        app:boxCornerRadiusBottomStart="15dp"
+                        app:boxCornerRadiusTopEnd="15dp"
+                        app:boxCornerRadiusTopStart="15dp"
+                        app:boxStrokeColor="@color/pasajes_primary"
+                        app:boxStrokeWidth="1dp"
+                        app:boxStrokeWidthFocused="2dp"
+                        app:errorEnabled="true"
+                        app:startIconDrawable="@drawable/ic_dni_pasajes"
+                        app:startIconTint="@color/pasajes_primary">
+
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDni"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:maxLength="8"
+                            android:maxLines="1"
+                            android:imeOptions="actionNext"
+                            android:paddingTop="17dp"
+                            android:paddingBottom="17dp"
+                            android:textColor="@color/pasajes_text_primary"
+                            android:textSize="15sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <!-- Celular -->
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilCelular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="11dp"
+                        android:hint="Número de celular"
+                        app:boxBackgroundColor="@color/pasajes_surface"
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusBottomEnd="15dp"
+                        app:boxCornerRadiusBottomStart="15dp"
+                        app:boxCornerRadiusTopEnd="15dp"
+                        app:boxCornerRadiusTopStart="15dp"
+                        app:boxStrokeColor="@color/pasajes_primary"
+                        app:boxStrokeWidth="1dp"
+                        app:boxStrokeWidthFocused="2dp"
+                        app:errorEnabled="true"
+                        app:startIconDrawable="@drawable/ic_phone_pasajes"
+                        app:startIconTint="@color/pasajes_primary">
+
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etCelular"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone"
+                            android:maxLength="9"
+                            android:maxLines="1"
+                            android:imeOptions="actionDone"
+                            android:paddingTop="17dp"
+                            android:paddingBottom="17dp"
+                            android:textColor="@color/pasajes_text_primary"
+                            android:textSize="15sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <!-- Términos -->
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/checkTerminos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Acepto los términos y condiciones de PasajesYa"
+                        android:textColor="@color/pasajes_text_secondary"
+                        android:textSize="13sp"
+                        app:buttonTint="@color/pasajes_primary" />
+
+
+                    <TextView
+                        android:id="@+id/tvErrorTerminos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="Debes aceptar los términos y condiciones"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
+
+                    <!-- Botón completar -->
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="57dp"
+                        android:layout_marginTop="18dp">
+
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCompletar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="COMPLETAR REGISTRO"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="@color/pasajes_primary"
+                            app:cornerRadius="16dp"
+                            app:elevation="3dp" />
+
+
+                        <ProgressBar
+                            android:id="@+id/progressRegistro"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:indeterminate="true"
+                            android:indeterminateTint="@color/white"
+                            android:visibility="gone"
+                            tools:visibility="gone" />
+
+
+                    </FrameLayout>
+
+
+                    <!-- Cancelar -->
+
+                    <TextView
+                        android:id="@+id/tvCancelar"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="7dp"
+                        android:gravity="center"
+                        android:text="Usar otra cuenta"
+                        android:textColor="@color/pasajes_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:text="Tu información será utilizada para gestionar tus reservas"
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="11sp"
+                android:gravity="center" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@ package com.PasajesYa.pasajesya
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -11,6 +12,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.PasajesYa.pasajesya.databinding.ActivitySeleccionarEmpresaBinding
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -110,6 +112,21 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
         cargarNombreUsuario()
 
         escucharEmpresas()
+    }
+
+
+    // =================================================
+    // ON RESUME
+    // =================================================
+
+    override fun onResume() {
+
+        super.onResume()
+
+        if (::binding.isInitialized && auth.currentUser != null) {
+
+            cargarNombreUsuario()
+        }
     }
 
 
@@ -556,27 +573,38 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                 ?: return
 
 
-        // ---------------------------------------------
-        // DATOS INICIALES
-        // ---------------------------------------------
-
         binding.tvSaludoUsuario.text =
             "¡Hola!"
 
 
+        val nombreFirebase =
+            usuarioActual.displayName
+                ?.trim()
+                .orEmpty()
+
+
+        val fotoFirebase =
+            usuarioActual.photoUrl
+                ?.toString()
+                .orEmpty()
+                .trim()
+
+
         configurarCabeceraMenu(
+
             nombre =
-                "Usuario PasajesYa",
+                nombreFirebase.ifBlank {
+                    "Usuario PasajesYa"
+                },
 
             correo =
                 usuarioActual.email
-                    .orEmpty()
+                    .orEmpty(),
+
+            fotoUrl =
+                fotoFirebase
         )
 
-
-        // ---------------------------------------------
-        // LEER PERFIL FIRESTORE
-        // ---------------------------------------------
 
         firestore
             .collection(
@@ -590,17 +618,11 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                     documento ->
 
 
-                if (
-                    !documento.exists()
-                ) {
+                if (!documento.exists()) {
 
                     return@addOnSuccessListener
                 }
 
-
-                // -------------------------------------
-                // NOMBRES
-                // -------------------------------------
 
                 val nombres =
                     documento
@@ -611,10 +633,6 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                         .trim()
 
 
-                // -------------------------------------
-                // APELLIDOS
-                // -------------------------------------
-
                 val apellidos =
                     documento
                         .getString(
@@ -623,10 +641,6 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                         .orEmpty()
                         .trim()
 
-
-                // -------------------------------------
-                // CORREO
-                // -------------------------------------
 
                 val correoFirestore =
                     documento
@@ -638,9 +652,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
                 val correo =
-                    if (
-                        correoFirestore.isNotBlank()
-                    ) {
+                    if (correoFirestore.isNotBlank()) {
 
                         correoFirestore
 
@@ -651,9 +663,28 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                     }
 
 
-                // -------------------------------------
-                // PRIMER NOMBRE
-                // -------------------------------------
+                val fotoFirestore =
+                    documento
+                        .getString(
+                            CAMPO_FOTO_URL
+                        )
+                        .orEmpty()
+                        .trim()
+
+
+                val fotoUrl =
+                    if (fotoFirestore.isNotBlank()) {
+
+                        fotoFirestore
+
+                    } else {
+
+                        usuarioActual.photoUrl
+                            ?.toString()
+                            .orEmpty()
+                            .trim()
+                    }
+
 
                 val primerNombre =
                     nombres
@@ -663,9 +694,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
                 binding.tvSaludoUsuario.text =
-                    if (
-                        primerNombre.isBlank()
-                    ) {
+                    if (primerNombre.isBlank()) {
 
                         "¡Hola!"
 
@@ -674,10 +703,6 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                         "¡Hola, $primerNombre!"
                     }
 
-
-                // -------------------------------------
-                // NOMBRE COMPLETO
-                // -------------------------------------
 
                 val nombreCompleto =
                     listOf(
@@ -690,6 +715,9 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                         .joinToString(
                             " "
                         )
+                        .ifBlank {
+                            nombreFirebase
+                        }
 
 
                 configurarCabeceraMenu(
@@ -698,11 +726,13 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                         nombreCompleto,
 
                     correo =
-                        correo
+                        correo,
+
+                    fotoUrl =
+                        fotoUrl
                 )
             }
             .addOnFailureListener {
-
 
                 binding.tvSaludoUsuario.text =
                     "¡Hola!"
@@ -716,12 +746,11 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
     private fun configurarCabeceraMenu(
         nombre: String,
-        correo: String
+        correo: String,
+        fotoUrl: String
     ) {
 
-        if (
-            binding.navigationView.headerCount <= 0
-        ) {
+        if (binding.navigationView.headerCount <= 0) {
 
             return
         }
@@ -748,20 +777,56 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                 )
 
 
-        tvNombre.text =
-            nombre
-                .ifBlank {
+        val ivFoto =
+            headerView
+                .findViewById<ImageView>(
+                    R.id.ivMenuFotoUsuario
+                )
 
-                    "Usuario PasajesYa"
-                }
+
+        tvNombre.text =
+            nombre.ifBlank {
+                "Usuario PasajesYa"
+            }
 
 
         tvCorreo.text =
-            correo
-                .ifBlank {
+            correo.ifBlank {
+                "PasajesYa"
+            }
 
-                    "PasajesYa"
-                }
+
+        if (fotoUrl.isBlank()) {
+
+            Glide
+                .with(this)
+                .clear(
+                    ivFoto
+                )
+
+            ivFoto
+                .setImageResource(
+                    R.drawable.ic_persona_pasajes
+                )
+
+        } else {
+
+            Glide
+                .with(this)
+                .load(
+                    fotoUrl
+                )
+                .placeholder(
+                    R.drawable.ic_persona_pasajes
+                )
+                .error(
+                    R.drawable.ic_persona_pasajes
+                )
+                .circleCrop()
+                .into(
+                    ivFoto
+                )
+        }
     }
 
 
@@ -1397,6 +1462,10 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
         private const val CAMPO_CORREO =
             "correo"
+
+
+        private const val CAMPO_FOTO_URL =
+            "fotoUrl"
 
 
         private const val CAMPO_ULTIMA_EMPRESA_ID =
