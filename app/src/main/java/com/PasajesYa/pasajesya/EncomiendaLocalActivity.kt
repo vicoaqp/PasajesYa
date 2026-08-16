@@ -3,6 +3,7 @@ package com.PasajesYa.pasajesya
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -15,31 +16,23 @@ import com.google.firebase.storage.FirebaseStorage
 
 class EncomiendaLocalActivity : AppCompatActivity() {
 
-    private lateinit var binding:
-            ActivityEncomiendaLocalBinding
+    private lateinit var binding: ActivityEncomiendaLocalBinding
 
-    private lateinit var auth:
-            FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
-    private lateinit var firestore:
-            FirebaseFirestore
+    private lateinit var firestore: FirebaseFirestore
 
-    private lateinit var storage:
-            FirebaseStorage
+    private lateinit var storage: FirebaseStorage
 
 
-    private var fotoUri:
-            Uri? = null
+    private var fotoUri: Uri? = null
 
 
-    private var usuarioNombre =
-        ""
+    private var usuarioNombre = ""
 
-    private var usuarioCelular =
-        ""
+    private var usuarioCelular = ""
 
-    private var usuarioCorreo =
-        ""
+    private var usuarioCorreo = ""
 
 
     // =================================================
@@ -53,17 +46,14 @@ class EncomiendaLocalActivity : AppCompatActivity() {
 
             if (uri != null) {
 
-                fotoUri =
+                fotoUri = uri
+
+                binding.imgEncomienda.setImageURI(
                     uri
+                )
 
-                binding.imgEncomienda
-                    .setImageURI(
-                        uri
-                    )
-
-                binding.imgEncomienda
-                    .scaleType =
-                    android.widget.ImageView.ScaleType.CENTER_CROP
+                binding.imgEncomienda.scaleType =
+                    ImageView.ScaleType.CENTER_CROP
             }
         }
 
@@ -82,10 +72,9 @@ class EncomiendaLocalActivity : AppCompatActivity() {
 
 
         binding =
-            ActivityEncomiendaLocalBinding
-                .inflate(
-                    layoutInflater
-                )
+            ActivityEncomiendaLocalBinding.inflate(
+                layoutInflater
+            )
 
 
         setContentView(
@@ -182,7 +171,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
 
 
     // =================================================
-    // DATOS USUARIO
+    // DATOS DEL USUARIO
     // =================================================
 
     private fun cargarDatosUsuario() {
@@ -193,8 +182,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
 
 
         usuarioCorreo =
-            usuario.email
-                .orEmpty()
+            usuario.email.orEmpty()
 
 
         firestore
@@ -205,8 +193,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                 usuario.uid
             )
             .get()
-            .addOnSuccessListener {
-                    documento ->
+            .addOnSuccessListener { documento ->
 
 
                 val nombres =
@@ -257,6 +244,14 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                     usuarioCorreo =
                         correoFirestore
                 }
+            }
+            .addOnFailureListener {
+
+                Toast.makeText(
+                    this,
+                    "No se pudieron cargar todos los datos de tu perfil.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 
@@ -331,6 +326,10 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                 .trim()
 
 
+        // ---------------------------------------------
+        // DESCRIPCIÓN
+        // ---------------------------------------------
+
         if (
             descripcion.isBlank()
         ) {
@@ -338,12 +337,18 @@ class EncomiendaLocalActivity : AppCompatActivity() {
             binding.etDescripcion.error =
                 "Describe lo que deseas trasladar"
 
+
             binding.etDescripcion
                 .requestFocus()
+
 
             return
         }
 
+
+        // ---------------------------------------------
+        // CANTIDAD
+        // ---------------------------------------------
 
         if (
             cantidadTexto.isBlank()
@@ -352,8 +357,10 @@ class EncomiendaLocalActivity : AppCompatActivity() {
             binding.etCantidad.error =
                 "Ingresa la cantidad"
 
+
             binding.etCantidad
                 .requestFocus()
+
 
             return
         }
@@ -371,12 +378,18 @@ class EncomiendaLocalActivity : AppCompatActivity() {
             binding.etCantidad.error =
                 "Ingresa una cantidad válida"
 
+
             binding.etCantidad
                 .requestFocus()
+
 
             return
         }
 
+
+        // ---------------------------------------------
+        // RECOJO
+        // ---------------------------------------------
 
         if (
             direccionRecojo.isBlank()
@@ -385,12 +398,18 @@ class EncomiendaLocalActivity : AppCompatActivity() {
             binding.etDireccionRecojo.error =
                 "Ingresa el lugar de recojo"
 
+
             binding.etDireccionRecojo
                 .requestFocus()
+
 
             return
         }
 
+
+        // ---------------------------------------------
+        // ENTREGA
+        // ---------------------------------------------
 
         if (
             direccionEntrega.isBlank()
@@ -399,12 +418,18 @@ class EncomiendaLocalActivity : AppCompatActivity() {
             binding.etDireccionEntrega.error =
                 "Ingresa el lugar de entrega"
 
+
             binding.etDireccionEntrega
                 .requestFocus()
+
 
             return
         }
 
+
+        // ---------------------------------------------
+        // CELULAR DEL USUARIO
+        // ---------------------------------------------
 
         if (
             usuarioCelular.isBlank()
@@ -415,6 +440,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                 "No se pudo obtener tu número de celular. Revisa tu perfil.",
                 Toast.LENGTH_LONG
             ).show()
+
 
             return
         }
@@ -467,50 +493,60 @@ class EncomiendaLocalActivity : AppCompatActivity() {
     // TAMAÑO
     // =================================================
 
-    private fun obtenerTamano():
-            String {
+    private fun obtenerTamano(): String {
 
         return when {
 
-            binding.rbGrande.isChecked ->
+            binding.rbGrande.isChecked -> {
+
                 TAMANO_GRANDE
+            }
 
 
-            binding.rbMediano.isChecked ->
+            binding.rbMediano.isChecked -> {
+
                 TAMANO_MEDIANO
+            }
 
 
-            else ->
+            else -> {
+
                 TAMANO_PEQUENO
+            }
         }
     }
 
 
     // =================================================
-    // TIPO UNIDAD
+    // TIPO DE UNIDAD
     // =================================================
 
-    private fun obtenerTipoUnidad():
-            String {
+    private fun obtenerTipoUnidad(): String {
 
         return when {
 
-            binding.rbMototaxi.isChecked ->
+            binding.rbMototaxi.isChecked -> {
+
                 TIPO_MOTOTAXI
+            }
 
 
-            binding.rbTaxi.isChecked ->
+            binding.rbTaxi.isChecked -> {
+
                 TIPO_TAXI
+            }
 
 
-            else ->
+            else -> {
+
                 TIPO_CUALQUIERA
+            }
         }
     }
 
 
     // =================================================
-    // CONFIRMAR
+    // CONFIRMAR PUBLICACIÓN
     // =================================================
 
     private fun confirmarPublicacion(
@@ -531,16 +567,22 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                 tipoUnidad
             ) {
 
-                TIPO_MOTOTAXI ->
+                TIPO_MOTOTAXI -> {
+
                     "Mototaxi"
+                }
 
 
-                TIPO_TAXI ->
+                TIPO_TAXI -> {
+
                     "Taxi / vehículo"
+                }
 
 
-                else ->
+                else -> {
+
                     "Cualquier unidad"
+                }
             }
 
 
@@ -564,8 +606,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
             )
             .setPositiveButton(
                 "PUBLICAR"
-            ) {
-                    _, _ ->
+            ) { _, _ ->
 
 
                 publicarEncomienda(
@@ -606,7 +647,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
 
 
     // =================================================
-    // PUBLICAR
+    // PUBLICAR ENCOMIENDA
     // =================================================
 
     private fun publicarEncomienda(
@@ -636,6 +677,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
 
+
             return
         }
 
@@ -644,6 +686,10 @@ class EncomiendaLocalActivity : AppCompatActivity() {
             true
         )
 
+
+        // ---------------------------------------------
+        // GENERAR ID PARA LA SOLICITUD
+        // ---------------------------------------------
 
         val referenciaSolicitud =
             firestore
@@ -660,6 +706,10 @@ class EncomiendaLocalActivity : AppCompatActivity() {
         val uri =
             fotoUri
 
+
+        // ---------------------------------------------
+        // SIN FOTO
+        // ---------------------------------------------
 
         if (
             uri == null
@@ -708,6 +758,10 @@ class EncomiendaLocalActivity : AppCompatActivity() {
             return
         }
 
+
+        // ---------------------------------------------
+        // CON FOTO
+        // ---------------------------------------------
 
         subirFoto(
 
@@ -769,11 +823,51 @@ class EncomiendaLocalActivity : AppCompatActivity() {
         tipoUnidad: String
     ) {
 
+        // ---------------------------------------------
+        // USUARIO ACTUAL
+        // ---------------------------------------------
+
+        val usuario =
+            auth.currentUser
+
+
+        if (
+            usuario == null
+        ) {
+
+            mostrarCargando(
+                false
+            )
+
+
+            Toast.makeText(
+                this,
+                "Tu sesión ha finalizado.",
+                Toast.LENGTH_LONG
+            ).show()
+
+
+            return
+        }
+
+
+        // ---------------------------------------------
+        // RUTA DE STORAGE
+        //
+        // solicitudeslocales
+        //   └── UID USUARIO
+        //        └── ID SOLICITUD
+        //             └── foto_encomienda.jpg
+        // ---------------------------------------------
+
         val referenciaFoto =
             storage
                 .reference
                 .child(
                     "solicitudeslocales"
+                )
+                .child(
+                    usuario.uid
                 )
                 .child(
                     solicitudId
@@ -783,12 +877,15 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                 )
 
 
+        // ---------------------------------------------
+        // SUBIR FOTO
+        // ---------------------------------------------
+
         referenciaFoto
             .putFile(
                 uri
             )
-            .continueWithTask {
-                    tarea ->
+            .continueWithTask { tarea ->
 
 
                 if (
@@ -796,17 +893,16 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                 ) {
 
                     tarea.exception
-                        ?.let {
+                        ?.let { error ->
 
-                            throw it
+                            throw error
                         }
                 }
 
 
                 referenciaFoto.downloadUrl
             }
-            .addOnSuccessListener {
-                    downloadUri ->
+            .addOnSuccessListener { downloadUri ->
 
 
                 guardarSolicitudFirestore(
@@ -848,8 +944,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                         tipoUnidad
                 )
             }
-            .addOnFailureListener {
-                    error ->
+            .addOnFailureListener { error ->
 
 
                 mostrarCargando(
@@ -871,7 +966,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
 
 
     // =================================================
-    // GUARDAR EN FIRESTORE
+    // GUARDAR SOLICITUD EN FIRESTORE
     // =================================================
 
     private fun guardarSolicitudFirestore(
@@ -901,6 +996,14 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                 false
             )
 
+
+            Toast.makeText(
+                this,
+                "Tu sesión ha finalizado.",
+                Toast.LENGTH_LONG
+            ).show()
+
+
             return
         }
 
@@ -908,7 +1011,10 @@ class EncomiendaLocalActivity : AppCompatActivity() {
         val datos =
             hashMapOf<String, Any>(
 
+
+                // =========================================
                 // IDENTIFICACION
+                // =========================================
 
                 "id" to
                         solicitudId,
@@ -917,7 +1023,9 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                         TIPO_SOLICITUD_ENCOMIENDA,
 
 
+                // =========================================
                 // CLIENTE
+                // =========================================
 
                 "usuarioId" to
                         usuario.uid,
@@ -932,7 +1040,9 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                         usuarioCorreo,
 
 
+                // =========================================
                 // ENCOMIENDA
+                // =========================================
 
                 "descripcion" to
                         descripcion,
@@ -950,7 +1060,9 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                         fotoUrl,
 
 
+                // =========================================
                 // RECOJO
+                // =========================================
 
                 "direccionRecojo" to
                         direccionRecojo,
@@ -965,7 +1077,9 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                         0.0,
 
 
+                // =========================================
                 // ENTREGA
+                // =========================================
 
                 "direccionEntrega" to
                         direccionEntrega,
@@ -980,19 +1094,25 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                         0.0,
 
 
+                // =========================================
                 // INDICACIONES
+                // =========================================
 
                 "indicaciones" to
                         indicaciones,
 
 
+                // =========================================
                 // UNIDAD SOLICITADA
+                // =========================================
 
                 "tipoUnidad" to
                         tipoUnidad,
 
 
+                // =========================================
                 // ESTADO
+                // =========================================
 
                 "estado" to
                         ESTADO_PUBLICADO,
@@ -1004,7 +1124,9 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                         0,
 
 
+                // =========================================
                 // CONDUCTOR SELECCIONADO
+                // =========================================
 
                 "conductorSeleccionadoId" to
                         "",
@@ -1019,7 +1141,9 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                         0.0,
 
 
+                // =========================================
                 // FECHAS
+                // =========================================
 
                 "fechaPublicacion" to
                         FieldValue.serverTimestamp(),
@@ -1041,6 +1165,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
             )
             .addOnSuccessListener {
 
+
                 mostrarCargando(
                     false
                 )
@@ -1050,8 +1175,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
                     solicitudId
                 )
             }
-            .addOnFailureListener {
-                    error ->
+            .addOnFailureListener { error ->
 
 
                 mostrarCargando(
@@ -1096,8 +1220,7 @@ class EncomiendaLocalActivity : AppCompatActivity() {
             )
             .setPositiveButton(
                 "ACEPTAR"
-            ) {
-                    _, _ ->
+            ) { _, _ ->
 
 
                 finish()
@@ -1133,6 +1256,10 @@ class EncomiendaLocalActivity : AppCompatActivity() {
 
         binding.btnAgregarFoto.isEnabled =
             !mostrar
+
+
+        binding.imgEncomienda.isEnabled =
+            !mostrar
     }
 
 
@@ -1142,53 +1269,43 @@ class EncomiendaLocalActivity : AppCompatActivity() {
 
     companion object {
 
-        private const val
-                COLECCION_USUARIOS =
+        private const val COLECCION_USUARIOS =
             "usuariospasajes"
 
 
-        private const val
-                COLECCION_SOLICITUDES =
+        private const val COLECCION_SOLICITUDES =
             "solicitudeslocales"
 
 
-        private const val
-                TIPO_SOLICITUD_ENCOMIENDA =
+        private const val TIPO_SOLICITUD_ENCOMIENDA =
             "encomienda"
 
 
-        private const val
-                TIPO_MOTOTAXI =
+        private const val TIPO_MOTOTAXI =
             "mototaxi"
 
 
-        private const val
-                TIPO_TAXI =
+        private const val TIPO_TAXI =
             "taxi"
 
 
-        private const val
-                TIPO_CUALQUIERA =
+        private const val TIPO_CUALQUIERA =
             "cualquiera"
 
 
-        private const val
-                TAMANO_PEQUENO =
+        private const val TAMANO_PEQUENO =
             "pequeno"
 
 
-        private const val
-                TAMANO_MEDIANO =
+        private const val TAMANO_MEDIANO =
             "mediano"
 
 
-        private const val
-                TAMANO_GRANDE =
+        private const val TAMANO_GRANDE =
             "grande"
 
 
-        private const val
-                ESTADO_PUBLICADO =
+        private const val ESTADO_PUBLICADO =
             "publicado"
     }
 }

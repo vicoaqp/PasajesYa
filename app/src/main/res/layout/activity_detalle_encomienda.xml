@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pasajes_background"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    tools:context=".DetalleEncomiendaActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <!-- ENCABEZADO -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/pasajes_primary_dark"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="18dp">
+
+
+            <TextView
+                android:id="@+id/btnVolver"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="←"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Detalle de encomienda"
+                    android:textColor="@color/white"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Revisa tu solicitud y las ofertas recibidas"
+                    android:textColor="#D9FFFFFF"
+                    android:textSize="12sp" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <!-- CONTENIDO -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+
+            <!-- ENCOMIENDA -->
+
+            <TextView
+                android:id="@+id/tvDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📦 Caja con ropa"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/tvEstado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="🔵 Buscando ofertas"
+                android:textColor="@color/pasajes_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+
+            <!-- DATOS -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp"
+                app:cardBackgroundColor="@color/pasajes_surface"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/pasajes_border"
+                app:strokeWidth="1dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+
+                    <TextView
+                        android:id="@+id/tvCantidad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Cantidad: 1"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="13sp" />
+
+
+                    <TextView
+                        android:id="@+id/tvPeso"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Peso: 5 kg"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="13sp" />
+
+
+                    <TextView
+                        android:id="@+id/tvTamano"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Tamaño: Mediano"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="13sp" />
+
+
+                    <TextView
+                        android:id="@+id/tvUnidad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Unidad: Cualquier unidad"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="13sp" />
+
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- RUTA -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                android:text="Ruta de la encomienda"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/tvRecojo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="📍 Recojo: Aplao"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/tvReferenciaRecojo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="3dp"
+                android:text="Referencia: Al costado"
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="12sp" />
+
+
+            <TextView
+                android:id="@+id/tvEntrega"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="🏁 Entrega: Huancarqui"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/tvReferenciaEntrega"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="3dp"
+                android:text="Referencia: Casa verde"
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="12sp" />
+
+
+            <!-- CONDUCTOR SELECCIONADO -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardConductorSeleccionado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="#EAF7EF"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="✅ Conductor seleccionado"
+                        android:textColor="@color/pasajes_success"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/tvConductorSeleccionado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Pedro Quispe"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:id="@+id/tvPrecioAceptado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Precio acordado: S/ 10.00"
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- OFERTAS -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="Ofertas recibidas"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/tvResumenOfertas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Esperando ofertas de conductores..."
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="12sp" />
+
+
+            <ProgressBar
+                android:id="@+id/progressOfertas"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:indeterminateTint="@color/pasajes_primary" />
+
+
+            <TextView
+                android:id="@+id/tvSinOfertas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:padding="20dp"
+                android:text="Aún no has recibido ofertas."
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerOfertas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone"
+                tools:listitem="@layout/item_oferta_encomienda" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

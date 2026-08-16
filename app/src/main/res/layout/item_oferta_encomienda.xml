@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    app:cardBackgroundColor="@color/pasajes_surface"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/pasajes_border"
+    app:strokeWidth="1dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <!-- CABECERA -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                app:cardBackgroundColor="#E7F4F9"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
+
+
+                <TextView
+                    android:id="@+id/tvIconoUnidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="🛺"
+                    android:textSize="26sp" />
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/tvNombreConductor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pedro Quispe"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Pedro Quispe" />
+
+
+                <TextView
+                    android:id="@+id/tvUnidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="Mototaxi Bajaj"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="12sp"
+                    tools:text="Mototaxi Bajaj RE" />
+
+
+                <TextView
+                    android:id="@+id/tvPlaca"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Placa: 1234-AB"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="11sp" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <!-- PRECIO -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="#F3F8FB"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="13dp">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Precio ofrecido"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="11sp" />
+
+
+                <TextView
+                    android:id="@+id/tvPrecio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="S/ 10.00"
+                    android:textColor="@color/pasajes_primary"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tvEstadoOferta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PENDIENTE"
+                android:textColor="@color/pasajes_primary"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+
+        <!-- ACEPTAR -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAceptarOferta"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="13dp"
+            android:text="ACEPTAR OFERTA"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/pasajes_primary"
+            app:cornerRadius="14dp" />
+
+
+    </LinearLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

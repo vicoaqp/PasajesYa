@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="7dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="7dp"
+    app:cardBackgroundColor="@color/pasajes_surface"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="3dp"
+    app:strokeColor="@color/pasajes_border"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="17dp">
+
+
+        <!-- CABECERA -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="📦"
+                android:textSize="27sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvDescripcion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:text="Caja con ropa"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    tools:text="Caja con ropa" />
+
+                <TextView
+                    android:id="@+id/tvFecha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="15/08/2026 - 5:30 p. m."
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <!-- ESTADO -->
+
+        <TextView
+            android:id="@+id/tvEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/bg_estado_disponible"
+            android:paddingStart="12dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="7dp"
+            android:text="🔵 BUSCANDO OFERTAS"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+
+        <!-- RUTA -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:text="📍"
+                android:textSize="17sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Recojo"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvRecojo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Mercado de Aplao"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="13sp"
+                    tools:text="Mercado de Aplao" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="↓"
+            android:textColor="@color/pasajes_text_secondary"
+            android:textSize="18sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:text="🏁"
+                android:textSize="17sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Entrega"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvEntrega"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Huancarqui"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="13sp"
+                    tools:text="Huancarqui" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <!-- DATOS INFERIORES -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Unidad"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/tvTipoUnidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="🚘 Cualquier unidad"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="Ofertas"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/tvCantidadOfertas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="end"
+                    android:text="0 recibidas"
+                    android:textColor="@color/pasajes_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <!-- PRECIO ACEPTADO -->
+
+        <LinearLayout
+            android:id="@+id/contenedorPrecioAceptado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="#EAF7EF"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Precio acordado"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvPrecioAceptado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="S/ 15.00"
+                android:textColor="@color/pasajes_success"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <!-- CONDUCTOR -->
+
+        <TextView
+            android:id="@+id/tvConductor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Conductor: Carlos Quispe"
+            android:textColor="@color/pasajes_text_primary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+
+        <!-- BOTÓN -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVerDetalle"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:text="VER DETALLE Y OFERTAS"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/pasajes_primary"
+            app:cornerRadius="14dp" />
+
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

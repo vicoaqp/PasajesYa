@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- ========================================== -->
+    <!-- MI CUENTA -->
+    <!-- ========================================== -->
+
+    <group
+        android:id="@+id/grupoCuenta"
+        android:checkableBehavior="none">
+
+        <item
+            android:id="@+id/menuPerfil"
+            android:title="👤  Mi perfil" />
+
+    </group>
+
+
+    <!-- ========================================== -->
+    <!-- MIS ACTIVIDADES -->
+    <!-- ========================================== -->
+
+    <item android:title="MIS ACTIVIDADES">
+
+        <menu>
+
+            <item
+                android:id="@+id/menuMisPasajes"
+                android:title="🎫  Mis pasajes" />
+
+            <item
+                android:id="@+id/menuMisEncomiendas"
+                android:title="📦  Mis encomiendas" />
+
+            <item
+                android:id="@+id/menuMisCompras"
+                android:title="🛒  Mis compras y mandados" />
+
+        </menu>
+
+    </item>
+
+
+    <!-- ========================================== -->
+    <!-- INFORMACIÓN -->
+    <!-- ========================================== -->
+
+    <item android:title="INFORMACIÓN">
+
+        <menu>
+
+            <item
+                android:id="@+id/menuAyuda"
+                android:title="❓  Ayuda" />
+
+            <item
+                android:id="@+id/menuAcerca"
+                android:title="ℹ️  Acerca de PasajesYa" />
+
+        </menu>
+
+    </item>
+
+
+    <!-- ========================================== -->
+    <!-- CERRAR SESIÓN -->
+    <!-- ========================================== -->
+
+    <group
+        android:id="@+id/grupoSesion"
+        android:checkableBehavior="none">
+
+        <item
+            android:id="@+id/menuCerrarSesion"
+            android:title="🚪  Cerrar sesión" />
+
+    </group>
+
+
+</menu>

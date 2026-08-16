@@ -75,6 +75,8 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
+    implementation("androidx.drawerlayout:drawerlayout:1.2.0")
+
 
 
 }

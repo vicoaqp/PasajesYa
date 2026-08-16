@@ -3,8 +3,11 @@ package com.PasajesYa.pasajesya
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.PasajesYa.pasajesya.databinding.ActivitySeleccionarEmpresaBinding
@@ -102,6 +105,8 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
         configurarEventos()
 
+        configurarBotonAtras()
+
         cargarNombreUsuario()
 
         escucharEmpresas()
@@ -164,7 +169,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
-    // EVENTOS
+    // CONFIGURAR EVENTOS
     // =================================================
 
     private fun configurarEventos() {
@@ -188,13 +193,16 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
         // ---------------------------------------------
-        // CERRAR SESIÓN
+        // ABRIR MENÚ LATERAL
         // ---------------------------------------------
 
-        binding.btnCerrarSesion
+        binding.btnMenu
             .setOnClickListener {
 
-                mostrarDialogoCerrarSesion()
+                binding.drawerLayout
+                    .openDrawer(
+                        GravityCompat.START
+                    )
             }
 
 
@@ -229,6 +237,211 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
                 abrirCompraLocal()
             }
+
+
+        // ---------------------------------------------
+        // OPCIONES DEL MENÚ
+        // ---------------------------------------------
+
+        binding.navigationView
+            .setNavigationItemSelectedListener {
+                    item ->
+
+
+                when (
+                    item.itemId
+                ) {
+
+                    // ---------------------------------
+                    // MI PERFIL
+                    // ---------------------------------
+
+                    R.id.menuPerfil -> {
+
+                        cerrarMenu()
+
+                        abrirPerfil()
+
+                        true
+                    }
+
+
+                    // ---------------------------------
+                    // MIS PASAJES
+                    // ---------------------------------
+
+                    R.id.menuMisPasajes -> {
+
+                        cerrarMenu()
+
+                        Toast.makeText(
+                            this,
+                            "Mis pasajes estará disponible próximamente.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        true
+                    }
+
+
+                    // ---------------------------------
+                    // MIS ENCOMIENDAS
+                    // ---------------------------------
+
+                    R.id.menuMisEncomiendas -> {
+
+                        cerrarMenu()
+
+                        abrirMisEncomiendas()
+
+                        true
+                    }
+
+
+                    // ---------------------------------
+                    // MIS COMPRAS
+                    // ---------------------------------
+
+                    R.id.menuMisCompras -> {
+
+                        cerrarMenu()
+
+                        Toast.makeText(
+                            this,
+                            "Mis compras y mandados estará disponible próximamente.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        true
+                    }
+
+
+                    // ---------------------------------
+                    // AYUDA
+                    // ---------------------------------
+
+                    R.id.menuAyuda -> {
+
+                        cerrarMenu()
+
+                        mostrarAyuda()
+
+                        true
+                    }
+
+
+                    // ---------------------------------
+                    // ACERCA DE
+                    // ---------------------------------
+
+                    R.id.menuAcerca -> {
+
+                        cerrarMenu()
+
+                        mostrarAcercaDe()
+
+                        true
+                    }
+
+
+                    // ---------------------------------
+                    // CERRAR SESIÓN
+                    // ---------------------------------
+
+                    R.id.menuCerrarSesion -> {
+
+                        cerrarMenu()
+
+                        mostrarDialogoCerrarSesion()
+
+                        true
+                    }
+
+
+                    else -> {
+
+                        false
+                    }
+                }
+            }
+    }
+
+
+    // =================================================
+    // BOTÓN ATRÁS
+    // =================================================
+
+    private fun configurarBotonAtras() {
+
+        onBackPressedDispatcher
+            .addCallback(
+                this
+            ) {
+
+
+                if (
+                    binding.drawerLayout
+                        .isDrawerOpen(
+                            GravityCompat.START
+                        )
+                ) {
+
+                    binding.drawerLayout
+                        .closeDrawer(
+                            GravityCompat.START
+                        )
+
+                } else {
+
+                    finish()
+                }
+            }
+    }
+
+
+    // =================================================
+    // CERRAR MENÚ
+    // =================================================
+
+    private fun cerrarMenu() {
+
+        if (
+            binding.drawerLayout
+                .isDrawerOpen(
+                    GravityCompat.START
+                )
+        ) {
+
+            binding.drawerLayout
+                .closeDrawer(
+                    GravityCompat.START
+                )
+        }
+    }
+
+
+    // =================================================
+    // ABRIR PERFIL
+    // =================================================
+
+    private fun abrirPerfil() {
+
+        val intent =
+            Intent(
+                this,
+                PerfilActivity::class.java
+            )
+
+
+        startActivity(
+            intent
+        )
+
+
+        overridePendingTransition(
+            android.R.anim.fade_in,
+            android.R.anim.fade_out
+        )
     }
 
 
@@ -308,7 +521,32 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
-    // CARGAR NOMBRE USUARIO
+    // ABRIR MIS ENCOMIENDAS
+    // =================================================
+
+    private fun abrirMisEncomiendas() {
+
+        val intent =
+            Intent(
+                this,
+                MisEncomiendasActivity::class.java
+            )
+
+
+        startActivity(
+            intent
+        )
+
+
+        overridePendingTransition(
+            android.R.anim.fade_in,
+            android.R.anim.fade_out
+        )
+    }
+
+
+    // =================================================
+    // CARGAR DATOS DEL USUARIO
     // =================================================
 
     private fun cargarNombreUsuario() {
@@ -318,9 +556,27 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                 ?: return
 
 
+        // ---------------------------------------------
+        // DATOS INICIALES
+        // ---------------------------------------------
+
         binding.tvSaludoUsuario.text =
             "¡Hola!"
 
+
+        configurarCabeceraMenu(
+            nombre =
+                "Usuario PasajesYa",
+
+            correo =
+                usuarioActual.email
+                    .orEmpty()
+        )
+
+
+        // ---------------------------------------------
+        // LEER PERFIL FIRESTORE
+        // ---------------------------------------------
 
         firestore
             .collection(
@@ -342,6 +598,10 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                 }
 
 
+                // -------------------------------------
+                // NOMBRES
+                // -------------------------------------
+
                 val nombres =
                     documento
                         .getString(
@@ -350,6 +610,50 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
                         .orEmpty()
                         .trim()
 
+
+                // -------------------------------------
+                // APELLIDOS
+                // -------------------------------------
+
+                val apellidos =
+                    documento
+                        .getString(
+                            CAMPO_APELLIDOS
+                        )
+                        .orEmpty()
+                        .trim()
+
+
+                // -------------------------------------
+                // CORREO
+                // -------------------------------------
+
+                val correoFirestore =
+                    documento
+                        .getString(
+                            CAMPO_CORREO
+                        )
+                        .orEmpty()
+                        .trim()
+
+
+                val correo =
+                    if (
+                        correoFirestore.isNotBlank()
+                    ) {
+
+                        correoFirestore
+
+                    } else {
+
+                        usuarioActual.email
+                            .orEmpty()
+                    }
+
+
+                // -------------------------------------
+                // PRIMER NOMBRE
+                // -------------------------------------
 
                 val primerNombre =
                     nombres
@@ -369,12 +673,95 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
                         "¡Hola, $primerNombre!"
                     }
+
+
+                // -------------------------------------
+                // NOMBRE COMPLETO
+                // -------------------------------------
+
+                val nombreCompleto =
+                    listOf(
+                        nombres,
+                        apellidos
+                    )
+                        .filter {
+                            it.isNotBlank()
+                        }
+                        .joinToString(
+                            " "
+                        )
+
+
+                configurarCabeceraMenu(
+
+                    nombre =
+                        nombreCompleto,
+
+                    correo =
+                        correo
+                )
             }
             .addOnFailureListener {
+
 
                 binding.tvSaludoUsuario.text =
                     "¡Hola!"
             }
+    }
+
+
+    // =================================================
+    // CABECERA DEL MENÚ
+    // =================================================
+
+    private fun configurarCabeceraMenu(
+        nombre: String,
+        correo: String
+    ) {
+
+        if (
+            binding.navigationView.headerCount <= 0
+        ) {
+
+            return
+        }
+
+
+        val headerView =
+            binding.navigationView
+                .getHeaderView(
+                    0
+                )
+
+
+        val tvNombre =
+            headerView
+                .findViewById<TextView>(
+                    R.id.tvMenuNombreUsuario
+                )
+
+
+        val tvCorreo =
+            headerView
+                .findViewById<TextView>(
+                    R.id.tvMenuCorreoUsuario
+                )
+
+
+        tvNombre.text =
+            nombre
+                .ifBlank {
+
+                    "Usuario PasajesYa"
+                }
+
+
+        tvCorreo.text =
+            correo
+                .ifBlank {
+
+                    "PasajesYa"
+                }
     }
 
 
@@ -423,6 +810,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
                         mostrarSinEmpresas(
+
                             mostrar =
                                 true,
 
@@ -479,7 +867,6 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
                                 estadoEmpresa ==
                                         ESTADO_ACTIVO &&
-
                                         empresa
                                             .visibleUsuarios
                             }
@@ -510,6 +897,7 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
                     mostrarSinEmpresas(
+
                         mostrar =
                             empresas.isEmpty(),
 
@@ -758,6 +1146,55 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
 
     // =================================================
+    // AYUDA
+    // =================================================
+
+    private fun mostrarAyuda() {
+
+        MaterialAlertDialogBuilder(
+            this
+        )
+            .setTitle(
+                "Ayuda"
+            )
+            .setMessage(
+                "Desde PasajesYa puedes consultar viajes, " +
+                        "encontrar movilidad local, solicitar encomiendas " +
+                        "y realizar compras o mandados."
+            )
+            .setPositiveButton(
+                "ENTENDIDO",
+                null
+            )
+            .show()
+    }
+
+
+    // =================================================
+    // ACERCA DE PASAJESYA
+    // =================================================
+
+    private fun mostrarAcercaDe() {
+
+        MaterialAlertDialogBuilder(
+            this
+        )
+            .setTitle(
+                "PasajesYa"
+            )
+            .setMessage(
+                "PasajesYa conecta a usuarios con empresas de transporte " +
+                        "y servicios de movilidad local."
+            )
+            .setPositiveButton(
+                "CERRAR",
+                null
+            )
+            .show()
+    }
+
+
+    // =================================================
     // MOSTRAR CARGANDO
     // =================================================
 
@@ -952,6 +1389,14 @@ class SeleccionarEmpresaActivity : AppCompatActivity() {
 
         private const val CAMPO_NOMBRES =
             "nombres"
+
+
+        private const val CAMPO_APELLIDOS =
+            "apellidos"
+
+
+        private const val CAMPO_CORREO =
+            "correo"
 
 
         private const val CAMPO_ULTIMA_EMPRESA_ID =

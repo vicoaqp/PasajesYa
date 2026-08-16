@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pasajes_background"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".MisEncomiendasActivity">
+
+
+    <!-- ENCABEZADO -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pasajes_primary_dark"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="18dp">
+
+
+        <TextView
+            android:id="@+id/btnVolver"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:text="←"
+            android:textColor="@color/white"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mis encomiendas"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Revisa tus solicitudes, estados y ofertas"
+                android:textColor="#D9FFFFFF"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <!-- RESUMEN -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingTop="17dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="6dp">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📦 Tus encomiendas locales"
+            android:textColor="@color/pasajes_text_primary"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/tvResumen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Cargando tus solicitudes..."
+            android:textColor="@color/pasajes_text_secondary"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+
+
+    <!-- CARGANDO -->
+
+    <ProgressBar
+        android:id="@+id/progressEncomiendas"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:indeterminateTint="@color/pasajes_primary" />
+
+
+    <!-- SIN ENCOMIENDAS -->
+
+    <LinearLayout
+        android:id="@+id/contenedorSinEncomiendas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="25dp"
+        android:visibility="gone">
+
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:gravity="center"
+            android:text="📦"
+            android:textSize="46sp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Aún no tienes encomiendas"
+            android:textColor="@color/pasajes_text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="Cuando publiques una encomienda aparecerá aquí junto con su estado y las ofertas recibidas."
+            android:textColor="@color/pasajes_text_secondary"
+            android:textSize="13sp" />
+
+
+    </LinearLayout>
+
+
+    <!-- LISTA -->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerEncomiendas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="22dp"
+        android:visibility="gone"
+        tools:listitem="@layout/item_encomienda" />
+
+
+</LinearLayout>
