@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- ===================================================== -->
-    <!-- INTERNET -->
-    <!-- Firebase, Google Maps, fotos de Google, etc. -->
-    <!-- ===================================================== -->
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- ===================================================== -->
-    <!-- UBICACIÓN -->
-    <!-- Necesario para obtener la ubicación actual -->
-    <!-- ===================================================== -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -20,79 +14,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PasajesYa">
-        <activity
-            android:name=".SeleccionarUbicacionActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+
+
+        <!-- ================================================ -->
+        <!-- GOOGLE MAPS API KEY                              -->
+        <!-- (inyectada por secrets-gradle-plugin)            -->
+        <!-- ================================================ -->
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" /> <!-- ================================================= -->
-        <!-- COMPLETAR PERFIL GOOGLE -->
-        <!-- DNI + celular -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".CompletarPerfilGoogleActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" /> <!-- ================================================= -->
-        <!-- MOVILIDAD LOCAL -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".MovilidadDisponibleActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" /> <!-- ================================================= -->
-        <!-- PERFIL DEL USUARIO -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".PerfilActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" /> <!-- ================================================= -->
-        <!-- MIS RESERVAS -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".MisReservasActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" /> <!-- ================================================= -->
-        <!-- SELECCIÓN DE ASIENTO -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".SeleccionarAsientoActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" /> <!-- ================================================= -->
-        <!-- PANTALLA PRINCIPAL DE EMPRESA -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" /> <!-- ================================================= -->
-        <!-- REGISTRO NORMAL -->
-        <!-- Correo + contraseña -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".RegisterActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" /> <!-- ================================================= -->
-        <!-- SELECCIÓN DE EMPRESA -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".SeleccionarEmpresaActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" /> <!-- ================================================= -->
-        <!-- LOGIN -->
-        <!-- Correo / contraseña / Google -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" /> <!-- ================================================= -->
-        <!-- SPLASH -->
-        <!-- PRIMERA PANTALLA -->
-        <!-- ================================================= -->
+            android:value="${MAPS_API_KEY}" />
+
+
+        <!-- ================================================ -->
+        <!-- SPLASH Y AUTENTICACIÓN                           -->
+        <!-- ================================================ -->
+
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -100,38 +37,137 @@
             android:theme="@style/Theme.PasajesYa.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- ================================================= -->
-        <!-- ENCOMIENDA LOCAL -->
-        <!-- ================================================= -->
+        </activity>
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".CompletarPerfilGoogleActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+
+        <!-- ================================================ -->
+        <!-- PANTALLA PRINCIPAL Y PERFIL                      -->
+        <!-- ================================================ -->
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".PerfilActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+
+        <!-- ================================================ -->
+        <!-- FLUJO DE PASAJES / BUS                          -->
+        <!-- ================================================ -->
+
+        <activity
+            android:name=".SeleccionarEmpresaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".SeleccionarAsientoActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".SeleccionarUbicacionActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".MisReservasActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+
+        <!-- ================================================ -->
+        <!-- ENCOMIENDAS                                      -->
+        <!-- ================================================ -->
+
         <activity
             android:name=".EncomiendaLocalActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" /> <!-- ================================================= -->
-        <!-- COMPRAS Y MANDADOS -->
-        <!-- ================================================= -->
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".DetalleEncomiendaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".MisEncomiendasActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".CompraLocalActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" /> <!-- ================================================= -->
-        <!-- MIS ENCOMIENDAS -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".MisEncomiendasActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" /> <!-- ================================================= -->
-        <!-- DETALLE DE ENCOMIENDA -->
-        <!-- ================================================= -->
-        <activity
-            android:name=".DetalleEncomiendaActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
+
+
+        <!-- ================================================ -->
+        <!-- MOVILIDAD (mototaxi / auto)                     -->
+        <!-- ================================================ -->
+
+        <activity
+            android:name=".MovilidadDisponibleActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".OfertasMovilidadActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".MisSolicitudesMovilidadActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+
+        <!-- ================================================ -->
+        <!-- SERVICIO RÁPIDO (Modo 2)                        -->
+        <!-- ================================================ -->
+
+        <activity
+            android:name=".SolicitudRapidaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+
+        <!-- ================================================ -->
+        <!-- CONDUCTORES DISPONIBLES                          -->
+        <!-- ================================================ -->
+
+        <activity
+            android:name=".ConductoresDisponiblesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+
     </application>
 
 </manifest>

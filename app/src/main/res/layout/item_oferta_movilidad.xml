@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardBackgroundColor="@color/pasajes_surface"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/pasajes_border"
+    app:strokeWidth="1dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <!-- ================================================= -->
+        <!-- CONDUCTOR -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                app:cardCornerRadius="29dp"
+                app:cardElevation="0dp">
+
+
+                <ImageView
+                    android:id="@+id/ivFotoConductor"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Foto del conductor"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_persona_pasajes" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/tvNombreConductor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Carlos Flores"
+                    android:textColor="@color/pasajes_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Carlos Flores" />
+
+
+                <TextView
+                    android:id="@+id/tvVehiculo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="Toyota Yaris"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="12sp"
+                    tools:text="Toyota Yaris • Blanco" />
+
+
+                <TextView
+                    android:id="@+id/tvPlaca"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="ABC-123"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    tools:text="ABC-123" />
+
+            </LinearLayout>
+
+
+            <!-- PRECIO -->
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OFERTA"
+                    android:textColor="@color/pasajes_text_secondary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/tvPrecio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="S/ 8.00"
+                    android:textColor="@color/pasajes_primary"
+                    android:textSize="23sp"
+                    android:textStyle="bold"
+                    tools:text="S/ 8.00" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <!-- ================================================= -->
+        <!-- MENSAJE DEL CONDUCTOR -->
+        <!-- ================================================= -->
+
+        <TextView
+            android:id="@+id/tvMensajeConductor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:background="#F5F7FA"
+            android:padding="10dp"
+            android:text="Estoy cerca, puedo recogerlo en unos minutos."
+            android:textColor="@color/pasajes_text_secondary"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
+        <!-- ================================================= -->
+        <!-- BOTÓN ACEPTAR -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAceptarOferta"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="14dp"
+            android:text="ACEPTAR OFERTA"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/pasajes_primary"
+            app:cornerRadius="15dp" />
+
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

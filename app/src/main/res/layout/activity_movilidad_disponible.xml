@@ -1,298 +1,638 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pasajes_background"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
     tools:context=".MovilidadDisponibleActivity">
 
-    <!-- ENCABEZADO -->
+
+    <!-- ===================================================== -->
+    <!-- CABECERA -->
+    <!-- ===================================================== -->
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/headerMovilidad"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/pasajes_primary_dark"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="18dp"
-        android:paddingTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="14dp"
         android:paddingEnd="18dp"
-        android:paddingBottom="16dp">
+        android:paddingBottom="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/btn_volver"
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVolver"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:gravity="center"
+            android:minWidth="0dp"
             android:text="←"
             android:textColor="@color/white"
-            android:textSize="27sp"
-            android:textStyle="bold" />
+            android:textSize="22sp"
+            app:backgroundTint="#25FFFFFF"
+            app:cornerRadius="15dp"
+            app:strokeColor="#60FFFFFF"
+            app:strokeWidth="1dp" />
+
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:orientation="vertical">
+
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Movilidad disponible"
+                android:text="Movilidad Local"
                 android:textColor="@color/white"
                 android:textSize="21sp"
                 android:textStyle="bold" />
+
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Taxi y mototaxi en servicio"
+                android:text="Solicita precios y elige la mejor oferta"
                 android:textColor="#D9FFFFFF"
                 android:textSize="12sp" />
 
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-    <!-- CONTENIDO SUPERIOR -->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="16dp"
-        android:paddingTop="18dp"
-        android:paddingEnd="16dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Unidades disponibles ahora"
-            android:textColor="@color/pasajes_text_primary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="El conductor ha indicado que se encuentra disponible para atender pasajeros."
-            android:textColor="@color/pasajes_text_secondary"
-            android:textSize="13sp" />
-
-
-        <!-- CONTADORES -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="17dp"
-            android:orientation="horizontal">
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/pasajes_surface"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="1dp"
-                app:strokeColor="@color/pasajes_border"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="15dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🚕 TAXIS"
-                        android:textColor="@color/pasajes_text_secondary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_cantidad_taxis"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="0"
-                        android:textColor="@color/pasajes_primary"
-                        android:textSize="28sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                app:cardBackgroundColor="@color/pasajes_surface"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="1dp"
-                app:strokeColor="@color/pasajes_border"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="15dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🛺 MOTOTAXIS"
-                        android:textColor="@color/pasajes_text_secondary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_cantidad_mototaxis"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="0"
-                        android:textColor="@color/pasajes_secondary"
-                        android:textSize="28sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-        </LinearLayout>
-
-
-        <!-- FILTROS -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_todos"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:text="TODOS"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                app:cornerRadius="14dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_taxis"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:text="🚕 TAXIS"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                app:cornerRadius="14dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_mototaxis"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="4dp"
-                android:layout_weight="1"
-                android:text="MOTOTAXIS"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                app:cornerRadius="14dp" />
 
         </LinearLayout>
 
     </LinearLayout>
 
 
-    <!-- CARGANDO -->
+    <!-- ===================================================== -->
+    <!-- CONTENIDO -->
+    <!-- ===================================================== -->
 
-    <ProgressBar
-        android:id="@+id/progress_movilidad"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="28dp"
-        android:indeterminateTint="@color/pasajes_primary" />
-
-
-    <!-- SIN UNIDADES -->
-
-    <LinearLayout
-        android:id="@+id/contenedor_sin_unidades"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="25dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:alpha="0.55"
-            android:contentDescription="Sin unidades"
-            android:src="@drawable/ic_empresa_transporte" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="No hay unidades disponibles"
-            android:textColor="@color/pasajes_text_primary"
-            android:textSize="17sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_mensaje_sin_unidades"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:gravity="center"
-            android:text="En este momento no hay conductores disponibles."
-            android:textColor="@color/pasajes_text_secondary"
-            android:textSize="13sp" />
-
-    </LinearLayout>
-
-
-    <!-- LISTA -->
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_movilidad"
-        android:layout_width="match_parent"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollMovilidad"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="20dp"
-        android:visibility="gone"
-        tools:listitem="@layout/item_conductor_movilidad" />
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerMovilidad">
 
-</LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="18dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="32dp">
+
+
+            <!-- ================================================= -->
+            <!-- TÍTULO -->
+            <!-- ================================================= -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="¿A dónde quieres ir?"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="23sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Indica tu punto de partida y destino."
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="13sp" />
+
+
+            <!-- ================================================= -->
+            <!-- RUTA -->
+            <!-- ================================================= -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="@color/pasajes_surface"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/pasajes_border"
+                app:strokeWidth="1dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="17dp">
+
+
+                    <!-- ORIGEN -->
+
+                    <LinearLayout
+                        android:id="@+id/cardOrigen"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="12dp">
+
+
+                        <TextView
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:gravity="center"
+                            android:text="🟢"
+                            android:textSize="20sp" />
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ORIGEN"
+                                android:textColor="@color/pasajes_text_secondary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+
+                            <TextView
+                                android:id="@+id/tvOrigen"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="3dp"
+                                android:text="Cargando ubicación de casa..."
+                                android:textColor="@color/pasajes_text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="CAMBIAR"
+                            android:textColor="@color/pasajes_primary"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+
+                    </LinearLayout>
+
+
+                    <!-- LÍNEA -->
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="50dp"
+                        android:background="@color/pasajes_border" />
+
+
+                    <!-- DESTINO -->
+
+                    <LinearLayout
+                        android:id="@+id/cardDestino"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="8dp">
+
+
+                        <TextView
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:gravity="center"
+                            android:text="🔴"
+                            android:textSize="20sp" />
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="DESTINO"
+                                android:textColor="@color/pasajes_text_secondary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+
+                            <TextView
+                                android:id="@+id/tvDestino"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="3dp"
+                                android:text="Selecciona a dónde quieres ir"
+                                android:textColor="@color/pasajes_text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ELEGIR"
+                            android:textColor="@color/pasajes_primary"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ================================================= -->
+            <!-- TIPO DE MOVILIDAD -->
+            <!-- ================================================= -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="¿Qué movilidad necesitas?"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+
+                <!-- TAXI -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardTaxi"
+                    android:layout_width="0dp"
+                    android:layout_height="125dp"
+                    android:layout_marginEnd="7dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/pasajes_surface"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="1dp"
+                    app:strokeColor="@color/pasajes_primary"
+                    app:strokeWidth="2dp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🚕"
+                            android:textSize="38sp" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Taxi"
+                            android:textColor="@color/pasajes_text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+
+                        <TextView
+                            android:id="@+id/tvTaxiSeleccionado"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="Seleccionado"
+                            android:textColor="@color/pasajes_primary"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!-- MOTOTAXI -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardMototaxi"
+                    android:layout_width="0dp"
+                    android:layout_height="125dp"
+                    android:layout_marginStart="7dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/pasajes_surface"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="1dp"
+                    app:strokeColor="@color/pasajes_border"
+                    app:strokeWidth="1dp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🛺"
+                            android:textSize="38sp" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Mototaxi"
+                            android:textColor="@color/pasajes_text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+
+                        <TextView
+                            android:id="@+id/tvMototaxiSeleccionado"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="Tocar para elegir"
+                            android:textColor="@color/pasajes_text_secondary"
+                            android:textSize="11sp" />
+
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+            </LinearLayout>
+
+
+            <!-- ================================================= -->
+            <!-- REFERENCIA -->
+            <!-- ================================================= -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Indicaciones para el conductor"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Opcional. Por ejemplo: estoy frente a la municipalidad."
+                android:textColor="@color/pasajes_text_secondary"
+                android:textSize="12sp" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilReferencia"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Escribe una referencia"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp"
+                app:boxStrokeColor="@color/pasajes_primary"
+                app:counterEnabled="true"
+                app:counterMaxLength="150">
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etReferencia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|start"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLength="150"
+                    android:maxLines="3"
+                    android:minLines="2" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- ================================================= -->
+            <!-- EXPLICACIÓN -->
+            <!-- ================================================= -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                app:cardBackgroundColor="#EEF6FF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+
+                    <TextView
+                        android:layout_width="34dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="💰"
+                        android:textSize="22sp" />
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="Los conductores disponibles te enviarán sus precios. Tú decides qué oferta aceptar."
+                        android:textColor="@color/pasajes_text_primary"
+                        android:textSize="12sp" />
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ================================================= -->
+            <!-- SOLICITAR -->
+            <!-- ================================================= -->
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginTop="20dp">
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSolicitarOfertas"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="SOLICITAR OFERTAS"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/pasajes_primary"
+                    app:cornerRadius="17dp"
+                    app:elevation="3dp" />
+
+
+                <ProgressBar
+                    android:id="@+id/progressSolicitar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
+
+
+            </FrameLayout>
+
+
+            <!-- ============================================== -->
+            <!-- SERVICIO RÁPIDO (Modo 2) -->
+            <!-- ============================================== -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnServicioRapido"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="⚡ SERVICIO RÁPIDO"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:backgroundTint="#E67500"
+                app:cornerRadius="17dp"
+                app:elevation="3dp"
+                app:strokeColor="#FFB347"
+                app:strokeWidth="1dp" />
+
+
+            <!-- ============================================== -->
+            <!-- VER CONDUCTORES DISPONIBLES -->
+            <!-- ============================================== -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerConductores"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="🧑 VER CONDUCTORES DISPONIBLES"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/pasajes_surface"
+                app:cornerRadius="17dp"
+                app:elevation="2dp"
+                app:strokeColor="@color/pasajes_border"
+                app:strokeWidth="1dp" />
+
+
+            <!-- ============================================== -->
+            <!-- MIS PEDIDOS (historial) -->
+            <!-- ============================================== -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerMisPedidos"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="📋 VER MIS PEDIDOS"
+                android:textColor="@color/pasajes_text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/pasajes_surface"
+                app:cornerRadius="17dp"
+                app:elevation="2dp"
+                app:strokeColor="@color/pasajes_border"
+                app:strokeWidth="1dp" />
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

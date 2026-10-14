@@ -31,11 +31,13 @@
 
             <item
                 android:id="@+id/menuMisEncomiendas"
-                android:title="📦  Mis encomiendas" />
+                android:title="📦  Mis encomiendas"
+                android:visible="false" />
 
             <item
                 android:id="@+id/menuMisCompras"
-                android:title="🛒  Mis compras y mandados" />
+                android:title="🛒  Mis compras y mandados"
+                android:visible="false" />
 
         </menu>
 

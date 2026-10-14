@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.PasajesYa.pasajesya.databinding.ActivitySeleccionarUbicacionBinding
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -26,10 +25,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Locale
+import java.util.concurrent.Executors
 
 
 class SeleccionarUbicacionActivity :
@@ -45,7 +42,7 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // GOOGLE MAPS
+    // GOOGLE MAP
     // =========================================================
 
     private var googleMap: GoogleMap? = null
@@ -63,7 +60,7 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // UBICACIÓN DEL CELULAR
+    // GPS
     // =========================================================
 
     private val fusedLocationClient by lazy {
@@ -72,21 +69,34 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // CASA O TRABAJO
+    // GEOCODER
+    // =========================================================
+
+    private val geocoderExecutor =
+        Executors.newSingleThreadExecutor()
+
+
+    private var numeroSolicitudDireccion = 0
+
+    private var direccionSeleccionada = ""
+
+
+    // =========================================================
+    // TIPO DE UBICACIÓN
+    // CASA
+    // TRABAJO
+    // ORIGEN
+    // DESTINO
     // =========================================================
 
     private var tipoUbicacion = TIPO_CASA
 
+
+    // =========================================================
+    // DESDE DÓNDE SE ABRIÓ
+    // =========================================================
+
     private var origenUbicacion = ORIGEN_PERFIL
-
-
-    // =========================================================
-    // DIRECCIÓN
-    // =========================================================
-
-    private var direccionSeleccionada = ""
-
-    private var numeroSolicitudDireccion = 0
 
 
     // =========================================================
@@ -132,30 +142,40 @@ class SeleccionarUbicacionActivity :
 
 
         binding =
-            ActivitySeleccionarUbicacionBinding.inflate(layoutInflater)
+            ActivitySeleccionarUbicacionBinding.inflate(
+                layoutInflater
+            )
 
         setContentView(binding.root)
 
 
         // Firebase
 
-        auth = FirebaseAuth.getInstance()
+        auth =
+            FirebaseAuth.getInstance()
 
-        firestore = FirebaseFirestore.getInstance()
+        firestore =
+            FirebaseFirestore.getInstance()
 
 
-        // Leer datos recibidos
+        // Tipo recibido
 
         tipoUbicacion =
-            intent.getStringExtra(EXTRA_TIPO_UBICACION)
-                ?.uppercase()
+            intent
+                .getStringExtra(EXTRA_TIPO_UBICACION)
+                ?.uppercase(Locale.ROOT)
                 ?: TIPO_CASA
 
 
+        // Origen de la pantalla
+
         origenUbicacion =
-            intent.getStringExtra(EXTRA_ORIGEN_UBICACION)
+            intent
+                .getStringExtra(EXTRA_ORIGEN_UBICACION)
                 ?: ORIGEN_PERFIL
 
+
+        validarTipoUbicacion()
 
         configurarPantalla()
 
@@ -166,34 +186,132 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
+    // VALIDAR TIPO
+    // =========================================================
+
+    private fun validarTipoUbicacion() {
+
+        tipoUbicacion =
+
+            when (tipoUbicacion) {
+
+                TIPO_CASA ->
+                    TIPO_CASA
+
+                TIPO_TRABAJO ->
+                    TIPO_TRABAJO
+
+                TIPO_ORIGEN ->
+                    TIPO_ORIGEN
+
+                TIPO_DESTINO ->
+                    TIPO_DESTINO
+
+                else ->
+                    TIPO_CASA
+            }
+    }
+
+
+    // =========================================================
     // CONFIGURAR PANTALLA
     // =========================================================
 
     private fun configurarPantalla() {
 
-        if (tipoUbicacion == TIPO_TRABAJO) {
+        when (tipoUbicacion) {
 
-            binding.tvTituloUbicacion.text =
-                "Ubicación de mi trabajo"
 
-            binding.tvSubtituloUbicacion.text =
-                "Mueve el mapa hasta ubicar tu centro de trabajo"
+            // -------------------------------------------------
+            // CASA
+            // -------------------------------------------------
 
-            binding.tvMensajeUbicacion.text =
-                "Esta ubicación es opcional y se guardará en tu perfil"
+            TIPO_CASA -> {
 
-        } else {
+                binding.tvTituloUbicacion.text =
+                    "Ubicación de mi casa"
 
-            tipoUbicacion = TIPO_CASA
+                binding.tvSubtituloUbicacion.text =
+                    "Mueve el mapa hasta ubicar tu casa"
 
-            binding.tvTituloUbicacion.text =
-                "Ubicación de mi casa"
+                binding.tvMensajeUbicacion.text =
+                    "Esta será tu ubicación principal"
 
-            binding.tvSubtituloUbicacion.text =
-                "Mueve el mapa y coloca el punto donde corresponde"
+                binding.tilReferencia.hint =
+                    "Ej. Casa azul frente al colegio"
 
-            binding.tvMensajeUbicacion.text =
-                "Esta será tu ubicación principal"
+                binding.btnGuardarUbicacion.text =
+                    "GUARDAR UBICACIÓN"
+            }
+
+
+            // -------------------------------------------------
+            // TRABAJO
+            // -------------------------------------------------
+
+            TIPO_TRABAJO -> {
+
+                binding.tvTituloUbicacion.text =
+                    "Ubicación de mi trabajo"
+
+                binding.tvSubtituloUbicacion.text =
+                    "Mueve el mapa hasta ubicar tu centro de trabajo"
+
+                binding.tvMensajeUbicacion.text =
+                    "Esta ubicación es opcional"
+
+                binding.tilReferencia.hint =
+                    "Ej. Oficina al costado del banco"
+
+                binding.btnGuardarUbicacion.text =
+                    "GUARDAR UBICACIÓN"
+            }
+
+
+            // -------------------------------------------------
+            // ORIGEN
+            // -------------------------------------------------
+
+            TIPO_ORIGEN -> {
+
+                binding.tvTituloUbicacion.text =
+                    "Punto de partida"
+
+                binding.tvSubtituloUbicacion.text =
+                    "Selecciona dónde deseas que te recojan"
+
+                binding.tvMensajeUbicacion.text =
+                    "Este punto solo se utilizará para este viaje"
+
+                binding.tilReferencia.hint =
+                    "Ej. Estoy frente a la municipalidad"
+
+                binding.btnGuardarUbicacion.text =
+                    "USAR COMO ORIGEN"
+            }
+
+
+            // -------------------------------------------------
+            // DESTINO
+            // -------------------------------------------------
+
+            TIPO_DESTINO -> {
+
+                binding.tvTituloUbicacion.text =
+                    "Seleccionar destino"
+
+                binding.tvSubtituloUbicacion.text =
+                    "Mueve el mapa hasta el lugar donde quieres ir"
+
+                binding.tvMensajeUbicacion.text =
+                    "Este destino solo se utilizará para este viaje"
+
+                binding.tilReferencia.hint =
+                    "Referencia del destino (opcional)"
+
+                binding.btnGuardarUbicacion.text =
+                    "USAR COMO DESTINO"
+            }
         }
     }
 
@@ -204,11 +322,16 @@ class SeleccionarUbicacionActivity :
 
     private fun configurarEventos() {
 
+
+        // Volver
+
         binding.btnVolverUbicacion.setOnClickListener {
 
             finish()
         }
 
+
+        // GPS
 
         binding.btnMiUbicacion.setOnClickListener {
 
@@ -216,20 +339,23 @@ class SeleccionarUbicacionActivity :
         }
 
 
+        // Guardar / seleccionar
+
         binding.btnGuardarUbicacion.setOnClickListener {
 
-            guardarUbicacion()
+            procesarUbicacionSeleccionada()
         }
     }
 
 
     // =========================================================
-    // INICIAR GOOGLE MAP
+    // INICIAR MAPA
     // =========================================================
 
     private fun iniciarMapa() {
 
-        binding.progressMapa.visibility = View.VISIBLE
+        binding.progressMapa.visibility =
+            View.VISIBLE
 
 
         val mapFragment =
@@ -240,7 +366,8 @@ class SeleccionarUbicacionActivity :
 
         if (mapFragment == null) {
 
-            binding.progressMapa.visibility = View.GONE
+            binding.progressMapa.visibility =
+                View.GONE
 
             Toast.makeText(
                 this,
@@ -264,45 +391,95 @@ class SeleccionarUbicacionActivity :
 
         googleMap = map
 
-        binding.progressMapa.visibility = View.GONE
+
+        binding.progressMapa.visibility =
+            View.GONE
 
 
-        // Configuración del mapa
+        // Controles
 
-        map.uiSettings.isCompassEnabled = true
+        map.uiSettings.isCompassEnabled =
+            true
 
-        map.uiSettings.isZoomControlsEnabled = false
+        map.uiSettings.isZoomControlsEnabled =
+            false
 
-        map.uiSettings.isMapToolbarEnabled = false
+        map.uiSettings.isMapToolbarEnabled =
+            false
+
+        map.uiSettings.isRotateGesturesEnabled =
+            true
+
+        map.uiSettings.isTiltGesturesEnabled =
+            true
+
+        map.uiSettings.isZoomGesturesEnabled =
+            true
+
+        map.uiSettings.isScrollGesturesEnabled =
+            true
 
 
         habilitarCapaMiUbicacion()
 
 
-        // Cuando el usuario deja de mover el mapa
+        // -----------------------------------------------------
+        // CUANDO EL USUARIO TERMINA DE MOVER EL MAPA
+        // -----------------------------------------------------
 
         map.setOnCameraIdleListener {
 
             val centro =
                 map.cameraPosition.target
 
-            ubicacionSeleccionada = centro
 
-            mostrarCoordenadas(centro)
+            ubicacionSeleccionada =
+                centro
 
-            obtenerDireccion(centro)
+
+            mostrarCoordenadas(
+                centro
+            )
+
+
+            obtenerDireccion(
+                centro
+            )
         }
 
 
-        // Primero buscamos si el usuario ya tenía
-        // una ubicación guardada.
+        // Punto inicial
 
-        cargarUbicacionGuardada()
+        cargarPuntoInicial()
     }
 
 
     // =========================================================
-    // CARGAR UBICACIÓN YA GUARDADA
+    // PUNTO INICIAL
+    // =========================================================
+
+    private fun cargarPuntoInicial() {
+
+        when (tipoUbicacion) {
+
+            TIPO_CASA,
+            TIPO_TRABAJO -> {
+
+                cargarUbicacionGuardada()
+            }
+
+
+            TIPO_ORIGEN,
+            TIPO_DESTINO -> {
+
+                cargarPuntoInicialTemporal()
+            }
+        }
+    }
+
+
+    // =========================================================
+    // CASA / TRABAJO YA GUARDADOS
     // =========================================================
 
     private fun cargarUbicacionGuardada() {
@@ -345,34 +522,40 @@ class SeleccionarUbicacionActivity :
 
 
                 val mapaUbicacion =
-                    documento.get(campoUbicacion) as? Map<*, *>
+                    documento.get(campoUbicacion)
+                            as? Map<*, *>
 
 
                 val latitud =
-                    (mapaUbicacion?.get(CAMPO_LATITUD) as? Number)
+                    (mapaUbicacion
+                        ?.get(CAMPO_LATITUD) as? Number)
                         ?.toDouble()
 
 
                 val longitud =
-                    (mapaUbicacion?.get(CAMPO_LONGITUD) as? Number)
+                    (mapaUbicacion
+                        ?.get(CAMPO_LONGITUD) as? Number)
                         ?.toDouble()
 
 
                 val direccion =
-                    mapaUbicacion?.get(CAMPO_DIRECCION)
+                    mapaUbicacion
+                        ?.get(CAMPO_DIRECCION)
                         ?.toString()
                         .orEmpty()
 
 
                 val referencia =
-                    mapaUbicacion?.get(CAMPO_REFERENCIA)
+                    mapaUbicacion
+                        ?.get(CAMPO_REFERENCIA)
                         ?.toString()
                         .orEmpty()
 
 
-                // Si ya hay ubicación guardada
-
-                if (latitud != null && longitud != null) {
+                if (
+                    latitud != null &&
+                    longitud != null
+                ) {
 
                     val posicion =
                         LatLng(
@@ -381,15 +564,19 @@ class SeleccionarUbicacionActivity :
                         )
 
 
-                    ubicacionSeleccionada = posicion
+                    ubicacionSeleccionada =
+                        posicion
+
+
+                    direccionSeleccionada =
+                        direccion
 
 
                     if (direccion.isNotBlank()) {
 
-                        direccionSeleccionada =
-                            direccion
-
-                        binding.tvDireccionSeleccionada.text =
+                        binding
+                            .tvDireccionSeleccionada
+                            .text =
                             direccion
                     }
 
@@ -411,50 +598,237 @@ class SeleccionarUbicacionActivity :
                         )
                     )
 
+
                 } else {
 
-                    // Si aún no tiene casa/trabajo guardado,
-                    // mostramos Aplao como zona inicial.
-                    //
-                    // El usuario puede mover el mapa o tocar
-                    // "USAR MI UBICACIÓN ACTUAL".
-
-                    val aplao =
-                        LatLng(
-                            -16.0765,
-                            -72.4923
-                        )
-
-
-                    googleMap?.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            aplao,
-                            ZOOM_INICIAL
-                        )
-                    )
+                    centrarEnAplao()
                 }
             }
             .addOnFailureListener {
 
-                val aplao =
-                    LatLng(
-                        -16.0765,
-                        -72.4923
-                    )
-
-
-                googleMap?.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        aplao,
-                        ZOOM_INICIAL
-                    )
-                )
+                centrarEnAplao()
             }
     }
 
 
     // =========================================================
-    // VERIFICAR PERMISO
+    // PUNTO INICIAL PARA ORIGEN / DESTINO
+    // =========================================================
+
+    private fun cargarPuntoInicialTemporal() {
+
+
+        // -----------------------------------------------------
+        // PRIMERO REVISAMOS SI MovilidadDisponibleActivity
+        // NOS ENVIÓ UN PUNTO INICIAL
+        // -----------------------------------------------------
+
+        val latitudInicial =
+            intent.getDoubleExtra(
+                EXTRA_LATITUD_INICIAL,
+                Double.NaN
+            )
+
+
+        val longitudInicial =
+            intent.getDoubleExtra(
+                EXTRA_LONGITUD_INICIAL,
+                Double.NaN
+            )
+
+
+        val direccionInicial =
+            intent.getStringExtra(
+                EXTRA_DIRECCION_INICIAL
+            ).orEmpty()
+
+
+        if (
+            !latitudInicial.isNaN() &&
+            !longitudInicial.isNaN()
+        ) {
+
+            val posicion =
+                LatLng(
+                    latitudInicial,
+                    longitudInicial
+                )
+
+
+            ubicacionSeleccionada =
+                posicion
+
+
+            if (direccionInicial.isNotBlank()) {
+
+                direccionSeleccionada =
+                    direccionInicial
+
+                binding
+                    .tvDireccionSeleccionada
+                    .text =
+                    direccionInicial
+            }
+
+
+            mostrarCoordenadas(
+                posicion
+            )
+
+
+            googleMap?.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    posicion,
+                    ZOOM_UBICACION
+                )
+            )
+
+
+            return
+        }
+
+
+        // -----------------------------------------------------
+        // SI NO RECIBIMOS PUNTO:
+        // USAMOS CASA COMO REFERENCIA INICIAL
+        // -----------------------------------------------------
+
+        cargarCasaComoPuntoInicial()
+    }
+
+
+    // =========================================================
+    // CASA COMO CENTRO INICIAL
+    // PARA MOVILIDAD
+    // =========================================================
+
+    private fun cargarCasaComoPuntoInicial() {
+
+        val usuario =
+            auth.currentUser
+
+
+        if (usuario == null) {
+
+            centrarEnAplao()
+
+            return
+        }
+
+
+        firestore
+            .collection(COLECCION_USUARIOS)
+            .document(usuario.uid)
+            .get()
+            .addOnSuccessListener { documento ->
+
+
+                val ubicacionCasa =
+                    documento.get(
+                        CAMPO_UBICACION_CASA
+                    ) as? Map<*, *>
+
+
+                val latitud =
+                    (ubicacionCasa
+                        ?.get(CAMPO_LATITUD) as? Number)
+                        ?.toDouble()
+
+
+                val longitud =
+                    (ubicacionCasa
+                        ?.get(CAMPO_LONGITUD) as? Number)
+                        ?.toDouble()
+
+
+                val direccion =
+                    ubicacionCasa
+                        ?.get(CAMPO_DIRECCION)
+                        ?.toString()
+                        .orEmpty()
+
+
+                if (
+                    latitud != null &&
+                    longitud != null
+                ) {
+
+                    val posicion =
+                        LatLng(
+                            latitud,
+                            longitud
+                        )
+
+
+                    ubicacionSeleccionada =
+                        posicion
+
+
+                    if (direccion.isNotBlank()) {
+
+                        direccionSeleccionada =
+                            direccion
+
+                        binding
+                            .tvDireccionSeleccionada
+                            .text =
+                            direccion
+                    }
+
+
+                    mostrarCoordenadas(
+                        posicion
+                    )
+
+
+                    googleMap?.moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            posicion,
+                            ZOOM_UBICACION
+                        )
+                    )
+
+
+                } else {
+
+                    centrarEnAplao()
+                }
+            }
+            .addOnFailureListener {
+
+                centrarEnAplao()
+            }
+    }
+
+
+    // =========================================================
+    // APLAO COMO RESPALDO
+    // =========================================================
+
+    private fun centrarEnAplao() {
+
+        val aplao =
+            LatLng(
+                LATITUD_APLAO,
+                LONGITUD_APLAO
+            )
+
+
+        ubicacionSeleccionada =
+            aplao
+
+
+        googleMap?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                aplao,
+                ZOOM_INICIAL
+            )
+        )
+    }
+
+
+    // =========================================================
+    // VERIFICAR PERMISO GPS
     // =========================================================
 
     private fun verificarPermisoUbicacion() {
@@ -473,7 +847,10 @@ class SeleccionarUbicacionActivity :
             ) == PackageManager.PERMISSION_GRANTED
 
 
-        if (permisoFino || permisoAproximado) {
+        if (
+            permisoFino ||
+            permisoAproximado
+        ) {
 
             habilitarCapaMiUbicacion()
 
@@ -492,7 +869,7 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // MOSTRAR PUNTO AZUL DE UBICACIÓN
+    // CAPA AZUL DE GOOGLE MAPS
     // =========================================================
 
     private fun habilitarCapaMiUbicacion() {
@@ -511,7 +888,10 @@ class SeleccionarUbicacionActivity :
             ) == PackageManager.PERMISSION_GRANTED
 
 
-        if (!permisoFino && !permisoAproximado) {
+        if (
+            !permisoFino &&
+            !permisoAproximado
+        ) {
 
             return
         }
@@ -519,7 +899,8 @@ class SeleccionarUbicacionActivity :
 
         try {
 
-            googleMap?.isMyLocationEnabled = true
+            googleMap?.isMyLocationEnabled =
+                true
 
         } catch (_: SecurityException) {
 
@@ -528,7 +909,7 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // OBTENER UBICACIÓN ACTUAL DEL CELULAR
+    // UBICACIÓN ACTUAL
     // =========================================================
 
     private fun obtenerUbicacionActual() {
@@ -547,7 +928,10 @@ class SeleccionarUbicacionActivity :
             ) == PackageManager.PERMISSION_GRANTED
 
 
-        if (!permisoFino && !permisoAproximado) {
+        if (
+            !permisoFino &&
+            !permisoAproximado
+        ) {
 
             verificarPermisoUbicacion()
 
@@ -555,7 +939,9 @@ class SeleccionarUbicacionActivity :
         }
 
 
-        binding.btnMiUbicacion.isEnabled = false
+        binding.btnMiUbicacion.isEnabled =
+            false
+
 
         binding.btnMiUbicacion.text =
             "BUSCANDO UBICACIÓN..."
@@ -606,7 +992,6 @@ class SeleccionarUbicacionActivity :
                 }
                 .addOnFailureListener {
 
-
                     restaurarBotonMiUbicacion()
 
                     obtenerUltimaUbicacion()
@@ -617,9 +1002,10 @@ class SeleccionarUbicacionActivity :
 
             restaurarBotonMiUbicacion()
 
+
             Toast.makeText(
                 this,
-                "No fue posible acceder a la ubicación.",
+                "No fue posible acceder a tu ubicación.",
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -627,7 +1013,7 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // UBICACIÓN ANTERIOR COMO RESPALDO
+    // ÚLTIMA UBICACIÓN COMO RESPALDO
     // =========================================================
 
     private fun obtenerUltimaUbicacion() {
@@ -646,7 +1032,10 @@ class SeleccionarUbicacionActivity :
             ) == PackageManager.PERMISSION_GRANTED
 
 
-        if (!permisoFino && !permisoAproximado) {
+        if (
+            !permisoFino &&
+            !permisoAproximado
+        ) {
 
             return
         }
@@ -679,15 +1068,17 @@ class SeleccionarUbicacionActivity :
                             )
                         )
 
+
                     } else {
 
                         Toast.makeText(
                             this,
-                            "No pudimos obtener tu ubicación. Activa el GPS y vuelve a intentarlo.",
+                            "No pudimos obtener tu ubicación. Activa el GPS e inténtalo nuevamente.",
                             Toast.LENGTH_LONG
                         ).show()
                     }
                 }
+
 
         } catch (_: SecurityException) {
 
@@ -701,7 +1092,9 @@ class SeleccionarUbicacionActivity :
 
     private fun restaurarBotonMiUbicacion() {
 
-        binding.btnMiUbicacion.isEnabled = true
+        binding.btnMiUbicacion.isEnabled =
+            true
+
 
         binding.btnMiUbicacion.text =
             "📍  USAR MI UBICACIÓN ACTUAL"
@@ -709,7 +1102,7 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // MOSTRAR COORDENADAS
+    // COORDENADAS
     // =========================================================
 
     private fun mostrarCoordenadas(
@@ -727,7 +1120,7 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // OBTENER DIRECCIÓN DESDE LATITUD Y LONGITUD
+    // OBTENER DIRECCIÓN
     // =========================================================
 
     private fun obtenerDireccion(
@@ -735,6 +1128,7 @@ class SeleccionarUbicacionActivity :
     ) {
 
         numeroSolicitudDireccion++
+
 
         val solicitudActual =
             numeroSolicitudDireccion
@@ -755,46 +1149,66 @@ class SeleccionarUbicacionActivity :
             )
 
 
-        // Android 13 o superior
+        // -----------------------------------------------------
+        // ANDROID 13+
+        // -----------------------------------------------------
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (
+            Build.VERSION.SDK_INT >=
+            Build.VERSION_CODES.TIRAMISU
+        ) {
 
-            geocoder.getFromLocation(
-                posicion.latitude,
-                posicion.longitude,
-                1
-            ) { direcciones ->
+            try {
+
+                geocoder.getFromLocation(
+                    posicion.latitude,
+                    posicion.longitude,
+                    1
+                ) { direcciones ->
 
 
-                runOnUiThread {
+                    runOnUiThread {
 
-                    if (solicitudActual != numeroSolicitudDireccion) {
+                        if (
+                            solicitudActual !=
+                            numeroSolicitudDireccion
+                        ) {
 
-                        return@runOnUiThread
+                            return@runOnUiThread
+                        }
+
+
+                        val direccion =
+                            direcciones
+                                .firstOrNull()
+                                ?.getAddressLine(0)
+
+
+                        mostrarDireccionObtenida(
+                            direccion,
+                            posicion
+                        )
                     }
-
-
-                    val direccion =
-
-                        direcciones
-                            .firstOrNull()
-                            ?.getAddressLine(0)
-
-
-                    mostrarDireccionObtenida(
-                        direccion,
-                        posicion
-                    )
                 }
+
+
+            } catch (_: Exception) {
+
+                mostrarDireccionObtenida(
+                    null,
+                    posicion
+                )
             }
+
 
         } else {
 
-            // Android 12 o inferior
 
-            lifecycleScope.launch(
-                Dispatchers.IO
-            ) {
+            // -------------------------------------------------
+            // ANDROID 12 O ANTERIOR
+            // -------------------------------------------------
+
+            geocoderExecutor.execute {
 
                 val direccion =
 
@@ -810,19 +1224,21 @@ class SeleccionarUbicacionActivity :
                             ?.firstOrNull()
                             ?.getAddressLine(0)
 
+
                     } catch (_: Exception) {
 
                         null
                     }
 
 
-                withContext(
-                    Dispatchers.Main
-                ) {
+                runOnUiThread {
 
-                    if (solicitudActual != numeroSolicitudDireccion) {
+                    if (
+                        solicitudActual !=
+                        numeroSolicitudDireccion
+                    ) {
 
-                        return@withContext
+                        return@runOnUiThread
                     }
 
 
@@ -837,7 +1253,7 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // MOSTRAR DIRECCIÓN EN PANTALLA
+    // MOSTRAR DIRECCIÓN
     // =========================================================
 
     private fun mostrarDireccionObtenida(
@@ -851,7 +1267,9 @@ class SeleccionarUbicacionActivity :
 
         direccionSeleccionada =
 
-            if (!direccion.isNullOrBlank()) {
+            if (
+                !direccion.isNullOrBlank()
+            ) {
 
                 direccion
 
@@ -872,10 +1290,39 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // GUARDAR UBICACIÓN EN FIRESTORE
+    // PROCESAR BOTÓN PRINCIPAL
     // =========================================================
 
-    private fun guardarUbicacion() {
+    private fun procesarUbicacionSeleccionada() {
+
+        when (tipoUbicacion) {
+
+
+            // CASA / TRABAJO SE GUARDAN
+
+            TIPO_CASA,
+            TIPO_TRABAJO -> {
+
+                guardarUbicacionPerfil()
+            }
+
+
+            // ORIGEN / DESTINO SOLO SE DEVUELVEN
+
+            TIPO_ORIGEN,
+            TIPO_DESTINO -> {
+
+                devolverUbicacionTemporal()
+            }
+        }
+    }
+
+
+    // =========================================================
+    // GUARDAR CASA / TRABAJO EN FIRESTORE
+    // =========================================================
+
+    private fun guardarUbicacionPerfil() {
 
         val usuario =
             auth.currentUser
@@ -901,7 +1348,7 @@ class SeleccionarUbicacionActivity :
 
             Toast.makeText(
                 this,
-                "Selecciona primero una ubicación en el mapa.",
+                "Selecciona primero una ubicación.",
                 Toast.LENGTH_LONG
             ).show()
 
@@ -916,25 +1363,18 @@ class SeleccionarUbicacionActivity :
                 .orEmpty()
 
 
-        var direccion =
-            direccionSeleccionada.trim()
-
-
-        if (direccion.isBlank()) {
-
-            direccion =
-                String.format(
-                    Locale.US,
-                    "Ubicación seleccionada (%.6f, %.6f)",
-                    posicion.latitude,
-                    posicion.longitude
-                )
-        }
+        val direccion =
+            obtenerDireccionParaGuardar(
+                posicion
+            )
 
 
         val campoUbicacion =
 
-            if (tipoUbicacion == TIPO_TRABAJO) {
+            if (
+                tipoUbicacion ==
+                TIPO_TRABAJO
+            ) {
 
                 CAMPO_UBICACION_TRABAJO
 
@@ -972,7 +1412,7 @@ class SeleccionarUbicacionActivity :
             )
 
 
-        mostrarGuardando(
+        mostrarProcesando(
             true
         )
 
@@ -987,14 +1427,17 @@ class SeleccionarUbicacionActivity :
             .addOnSuccessListener {
 
 
-                mostrarGuardando(
+                mostrarProcesando(
                     false
                 )
 
 
                 val nombreTipo =
 
-                    if (tipoUbicacion == TIPO_TRABAJO) {
+                    if (
+                        tipoUbicacion ==
+                        TIPO_TRABAJO
+                    ) {
 
                         "trabajo"
 
@@ -1011,48 +1454,16 @@ class SeleccionarUbicacionActivity :
                 ).show()
 
 
-                val resultado =
-                    Intent().apply {
-
-                        putExtra(
-                            EXTRA_TIPO_UBICACION,
-                            tipoUbicacion
-                        )
-
-                        putExtra(
-                            "direccionUbicacion",
-                            direccion
-                        )
-
-                        putExtra(
-                            "latitudUbicacion",
-                            posicion.latitude
-                        )
-
-                        putExtra(
-                            "longitudUbicacion",
-                            posicion.longitude
-                        )
-
-                        putExtra(
-                            EXTRA_ORIGEN_UBICACION,
-                            origenUbicacion
-                        )
-                    }
-
-
-                setResult(
-                    Activity.RESULT_OK,
-                    resultado
+                devolverResultado(
+                    posicion = posicion,
+                    direccion = direccion,
+                    referencia = referencia
                 )
-
-
-                finish()
             }
             .addOnFailureListener { error ->
 
 
-                mostrarGuardando(
+                mostrarProcesando(
                     false
                 )
 
@@ -1067,16 +1478,163 @@ class SeleccionarUbicacionActivity :
 
 
     // =========================================================
-    // ESTADO GUARDANDO
+    // ORIGEN / DESTINO
+    // NO GUARDA EN FIRESTORE
     // =========================================================
 
-    private fun mostrarGuardando(
-        guardando: Boolean
+    private fun devolverUbicacionTemporal() {
+
+        val posicion =
+            ubicacionSeleccionada
+
+
+        if (posicion == null) {
+
+            Toast.makeText(
+                this,
+                "Selecciona un punto en el mapa.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
+
+
+        val direccion =
+            obtenerDireccionParaGuardar(
+                posicion
+            )
+
+
+        val referencia =
+            binding.etReferencia.text
+                ?.toString()
+                ?.trim()
+                .orEmpty()
+
+
+        devolverResultado(
+            posicion = posicion,
+            direccion = direccion,
+            referencia = referencia
+        )
+    }
+
+
+    // =========================================================
+    // DIRECCIÓN FINAL
+    // =========================================================
+
+    private fun obtenerDireccionParaGuardar(
+        posicion: LatLng
+    ): String {
+
+        val direccion =
+            direccionSeleccionada.trim()
+
+
+        if (
+            direccion.isNotBlank() &&
+            direccion != "Buscando dirección..."
+        ) {
+
+            return direccion
+        }
+
+
+        return String.format(
+            Locale.US,
+            "Ubicación seleccionada (%.6f, %.6f)",
+            posicion.latitude,
+            posicion.longitude
+        )
+    }
+
+
+    // =========================================================
+    // DEVOLVER RESULTADO
+    // =========================================================
+
+    private fun devolverResultado(
+        posicion: LatLng,
+        direccion: String,
+        referencia: String
+    ) {
+
+        val resultado =
+            Intent().apply {
+
+
+                // Tipo
+
+                putExtra(
+                    EXTRA_TIPO_UBICACION,
+                    tipoUbicacion
+                )
+
+
+                // Dirección
+
+                putExtra(
+                    EXTRA_DIRECCION_RESULTADO,
+                    direccion
+                )
+
+
+                // Latitud
+
+                putExtra(
+                    EXTRA_LATITUD_RESULTADO,
+                    posicion.latitude
+                )
+
+
+                // Longitud
+
+                putExtra(
+                    EXTRA_LONGITUD_RESULTADO,
+                    posicion.longitude
+                )
+
+
+                // Referencia
+
+                putExtra(
+                    EXTRA_REFERENCIA_RESULTADO,
+                    referencia
+                )
+
+
+                // De dónde vino
+
+                putExtra(
+                    EXTRA_ORIGEN_UBICACION,
+                    origenUbicacion
+                )
+            }
+
+
+        setResult(
+            Activity.RESULT_OK,
+            resultado
+        )
+
+
+        finish()
+    }
+
+
+    // =========================================================
+    // MOSTRAR PROCESANDO
+    // =========================================================
+
+    private fun mostrarProcesando(
+        procesando: Boolean
     ) {
 
         binding.progressGuardarUbicacion.visibility =
 
-            if (guardando) {
+            if (procesando) {
 
                 View.VISIBLE
 
@@ -1087,19 +1645,63 @@ class SeleccionarUbicacionActivity :
 
 
         binding.btnGuardarUbicacion.isEnabled =
-            !guardando
+            !procesando
 
+
+        if (procesando) {
+
+            binding.btnGuardarUbicacion.text =
+                ""
+
+        } else {
+
+            configurarTextoBotonPrincipal()
+        }
+    }
+
+
+    // =========================================================
+    // RESTAURAR TEXTO BOTÓN
+    // =========================================================
+
+    private fun configurarTextoBotonPrincipal() {
 
         binding.btnGuardarUbicacion.text =
 
-            if (guardando) {
+            when (tipoUbicacion) {
 
-                ""
+                TIPO_CASA,
+                TIPO_TRABAJO ->
+                    "GUARDAR UBICACIÓN"
 
-            } else {
+                TIPO_ORIGEN ->
+                    "USAR COMO ORIGEN"
 
-                "GUARDAR UBICACIÓN"
+                TIPO_DESTINO ->
+                    "USAR COMO DESTINO"
+
+                else ->
+                    "GUARDAR UBICACIÓN"
             }
+    }
+
+
+    // =========================================================
+    // ON DESTROY
+    // =========================================================
+
+    override fun onDestroy() {
+
+        super.onDestroy()
+
+
+        try {
+
+            geocoderExecutor.shutdownNow()
+
+        } catch (_: Exception) {
+
+        }
     }
 
 
@@ -1110,7 +1712,43 @@ class SeleccionarUbicacionActivity :
     companion object {
 
 
-        // Extras
+        // =====================================================
+        // TIPOS DE UBICACIÓN
+        // =====================================================
+
+        const val TIPO_CASA =
+            "CASA"
+
+        const val TIPO_TRABAJO =
+            "TRABAJO"
+
+        const val TIPO_ORIGEN =
+            "ORIGEN"
+
+        const val TIPO_DESTINO =
+            "DESTINO"
+
+
+        // =====================================================
+        // ORIGEN DE LA PANTALLA
+        // =====================================================
+
+        const val ORIGEN_PERFIL =
+            "PERFIL"
+
+        const val ORIGEN_MOVILIDAD =
+            "MOVILIDAD"
+
+        const val ORIGEN_ENCOMIENDA =
+            "ENCOMIENDA"
+
+        const val ORIGEN_MANDADO =
+            "MANDADO"
+
+
+        // =====================================================
+        // EXTRAS DE ENTRADA
+        // =====================================================
 
         const val EXTRA_TIPO_UBICACION =
             "tipoUbicacion"
@@ -1119,22 +1757,38 @@ class SeleccionarUbicacionActivity :
             "origenUbicacion"
 
 
-        // Tipos
+        // Punto inicial opcional
 
-        const val TIPO_CASA =
-            "CASA"
+        const val EXTRA_LATITUD_INICIAL =
+            "latitudInicial"
 
-        const val TIPO_TRABAJO =
-            "TRABAJO"
+        const val EXTRA_LONGITUD_INICIAL =
+            "longitudInicial"
 
-
-        // Orígenes
-
-        const val ORIGEN_PERFIL =
-            "PERFIL"
+        const val EXTRA_DIRECCION_INICIAL =
+            "direccionInicial"
 
 
-        // Firebase
+        // =====================================================
+        // RESULTADOS
+        // =====================================================
+
+        const val EXTRA_DIRECCION_RESULTADO =
+            "direccionUbicacion"
+
+        const val EXTRA_LATITUD_RESULTADO =
+            "latitudUbicacion"
+
+        const val EXTRA_LONGITUD_RESULTADO =
+            "longitudUbicacion"
+
+        const val EXTRA_REFERENCIA_RESULTADO =
+            "referenciaUbicacion"
+
+
+        // =====================================================
+        // FIRESTORE
+        // =====================================================
 
         private const val COLECCION_USUARIOS =
             "usuariospasajes"
@@ -1163,12 +1817,23 @@ class SeleccionarUbicacionActivity :
             "fechaActualizacion"
 
 
-        // Mapa
+        // =====================================================
+        // MAPA
+        // =====================================================
 
         private const val ZOOM_INICIAL =
             15f
 
         private const val ZOOM_UBICACION =
             17f
+
+
+        // Aplao como respaldo
+
+        private const val LATITUD_APLAO =
+            -16.0765
+
+        private const val LONGITUD_APLAO =
+            -72.4923
     }
 }
